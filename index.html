@@ -17,20 +17,16 @@
   ========================================================== -->
   <script>
     const CONFIG = {
-      // ----- YouTube Data API の設定 -----
-      YOUTUBE_API_KEY: "AlzaSyAkay-dmpZbQiwmggo_XDQwFVrpKqGOXLc",   // ← Google Cloud Console で発行
-      CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw",    // ← チャンネルID（設定済み）
-
       // ----- microCMS の設定 -----
       // サービスドメイン：https://kamiki.microcms.io なら "kamiki"
-      MICROCMS_SERVICE_DOMAIN: "kamiki",          // ← あなたのサービスドメイン（設定済み）
+      MICROCMS_SERVICE_DOMAIN: "kamiki",  // ← あなたのサービスドメイン（設定済み）
 
       // ▼ サイト設定用 API（sitesetting エンドポイント）
-      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",   // ← sitesetting 用のAPIキー
+      SITE_SETTINGS_API_KEY: "YOUR_SITE_SETTINGS_API_KEY",   // ← sitesetting 用のAPIキー
       SITE_SETTINGS_ENDPOINT: "sitesetting",
 
       // ▼ お知らせ用 API（news-kamiki エンドポイント）
-      NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",               // ← news-kamiki 用のAPIキー
+      NOTICES_API_KEY: "YOUR_NOTICES_API_KEY",               // ← news-kamiki 用のAPIキー
       NOTICES_ENDPOINT: "news-kamiki"
     };
   </script>
@@ -92,7 +88,7 @@
       transition: opacity 0.3s ease;
     }
     .logo:hover { opacity: 0.8; }
-    .logo img { display: none; }
+    .logo img { display: none; } /* アイコンは表示しない */
     nav {
       display: flex;
       align-items: center;
@@ -118,27 +114,6 @@
     }
     nav a:hover, nav a.active { color: var(--text-main); }
     nav a.active::after { width: 100%; }
-    .subscriber-display {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-sub);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      background: rgba(255,255,255,0.05);
-      padding: 6px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--card-border);
-      white-space: nowrap;
-    }
-    .subscriber-display .count {
-      color: var(--text-main);
-      font-weight: 900;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
     .menu-toggle {
       display: none;
       flex-direction: column;
@@ -188,7 +163,7 @@
       pointer-events: none;
     }
     .hero-inner { width: 100%; max-width: 850px; }
-    .hero-icon { display: none; }
+    .hero-icon { display: none; } /* アイコンは表示しない */
     .hero h1 {
       font-size: clamp(48px, 8vw, 90px);
       line-height: 1.1;
@@ -346,12 +321,6 @@
       }
       nav.active { transform: translateX(0); }
       nav a { font-size: 20px; }
-      .subscriber-display {
-        font-size: 16px;
-        padding: 8px 20px;
-        background: rgba(255,255,255,0.08);
-        border-color: rgba(255,255,255,0.2);
-      }
       .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
       .menu-toggle.active span:nth-child(2) { opacity: 0; }
       .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
@@ -377,9 +346,6 @@
       <a href="#q=member" data-page="member">MEMBER</a>
       <a href="#q=video" data-page="video">VIDEO</a>
       <a href="#q=about" data-page="about">ABOUT</a>
-      <span class="subscriber-display">
-        👥 登録者 <span class="count" id="subscriber-count">--</span> 人
-      </span>
     </nav>
   </div>
 </header>
@@ -393,7 +359,6 @@
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
           <a id="youtube-button" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">▶ YouTubeへ</a>
-          <a id="viewer-button" class="button secondary" href="#q=video">登録者ビューアー</a>
         </div>
         <div class="scroll">SCROLL ↓</div>
       </div>
@@ -403,6 +368,7 @@
         <h2 class="section-title">NEWS</h2>
         <p class="section-subtitle">神木チャンネルからのお知らせ</p>
         <div id="notice-list" class="notice-box">
+          <!-- ここにmicroCMSから取得したお知らせが表示されます -->
           <div class="notice">
             <div class="notice-date">Loading...</div>
             <div class="notice-title">お知らせを取得しています</div>
@@ -439,13 +405,6 @@
             <p>神木チャンネルのメイン動画はこちらからご視聴いただけます。</p>
             <div class="buttons">
               <a id="youtube-button-2" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTubeを見る</a>
-            </div>
-          </div>
-          <div class="card">
-            <h3>登録者ビューアー</h3>
-            <p>チャンネルの現在の登録者数をリアルタイムで確認できます（メニューにも表示）。</p>
-            <div class="buttons">
-              <a id="viewer-button-2" class="button secondary" href="#" target="_blank" rel="noopener">登録者を見る</a>
             </div>
           </div>
         </div>
@@ -517,47 +476,22 @@
   }
 
   /* ==================================================
-     YouTube登録者数取得（30秒ごと自動更新）
-  ================================================== */
-  async function fetchSubscriberCount() {
-    const el = document.getElementById("subscriber-count");
-    if (!el) return;
-    const key = CONFIG.YOUTUBE_API_KEY;
-    const cid = CONFIG.CHANNEL_ID;
-    if (!key || key === "YOUR_YOUTUBE_API_KEY") {
-      el.textContent = "🔑未設定";
-      return;
-    }
-    try {
-      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${cid}&key=${key}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (data.items && data.items.length > 0) {
-        el.textContent = Number(data.items[0].statistics.subscriberCount).toLocaleString();
-      } else {
-        throw new Error("チャンネルが見つかりません");
-      }
-    } catch (e) {
-      console.error("登録者数取得エラー:", e);
-      el.textContent = "❌エラー";
-    }
-  }
-  fetchSubscriberCount();
-  setInterval(fetchSubscriberCount, 30 * 1000);
-
-  /* ==================================================
      microCMS 連携（2つのAPIエンドポイント、別々のAPIキー）
   ================================================== */
   async function microCMSFetch(endpoint, apiKey) {
     const domain = CONFIG.MICROCMS_SERVICE_DOMAIN;
-    if (!domain || domain === "YOUR_SERVICE_DOMAIN") throw new Error("microCMS domain未設定");
+    if (!domain || domain === "YOUR_SERVICE_DOMAIN") {
+      throw new Error(`microCMS サービスドメインが設定されていません。 (${endpoint})`);
+    }
     if (!apiKey || apiKey === "YOUR_SITE_SETTINGS_API_KEY" || apiKey === "YOUR_NOTICES_API_KEY") {
       throw new Error(`APIキーが未設定です (${endpoint})`);
     }
     const url = `https://${domain}.microcms.io/api/v1/${endpoint}`;
+    console.log(`🔍 フェッチ中: ${url}`);
     const res = await fetch(url, { headers: { "X-MICROCMS-API-KEY": apiKey } });
-    if (!res.ok) throw new Error(`microCMS API Error: ${res.status} (${endpoint})`);
+    if (!res.ok) {
+      throw new Error(`microCMS API Error: ${res.status} (${endpoint})`);
+    }
     return res.json();
   }
 
@@ -568,22 +502,21 @@
         CONFIG.SITE_SETTINGS_ENDPOINT,
         CONFIG.SITE_SETTINGS_API_KEY
       );
-      console.log("✅ サイト設定:", settings);
+      console.log("✅ サイト設定取得成功:", settings);
 
+      // サイト名
       if (settings.siteName) {
         document.getElementById("site-name").textContent = settings.siteName;
         document.querySelector(".logo span").textContent = settings.siteName;
       }
+      // サブタイトル
       if (settings.subtitle) {
         document.getElementById("site-subtitle").textContent = settings.subtitle;
       }
+      // YouTube URL
       if (settings.youtubeUrl) {
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
-      }
-      if (settings.viewerUrl) {
-        document.getElementById("viewer-button").href = settings.viewerUrl;
-        document.getElementById("viewer-button-2").href = settings.viewerUrl;
       }
       // アイコンは表示しないので無視
 
@@ -592,16 +525,39 @@
         CONFIG.NOTICES_ENDPOINT,
         CONFIG.NOTICES_API_KEY
       );
-      console.log("✅ お知らせデータ:", newsData);
+      console.log("✅ お知らせ取得成功:", newsData);
 
       const list = document.getElementById("notice-list");
-      const notices = Array.isArray(newsData.notices) ? newsData.notices : [];
+
+      // ★ ここが重要！ newsData の構造をチェック ★
+      // 想定1: newsData.notices が配列
+      // 想定2: newsData.contents が配列（リスト形式の場合）
+      // 想定3: newsData 自体が配列
+      let notices = [];
+      if (Array.isArray(newsData.notices)) {
+        notices = newsData.notices;
+      } else if (Array.isArray(newsData.contents)) {
+        notices = newsData.contents;
+      } else if (Array.isArray(newsData)) {
+        notices = newsData;
+      } else {
+        // 構造が想定外の場合、中身を確認できるように表示
+        console.warn("想定外のデータ構造です:", newsData);
+        list.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">データ構造が想定と異なります。コンソール(F12)を確認してください。</div>
+          </div>
+        `;
+        return;
+      }
 
       if (notices.length === 0) {
         list.innerHTML = `<div class="notice"><div class="notice-title">現在、お知らせはありません。</div></div>`;
         return;
       }
 
+      // お知らせを表示
       list.innerHTML = notices.map(item => {
         const url = item.url || "";
         const dateStr = item.date ? escapeHTML(item.date) : "";
@@ -617,13 +573,21 @@
       }).join("");
 
     } catch (e) {
-      console.error("❌ microCMSエラー:", e);
+      console.error("❌ microCMS エラー:", e);
+      // エラー内容をユーザーにわかりやすく表示
       document.getElementById("notice-list").innerHTML = `
-        <div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">ただいまお知らせを準備中です。</div></div>
+        <div class="notice">
+          <div class="notice-title">⚠️ お知らせの読み込みに失敗しました</div>
+          <div class="notice-description">エラー: ${escapeHTML(e.message)}</div>
+          <div class="notice-description" style="margin-top:8px; font-size:12px; color:#666;">
+            設定（APIキー・エンドポイント名）を確認してください。
+          </div>
+        </div>
       `;
     }
   }
 
+  // ページ読み込み時に実行
   loadSiteData();
 </script>
 </body>
