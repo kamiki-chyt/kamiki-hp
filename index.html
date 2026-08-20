@@ -5,9 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>神木チャンネル</title>
   <meta name="description" content="神木チャンネル公式ホームページ">
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <!-- ==========================================================
+       ★★★ 設定はこの1箇所だけ！ ★★★
+       エンドポイントごとに別々のAPIキーを設定できます。
+  ========================================================== -->
+  <script>
+    const CONFIG = {
+      // ----- YouTube Data API の設定 -----
+      YOUTUBE_API_KEY: "AlzaSyAkay-dmpZbQiwmggo_XDQwFVrpKqGOXLc",   // ← Google Cloud Console で発行
+      CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw",    // ← チャンネルID（設定済み）
+
+      // ----- microCMS の設定 -----
+      // サービスドメイン：https://kamiki.microcms.io なら "kamiki"
+      MICROCMS_SERVICE_DOMAIN: "kamiki",          // ← あなたのサービスドメイン（設定済み）
+
+      // ▼ サイト設定用 API（sitesetting エンドポイント）
+      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",   // ← sitesetting 用のAPIキー
+      SITE_SETTINGS_ENDPOINT: "sitesetting",
+
+      // ▼ お知らせ用 API（news-kamiki エンドポイント）
+      NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",               // ← news-kamiki 用のAPIキー
+      NOTICES_ENDPOINT: "news-kamiki"
+    };
+  </script>
+  <!-- ========================================================== -->
+
   <style>
     :root {
       --bg-color: #050505;
@@ -444,22 +472,6 @@
 
 <script>
   /* ==================================================
-     ★★★ 設定はこの1箇所だけ ★★★
-  ================================================== */
-  const CONFIG = {
-    // ----- YouTube API -----
-    YOUTUBE_API_KEY: "AIzaSyAkay-dmpZbQiwmggo_XDQwFVrpKqGOXLc",   // ← ここにAPIキーを入れる
-    CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw",    // ← チャンネルID（設定済み）
-
-    // ----- microCMS（お知らせ用・任意） -----
-    MICROCMS_SERVICE_DOMAIN: "YOUR_SERVICE_DOMAIN",
-    MICROCMS_API_KEY: "YOUR_GET_ONLY_API_KEY",
-    DATA_ENDPOINT: "site-data"
-  };
-  /* ================================================== */
-
-
-  /* ==================================================
      ハンバーガーメニュー
   ================================================== */
   const menuToggle = document.getElementById('menu-toggle');
@@ -535,37 +547,36 @@
   setInterval(fetchSubscriberCount, 30 * 1000);
 
   /* ==================================================
-     microCMS（お知らせ）
+     microCMS 連携（2つのAPIエンドポイント、別々のAPIキー）
   ================================================== */
-  async function microCMSFetch(endpoint, params="") {
+  async function microCMSFetch(endpoint, apiKey) {
     const domain = CONFIG.MICROCMS_SERVICE_DOMAIN;
-    const key = CONFIG.MICROCMS_API_KEY;
     if (!domain || domain === "YOUR_SERVICE_DOMAIN") throw new Error("microCMS domain未設定");
-    if (!key || key === "YOUR_GET_ONLY_API_KEY") throw new Error("microCMS API key未設定");
-    const url = `https://${domain}.microcms.io/api/v1/${endpoint}${params}`;
-    const res = await fetch(url, { headers: { "X-MICROCMS-API-KEY": key } });
-    if (!res.ok) throw new Error(`microCMS API Error: ${res.status}`);
+    if (!apiKey || apiKey === "YOUR_SITE_SETTINGS_API_KEY" || apiKey === "YOUR_NOTICES_API_KEY") {
+      throw new Error(`APIキーが未設定です (${endpoint})`);
+    }
+    const url = `https://${domain}.microcms.io/api/v1/${endpoint}`;
+    const res = await fetch(url, { headers: { "X-MICROCMS-API-KEY": apiKey } });
+    if (!res.ok) throw new Error(`microCMS API Error: ${res.status} (${endpoint})`);
     return res.json();
   }
 
   async function loadSiteData() {
     try {
-      const domain = CONFIG.MICROCMS_SERVICE_DOMAIN;
-      const key = CONFIG.MICROCMS_API_KEY;
-      if (domain === "YOUR_SERVICE_DOMAIN" || key === "YOUR_GET_ONLY_API_KEY") {
-        console.warn("microCMS未設定のためデフォルト表示");
-        document.getElementById("notice-list").innerHTML = `
-          <div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">microCMSの接続設定を完了してください。</div></div>
-        `;
-        return;
-      }
-      const data = await microCMSFetch(CONFIG.DATA_ENDPOINT);
-      const settings = data.settings || data;
+      // ---- 1. サイト設定を取得（sitesetting エンドポイント） ----
+      const settings = await microCMSFetch(
+        CONFIG.SITE_SETTINGS_ENDPOINT,
+        CONFIG.SITE_SETTINGS_API_KEY
+      );
+      console.log("✅ サイト設定:", settings);
+
       if (settings.siteName) {
         document.getElementById("site-name").textContent = settings.siteName;
         document.querySelector(".logo span").textContent = settings.siteName;
       }
-      if (settings.subtitle) document.getElementById("site-subtitle").textContent = settings.subtitle;
+      if (settings.subtitle) {
+        document.getElementById("site-subtitle").textContent = settings.subtitle;
+      }
       if (settings.youtubeUrl) {
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
@@ -574,12 +585,23 @@
         document.getElementById("viewer-button").href = settings.viewerUrl;
         document.getElementById("viewer-button-2").href = settings.viewerUrl;
       }
+      // アイコンは表示しないので無視
+
+      // ---- 2. お知らせを取得（news-kamiki エンドポイント） ----
+      const newsData = await microCMSFetch(
+        CONFIG.NOTICES_ENDPOINT,
+        CONFIG.NOTICES_API_KEY
+      );
+      console.log("✅ お知らせデータ:", newsData);
+
       const list = document.getElementById("notice-list");
-      const notices = Array.isArray(data.notices) ? data.notices : [];
+      const notices = Array.isArray(newsData.notices) ? newsData.notices : [];
+
       if (notices.length === 0) {
         list.innerHTML = `<div class="notice"><div class="notice-title">現在、お知らせはありません。</div></div>`;
         return;
       }
+
       list.innerHTML = notices.map(item => {
         const url = item.url || "";
         const dateStr = item.date ? escapeHTML(item.date) : "";
@@ -593,13 +615,15 @@
           ${url ? `</a>` : `</div>`}
         `;
       }).join("");
+
     } catch (e) {
-      console.error("microCMSエラー:", e);
+      console.error("❌ microCMSエラー:", e);
       document.getElementById("notice-list").innerHTML = `
         <div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">ただいまお知らせを準備中です。</div></div>
       `;
     }
   }
+
   loadSiteData();
 </script>
 </body>
