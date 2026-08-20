@@ -521,6 +521,7 @@
 <header>
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
+      <!-- デフォルトの画像（assets/icon.png が存在しない場合はここにフォールバック） -->
       <img id="header-icon" src="assets/icon.png" alt="神木チャンネル">
       <span>神木チャンネル</span>
     </a>
@@ -753,16 +754,18 @@
      microCMS 連携設定
   ================================================== */
 
-  const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN"; // ドメイン部分を入力
-  const MICROCMS_API_KEY = "YOUR_GET_ONLY_API_KEY";      // APIキーを入力
+  // ★★★ 以下の2行をあなたの環境に合わせて書き換えてください ★★★
+  const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN"; // 例: "your-service"
+  const MICROCMS_API_KEY = "YOUR_GET_ONLY_API_KEY";      // 例: "abc123..."
   const DATA_ENDPOINT = "site-data";                     // 統合APIのエンドポイント名
 
   async function microCMSFetch(endpoint, params = "") {
+    // 設定が空の場合は即座にエラーを投げる
     if (!MICROCMS_SERVICE_DOMAIN || MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN") {
-      throw new Error("microCMS service domain is not configured.");
+      throw new Error("microCMS service domain が設定されていません。");
     }
     if (!MICROCMS_API_KEY || MICROCMS_API_KEY === "YOUR_GET_ONLY_API_KEY") {
-      throw new Error("microCMS API key is not configured.");
+      throw new Error("microCMS API key が設定されていません。");
     }
 
     const url = `https://${MICROCMS_SERVICE_DOMAIN}.microcms.io/api/v1/${endpoint}${params}`;
@@ -777,43 +780,72 @@
   }
 
   /* ==================================================
-     統合データの読み込み
+     統合データの読み込み（修正版）
   ================================================== */
   async function loadSiteData() {
     try {
-      const data = await microCMSFetch(DATA_ENDPOINT);
+      // 設定が空の場合はエラーを表示して終了（デフォルトの静的情報が表示される）
+      if (MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN" || MICROCMS_API_KEY === "YOUR_GET_ONLY_API_KEY") {
+        console.warn("microCMS の設定が完了していないため、デフォルト表示のままです。");
+        document.getElementById("notice-list").innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">microCMSの接続設定を完了してください。</div>
+          </div>
+        `;
+        return;
+      }
 
-      // --- 1. サイト設定の反映 (直置き or settingsグループ対応) ---
+      const data = await microCMSFetch(DATA_ENDPOINT);
+      console.log("✅ microCMS レスポンス:", data); // デバッグ用（本番では削除推奨）
+
+      // ---- 1. サイト設定の反映 ----
       const settings = data.settings || data;
 
+      // サイト名
       if (settings.siteName) {
         document.getElementById("site-name").textContent = settings.siteName;
         document.querySelector(".logo span").textContent = settings.siteName;
       }
 
+      // サブタイトル
       if (settings.subtitle) {
         document.getElementById("site-subtitle").textContent = settings.subtitle;
       }
 
-      if (settings.icon && settings.icon.url) {
-        const iconURL = settings.icon.url;
-        document.getElementById("header-icon").src = iconURL;
-        document.getElementById("hero-icon").src = iconURL;
+      // ---- 2. アイコンURLの取得（複数パスに対応） ----
+      let iconUrl = null;
+      if (settings.icon?.url) {
+        iconUrl = settings.icon.url;
+      } else if (settings.iconUrl) {
+        iconUrl = settings.iconUrl;
+      } else if (data.icon?.url) {
+        iconUrl = data.icon.url;
+      } else if (data.iconUrl) {
+        iconUrl = data.iconUrl;
       }
 
+      if (iconUrl) {
+        document.getElementById("header-icon").src = iconUrl;
+        document.getElementById("hero-icon").src = iconUrl;
+      } else {
+        console.log("アイコンURLが取得できなかったため、assets/icon.png を使用します。");
+        // assets/icon.png がそのまま使われる（デフォルト）
+      }
+
+      // ---- 3. YouTube / ビューアーURL ----
       if (settings.youtubeUrl) {
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
       }
-
       if (settings.viewerUrl) {
         document.getElementById("viewer-button").href = settings.viewerUrl;
         document.getElementById("viewer-button-2").href = settings.viewerUrl;
       }
 
-      // --- 2. お知らせ（繰り返しフィールド）の反映 ---
+      // ---- 4. お知らせの反映 ----
       const list = document.getElementById("notice-list");
-      const notices = data.notices || [];
+      const notices = Array.isArray(data.notices) ? data.notices : [];
 
       if (notices.length === 0) {
         list.innerHTML = `
@@ -826,23 +858,25 @@
 
       list.innerHTML = notices.map(item => {
         const url = item.url || "";
-        const dateStr = item.date ? escapeHTML(item.date) : ""; 
-        
+        const dateStr = item.date ? escapeHTML(item.date) : "";
+        const title = item.title ? escapeHTML(item.title) : "お知らせ";
+        const description = item.description ? escapeHTML(item.description) : "";
+
         return `
           ${url ? `<a class="notice" href="${escapeHTML(url)}" target="_blank" rel="noopener">` : `<div class="notice">`}
             ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
-            <div class="notice-title">${escapeHTML(item.title || "お知らせ")}</div>
-            <div class="notice-description">${escapeHTML(item.description || "")}</div>
+            <div class="notice-title">${title}</div>
+            ${description ? `<div class="notice-description">${description}</div>` : ''}
           ${url ? `</a>` : `</div>`}
         `;
       }).join("");
 
     } catch (error) {
-      console.log("microCMS load error:", error);
+      console.error("❌ microCMS 読み込みエラー:", error);
       document.getElementById("notice-list").innerHTML = `
         <div class="notice">
           <div class="notice-title">お知らせ</div>
-          <div class="notice-description">現在、お知らせを準備中です。</div>
+          <div class="notice-description">ただいまお知らせを準備中です。</div>
         </div>
       `;
     }
@@ -850,7 +884,6 @@
 
   // 起動時にデータを読み込む
   loadSiteData();
-
 </script>
 </body>
 </html>
