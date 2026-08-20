@@ -109,9 +109,9 @@
       opacity: 0.8;
     }
 
-    /* ★ アイコン画像を完全に削除（display:none でも可） */
+    /* ★ アイコン画像を完全に非表示 */
     .logo img {
-      display: none; /* 画像を完全に非表示 */
+      display: none;
     }
 
     nav {
@@ -246,7 +246,7 @@
 
     /* ★ ヒーロー部分の大きなアイコンも完全に非表示 */
     .hero-icon {
-      display: none; /* 画像を完全に非表示 */
+      display: none;
     }
 
     .hero h1 {
@@ -537,8 +537,7 @@
 <header>
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
-      <!-- ★ アイコン画像は完全に削除（imgタグごと消去） -->
-      <!-- <img id="header-icon" src="assets/icon.png" alt="神木チャンネル">  ← この行を削除 -->
+      <!-- ★ アイコン画像は完全に削除 -->
       <span>神木チャンネル</span>
     </a>
 
@@ -554,7 +553,7 @@
       <a href="#q=video" data-page="video">VIDEO</a>
       <a href="#q=about" data-page="about">ABOUT</a>
 
-      <!-- ★ 登録者数表示（メニュー内） -->
+      <!-- ★ 登録者数表示（30秒ごとに自動更新） -->
       <span class="subscriber-display">
         👥 登録者 <span class="count" id="subscriber-count">--</span> 人
       </span>
@@ -575,7 +574,6 @@
     <section class="hero">
       <div class="hero-inner">
         <!-- ★ ヒーロー部分のアイコンも完全に削除 -->
-        <!-- <img class="hero-icon" src="assets/icon.png" alt="神木チャンネル アイコン">  ← この行を削除 -->
 
         <h1 id="site-name">神木チャンネル</h1>
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
@@ -774,24 +772,21 @@
 
 
   /* ==================================================
-     ★ YouTube Data API v3 で登録者数を取得 ★
+     ★ YouTube Data API v3 で登録者数を取得（常時更新: 30秒間隔） ★
   ================================================== */
 
-  // ----- 設定（あなたの情報に書き換えてください） -----
-  const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY";   // Google Cloud Console で発行
-  const CHANNEL_ID = "YOUR_CHANNEL_ID";             // YouTube チャンネルID（UC... の形式）
-  // --------------------------------------------------
+  // ----- ★ 設定（あなたの情報に書き換えてください） ★ -----
+  const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY";   // ← Google Cloud Console で発行した APIキー
+  const CHANNEL_ID = "UCFCWHBYTtv17ku33Jl2lImw";    // ← あなたのチャンネルID（設定済み）
+  // -------------------------------------------------------
 
   async function fetchSubscriberCount() {
     const countElement = document.getElementById("subscriber-count");
     if (!countElement) return;
 
+    // APIキーが未設定の場合
     if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY") {
       countElement.textContent = "🔑未設定";
-      return;
-    }
-    if (!CHANNEL_ID || CHANNEL_ID === "YOUR_CHANNEL_ID") {
-      countElement.textContent = "📺未設定";
       return;
     }
 
@@ -817,12 +812,17 @@
     }
   }
 
+  // 初回取得
   fetchSubscriberCount();
-  setInterval(fetchSubscriberCount, 5 * 60 * 1000); // 5分ごと
+
+  // ★ 30秒ごとに自動更新（「常時更新」を実現）★
+  // ※ YouTube API のクォータ（1日10,000ユニット）に注意。
+  //   30秒間隔 = 1日2,880リクエスト で、クォータ内に収まります。
+  setInterval(fetchSubscriberCount, 30 * 1000); // 30秒
 
 
   /* ==================================================
-     microCMS 連携（お知らせ用）
+     microCMS 連携（お知らせ用・任意）
   ================================================== */
 
   const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN"; // 例: "your-service"
