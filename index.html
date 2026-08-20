@@ -382,24 +382,6 @@
       text-align: center;
     }
 
-    .member-icon {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-bottom: 20px;
-      background: #111;
-      border: 3px solid transparent;
-      background-image: linear-gradient(var(--bg-color), var(--bg-color)), var(--accent-gradient);
-      background-origin: border-box;
-      background-clip: content-box, border-box;
-      transition: transform 0.4s ease;
-    }
-
-    .card:hover .member-icon {
-      transform: scale(1.05) rotate(5deg);
-    }
-
     /* =========================
        BUTTON
     ========================= */
@@ -616,13 +598,11 @@
 
         <div class="cards">
           <div class="card member-card">
-            <img id="member-icon-1" class="member-icon" src="assets/icon.png" alt="神木">
-            <h3>神木</h3>
+            <h3>カミト</h3>
             <p>神木チャンネルのメンバー。</p>
           </div>
 
           <div class="card member-card">
-            <img id="member-icon-2" class="member-icon" src="assets/icon.png" alt="きぃ">
             <h3>きぃ</h3>
             <p>神木チャンネルのメンバー。</p>
           </div>
@@ -770,12 +750,12 @@
 
 
   /* ==================================================
-     microCMS 連携設定（1つに統合）
+     microCMS 連携設定
   ================================================== */
 
-  const MICROCMS_SERVICE_DOMAIN = "apis"; // ドメイン部分を入力
-  const MICROCMS_API_KEY = "h8XMAOffzupxynUiA5tiTEfeSEM4XqOviWaQ";      // APIキーを入力
-  const DATA_ENDPOINT = "site-data";                     // 作成した統合APIのエンドポイント名
+  const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN"; // ドメイン部分を入力
+  const MICROCMS_API_KEY = "YOUR_GET_ONLY_API_KEY";      // APIキーを入力
+  const DATA_ENDPOINT = "site-data";                     // 統合APIのエンドポイント名
 
   async function microCMSFetch(endpoint, params = "") {
     if (!MICROCMS_SERVICE_DOMAIN || MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN") {
@@ -797,14 +777,13 @@
   }
 
   /* ==================================================
-     1回の通信で設定とお知らせを両方読み込む処理
+     統合データの読み込み
   ================================================== */
   async function loadSiteData() {
     try {
       const data = await microCMSFetch(DATA_ENDPOINT);
 
-      // --- 1. サイト設定の反映 ---
-      // もし `settings` という親グループで囲んでいれば data.settings を、直接置いている場合は data そのままを参照します。
+      // --- 1. サイト設定の反映 (直置き or settingsグループ対応) ---
       const settings = data.settings || data;
 
       if (settings.siteName) {
@@ -820,8 +799,6 @@
         const iconURL = settings.icon.url;
         document.getElementById("header-icon").src = iconURL;
         document.getElementById("hero-icon").src = iconURL;
-        document.getElementById("member-icon-1").src = iconURL;
-        document.getElementById("member-icon-2").src = iconURL;
       }
 
       if (settings.youtubeUrl) {
@@ -849,7 +826,6 @@
 
       list.innerHTML = notices.map(item => {
         const url = item.url || "";
-        // 日付フィールド（date）がある場合は表示、なければ公開日時などはAPIの性質上取得できないため空文字にする
         const dateStr = item.date ? escapeHTML(item.date) : ""; 
         
         return `
