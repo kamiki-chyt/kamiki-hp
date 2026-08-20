@@ -158,6 +158,30 @@
       width: 100%;
     }
 
+    /* ---- 登録者数表示 ---- */
+    .subscriber-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      white-space: nowrap;
+    }
+
+    .subscriber-display .count {
+      color: var(--text-main);
+      font-weight: 900;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     /* ハンバーガーメニュー (Mobile) */
     .menu-toggle {
       display: none;
@@ -229,6 +253,7 @@
       max-width: 850px;
     }
 
+    /* アイコンは静的な assets/icon.png を使う（microCMS連携なし） */
     .hero-icon {
       width: 160px;
       height: 160px;
@@ -484,6 +509,14 @@
         font-size: 20px;
       }
 
+      /* モバイルでは登録者表示を別途スタイル */
+      .subscriber-display {
+        font-size: 16px;
+        padding: 8px 20px;
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.2);
+      }
+
       .menu-toggle.active span:nth-child(1) {
         transform: rotate(45deg) translate(5px, 5px);
       }
@@ -521,7 +554,7 @@
 <header>
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
-      <!-- デフォルトの画像（assets/icon.png が存在しない場合はここにフォールバック） -->
+      <!-- 静的なアイコン（assets/icon.png）をそのまま使用 -->
       <img id="header-icon" src="assets/icon.png" alt="神木チャンネル">
       <span>神木チャンネル</span>
     </a>
@@ -537,6 +570,11 @@
       <a href="#q=member" data-page="member">MEMBER</a>
       <a href="#q=video" data-page="video">VIDEO</a>
       <a href="#q=about" data-page="about">ABOUT</a>
+
+      <!-- ★ 登録者数表示（ナビゲーション内に追加） -->
+      <span class="subscriber-display">
+        👥 登録者 <span class="count" id="subscriber-count">--</span> 人
+      </span>
     </nav>
   </div>
 </header>
@@ -553,7 +591,8 @@
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <img id="hero-icon" class="hero-icon" src="assets/icon.png" alt="神木チャンネル アイコン">
+        <!-- アイコンは静的な assets/icon.png を使用 -->
+        <img class="hero-icon" src="assets/icon.png" alt="神木チャンネル アイコン">
         <h1 id="site-name">神木チャンネル</h1>
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
 
@@ -570,7 +609,7 @@
       </div>
     </section>
 
-    <!-- お知らせ -->
+    <!-- お知らせ（microCMS連携は継続） -->
     <section class="section">
       <div class="container">
         <h2 class="section-title">NEWS</h2>
@@ -635,7 +674,7 @@
 
           <div class="card">
             <h3>登録者ビューアー</h3>
-            <p>チャンネルの現在の登録者数をリアルタイムで確認できます。</p>
+            <p>チャンネルの現在の登録者数をリアルタイムで確認できます（メニューにも表示）。</p>
             <div class="buttons">
               <a id="viewer-button-2" class="button secondary" href="#" target="_blank" rel="noopener">
                 登録者を見る
@@ -751,21 +790,70 @@
 
 
   /* ==================================================
-     microCMS 連携設定
+     ★ YouTube Data API v3 で登録者数を取得 ★
   ================================================== */
 
-  // ★★★ 以下の2行をあなたの環境に合わせて書き換えてください ★★★
+  // ----- 設定（あなたの情報に書き換えてください） -----
+  const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY";   // Google Cloud Console で発行
+  const CHANNEL_ID = "YOUR_CHANNEL_ID";             // YouTube チャンネルID（UC... の形式）
+  // --------------------------------------------------
+
+  async function fetchSubscriberCount() {
+    const countElement = document.getElementById("subscriber-count");
+    if (!countElement) return;
+
+    // APIキーまたはチャンネルIDが未設定の場合はエラー表示
+    if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY") {
+      countElement.textContent = "🔑未設定";
+      return;
+    }
+    if (!CHANNEL_ID || CHANNEL_ID === "YOUR_CHANNEL_ID") {
+      countElement.textContent = "📺未設定";
+      return;
+    }
+
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${YOUTUBE_API_KEY}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.items && data.items.length > 0) {
+        const subscriberCount = data.items[0].statistics.subscriberCount;
+        // カンマ区切りで表示（例：1,234,567）
+        const formatted = Number(subscriberCount).toLocaleString();
+        countElement.textContent = formatted;
+      } else {
+        throw new Error("チャンネルが見つかりません");
+      }
+    } catch (error) {
+      console.error("登録者数取得エラー:", error);
+      countElement.textContent = "❌エラー";
+    }
+  }
+
+  // 初回取得 & 5分ごとに更新（API制限を考慮して間隔を空ける）
+  fetchSubscriberCount();
+  setInterval(fetchSubscriberCount, 5 * 60 * 1000); // 5分
+
+
+  /* ==================================================
+     microCMS 連携（お知らせ用）
+  ================================================== */
+
   const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN"; // 例: "your-service"
   const MICROCMS_API_KEY = "YOUR_GET_ONLY_API_KEY";      // 例: "abc123..."
   const DATA_ENDPOINT = "site-data";                     // 統合APIのエンドポイント名
 
   async function microCMSFetch(endpoint, params = "") {
-    // 設定が空の場合は即座にエラーを投げる
     if (!MICROCMS_SERVICE_DOMAIN || MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN") {
-      throw new Error("microCMS service domain が設定されていません。");
+      throw new Error("microCMS service domain 未設定");
     }
     if (!MICROCMS_API_KEY || MICROCMS_API_KEY === "YOUR_GET_ONLY_API_KEY") {
-      throw new Error("microCMS API key が設定されていません。");
+      throw new Error("microCMS API key 未設定");
     }
 
     const url = `https://${MICROCMS_SERVICE_DOMAIN}.microcms.io/api/v1/${endpoint}${params}`;
@@ -779,14 +867,10 @@
     return response.json();
   }
 
-  /* ==================================================
-     統合データの読み込み（修正版）
-  ================================================== */
   async function loadSiteData() {
     try {
-      // 設定が空の場合はエラーを表示して終了（デフォルトの静的情報が表示される）
       if (MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN" || MICROCMS_API_KEY === "YOUR_GET_ONLY_API_KEY") {
-        console.warn("microCMS の設定が完了していないため、デフォルト表示のままです。");
+        console.warn("microCMS 未設定のためデフォルト表示");
         document.getElementById("notice-list").innerHTML = `
           <div class="notice">
             <div class="notice-title">お知らせ</div>
@@ -797,43 +881,18 @@
       }
 
       const data = await microCMSFetch(DATA_ENDPOINT);
-      console.log("✅ microCMS レスポンス:", data); // デバッグ用（本番では削除推奨）
+      console.log("✅ microCMS レスポンス:", data);
 
-      // ---- 1. サイト設定の反映 ----
+      // ---- サイト設定の反映（アイコン取得は行わない） ----
       const settings = data.settings || data;
 
-      // サイト名
       if (settings.siteName) {
         document.getElementById("site-name").textContent = settings.siteName;
         document.querySelector(".logo span").textContent = settings.siteName;
       }
-
-      // サブタイトル
       if (settings.subtitle) {
         document.getElementById("site-subtitle").textContent = settings.subtitle;
       }
-
-      // ---- 2. アイコンURLの取得（複数パスに対応） ----
-      let iconUrl = null;
-      if (settings.icon?.url) {
-        iconUrl = settings.icon.url;
-      } else if (settings.iconUrl) {
-        iconUrl = settings.iconUrl;
-      } else if (data.icon?.url) {
-        iconUrl = data.icon.url;
-      } else if (data.iconUrl) {
-        iconUrl = data.iconUrl;
-      }
-
-      if (iconUrl) {
-        document.getElementById("header-icon").src = iconUrl;
-        document.getElementById("hero-icon").src = iconUrl;
-      } else {
-        console.log("アイコンURLが取得できなかったため、assets/icon.png を使用します。");
-        // assets/icon.png がそのまま使われる（デフォルト）
-      }
-
-      // ---- 3. YouTube / ビューアーURL ----
       if (settings.youtubeUrl) {
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
@@ -843,7 +902,7 @@
         document.getElementById("viewer-button-2").href = settings.viewerUrl;
       }
 
-      // ---- 4. お知らせの反映 ----
+      // ---- お知らせの反映 ----
       const list = document.getElementById("notice-list");
       const notices = Array.isArray(data.notices) ? data.notices : [];
 
@@ -882,7 +941,6 @@
     }
   }
 
-  // 起動時にデータを読み込む
   loadSiteData();
 </script>
 </body>
