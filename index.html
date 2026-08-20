@@ -13,12 +13,10 @@
 
   <!-- ==========================================================
        ★★★ 設定はこの1箇所だけ！ ★★★
-       エンドポイントごとに別々のAPIキーを設定できます。
   ========================================================== -->
   <script>
     const CONFIG = {
       // ----- microCMS の設定 -----
-      // サービスドメイン：https://kamiki.microcms.io なら "kamiki"
       MICROCMS_SERVICE_DOMAIN: "kamiki",  // ← あなたのサービスドメイン（設定済み）
 
       // ▼ サイト設定用 API（sitesetting エンドポイント）
@@ -27,7 +25,11 @@
 
       // ▼ お知らせ用 API（news-kamiki エンドポイント）
       NOTICES_API_KEY: "YOUR_NOTICES_API_KEY",               // ← news-kamiki 用のAPIキー
-      NOTICES_ENDPOINT: "news-kamiki"
+      NOTICES_ENDPOINT: "news-kamiki",
+
+      // ----- LINE公式アカウント（デフォルト値） -----
+      // microCMS で lineUrl フィールドを設定すれば、それが優先されます。
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
     };
   </script>
   <!-- ========================================================== -->
@@ -294,6 +296,16 @@
       transform: translateY(-3px);
       border-color: rgba(255,255,255,0.2);
     }
+    /* LINEボタン用アクセント */
+    .button.line {
+      background: #06C755;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(6, 199, 85, 0.3);
+    }
+    .button.line:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(6, 199, 85, 0.5);
+    }
     footer {
       padding: 60px 20px;
       text-align: center;
@@ -359,6 +371,8 @@
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
           <a id="youtube-button" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">▶ YouTubeへ</a>
+          <!-- ★ 追加: LINE公式アカウント友達追加ボタン -->
+          <a id="line-button" class="button line" href="#" target="_blank" rel="noopener">💬 LINE友達追加</a>
         </div>
         <div class="scroll">SCROLL ↓</div>
       </div>
@@ -518,6 +532,16 @@
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
       }
+
+      // ★ 追加: LINE公式アカウントURL（microCMSに lineUrl があれば優先）
+      const lineButton = document.getElementById("line-button");
+      if (settings.lineUrl) {
+        lineButton.href = settings.lineUrl;
+      } else {
+        // デフォルトは CONFIG の値を使用
+        lineButton.href = CONFIG.LINE_OFFICIAL_URL;
+      }
+
       // アイコンは表示しないので無視
 
       // ---- 2. お知らせを取得（news-kamiki エンドポイント） ----
@@ -529,10 +553,7 @@
 
       const list = document.getElementById("notice-list");
 
-      // ★ ここが重要！ newsData の構造をチェック ★
-      // 想定1: newsData.notices が配列
-      // 想定2: newsData.contents が配列（リスト形式の場合）
-      // 想定3: newsData 自体が配列
+      // データ構造のバリエーションに対応
       let notices = [];
       if (Array.isArray(newsData.notices)) {
         notices = newsData.notices;
@@ -541,7 +562,6 @@
       } else if (Array.isArray(newsData)) {
         notices = newsData;
       } else {
-        // 構造が想定外の場合、中身を確認できるように表示
         console.warn("想定外のデータ構造です:", newsData);
         list.innerHTML = `
           <div class="notice">
@@ -574,7 +594,6 @@
 
     } catch (e) {
       console.error("❌ microCMS エラー:", e);
-      // エラー内容をユーザーにわかりやすく表示
       document.getElementById("notice-list").innerHTML = `
         <div class="notice">
           <div class="notice-title">⚠️ お知らせの読み込みに失敗しました</div>
