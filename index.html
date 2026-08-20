@@ -7,7 +7,7 @@
   <title>神木チャンネル</title>
   <meta name="description" content="神木チャンネル公式ホームページ">
 
-  <!-- Google Fonts の読み込み -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
@@ -109,18 +109,9 @@
       opacity: 0.8;
     }
 
+    /* ★ アイコン画像を完全に削除（display:none でも可） */
     .logo img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #111;
-      border: 2px solid var(--card-border);
-      transition: transform 0.3s ease;
-    }
-
-    .logo:hover img {
-      transform: rotate(10deg) scale(1.05);
+      display: none; /* 画像を完全に非表示 */
     }
 
     nav {
@@ -253,16 +244,9 @@
       max-width: 850px;
     }
 
-    /* アイコンは静的な assets/icon.png を使う（microCMS連携なし） */
+    /* ★ ヒーロー部分の大きなアイコンも完全に非表示 */
     .hero-icon {
-      width: 160px;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-bottom: 35px;
-      background: #111;
-      box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
-      border: 2px solid rgba(255,255,255,0.1);
+      display: none; /* 画像を完全に非表示 */
     }
 
     .hero h1 {
@@ -509,7 +493,6 @@
         font-size: 20px;
       }
 
-      /* モバイルでは登録者表示を別途スタイル */
       .subscriber-display {
         font-size: 16px;
         padding: 8px 20px;
@@ -554,8 +537,8 @@
 <header>
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
-      <!-- 静的なアイコン（assets/icon.png）をそのまま使用 -->
-      <img id="header-icon" src="assets/icon.png" alt="神木チャンネル">
+      <!-- ★ アイコン画像は完全に削除（imgタグごと消去） -->
+      <!-- <img id="header-icon" src="assets/icon.png" alt="神木チャンネル">  ← この行を削除 -->
       <span>神木チャンネル</span>
     </a>
 
@@ -571,7 +554,7 @@
       <a href="#q=video" data-page="video">VIDEO</a>
       <a href="#q=about" data-page="about">ABOUT</a>
 
-      <!-- ★ 登録者数表示（ナビゲーション内に追加） -->
+      <!-- ★ 登録者数表示（メニュー内） -->
       <span class="subscriber-display">
         👥 登録者 <span class="count" id="subscriber-count">--</span> 人
       </span>
@@ -591,8 +574,9 @@
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <!-- アイコンは静的な assets/icon.png を使用 -->
-        <img class="hero-icon" src="assets/icon.png" alt="神木チャンネル アイコン">
+        <!-- ★ ヒーロー部分のアイコンも完全に削除 -->
+        <!-- <img class="hero-icon" src="assets/icon.png" alt="神木チャンネル アイコン">  ← この行を削除 -->
+
         <h1 id="site-name">神木チャンネル</h1>
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
 
@@ -609,7 +593,7 @@
       </div>
     </section>
 
-    <!-- お知らせ（microCMS連携は継続） -->
+    <!-- お知らせ（microCMS連携） -->
     <section class="section">
       <div class="container">
         <h2 class="section-title">NEWS</h2>
@@ -802,7 +786,6 @@
     const countElement = document.getElementById("subscriber-count");
     if (!countElement) return;
 
-    // APIキーまたはチャンネルIDが未設定の場合はエラー表示
     if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY") {
       countElement.textContent = "🔑未設定";
       return;
@@ -823,7 +806,6 @@
       const data = await response.json();
       if (data.items && data.items.length > 0) {
         const subscriberCount = data.items[0].statistics.subscriberCount;
-        // カンマ区切りで表示（例：1,234,567）
         const formatted = Number(subscriberCount).toLocaleString();
         countElement.textContent = formatted;
       } else {
@@ -835,9 +817,8 @@
     }
   }
 
-  // 初回取得 & 5分ごとに更新（API制限を考慮して間隔を空ける）
   fetchSubscriberCount();
-  setInterval(fetchSubscriberCount, 5 * 60 * 1000); // 5分
+  setInterval(fetchSubscriberCount, 5 * 60 * 1000); // 5分ごと
 
 
   /* ==================================================
@@ -883,7 +864,6 @@
       const data = await microCMSFetch(DATA_ENDPOINT);
       console.log("✅ microCMS レスポンス:", data);
 
-      // ---- サイト設定の反映（アイコン取得は行わない） ----
       const settings = data.settings || data;
 
       if (settings.siteName) {
@@ -902,7 +882,7 @@
         document.getElementById("viewer-button-2").href = settings.viewerUrl;
       }
 
-      // ---- お知らせの反映 ----
+      // ---- お知らせ ----
       const list = document.getElementById("notice-list");
       const notices = Array.isArray(data.notices) ? data.notices : [];
 
