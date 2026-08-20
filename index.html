@@ -20,16 +20,16 @@
       MICROCMS_SERVICE_DOMAIN: "kamiki",  // ← あなたのサービスドメイン（設定済み）
 
       // ▼ サイト設定用 API（sitesetting エンドポイント）
-      SITE_SETTINGS_API_KEY: "YOUR_SITE_SETTINGS_API_KEY",   // ← sitesetting 用のAPIキー
+      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",   // ← sitesetting 用のAPIキー
       SITE_SETTINGS_ENDPOINT: "sitesetting",
 
       // ▼ お知らせ用 API（news-kamiki エンドポイント）
-      NOTICES_API_KEY: "YOUR_NOTICES_API_KEY",               // ← news-kamiki 用のAPIキー
+      NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",               // ← news-kamiki 用のAPIキー
       NOTICES_ENDPOINT: "news-kamiki",
 
-      // ----- LINE公式アカウント（デフォルト値） -----
-      // microCMS で lineUrl フィールドを設定すれば、それが優先されます。
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
+      // ----- デフォルトURL（microCMSに値がない場合に使用） -----
+      YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",  // ← あなたのYouTubeチャンネルURL
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"                 // ← LINE公式アカウントURL
     };
   </script>
   <!-- ========================================================== -->
@@ -370,9 +370,10 @@
         <h1 id="site-name">神木チャンネル</h1>
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
-          <a id="youtube-button" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">▶ YouTubeへ</a>
-          <!-- ★ 追加: LINE公式アカウント友達追加ボタン -->
-          <a id="line-button" class="button line" href="#" target="_blank" rel="noopener">💬 LINE友達追加</a>
+          <!-- ★ YouTubeチャンネルへ飛ぶボタン（デフォルトURLを設定済み） -->
+          <a id="youtube-button" class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">▶ YouTubeへ</a>
+          <!-- ★ LINE友達追加ボタン -->
+          <a id="line-button" class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">💬 LINE友達追加</a>
         </div>
         <div class="scroll">SCROLL ↓</div>
       </div>
@@ -382,7 +383,6 @@
         <h2 class="section-title">NEWS</h2>
         <p class="section-subtitle">神木チャンネルからのお知らせ</p>
         <div id="notice-list" class="notice-box">
-          <!-- ここにmicroCMSから取得したお知らせが表示されます -->
           <div class="notice">
             <div class="notice-date">Loading...</div>
             <div class="notice-title">お知らせを取得しています</div>
@@ -418,7 +418,7 @@
             <h3>YouTube</h3>
             <p>神木チャンネルのメイン動画はこちらからご視聴いただけます。</p>
             <div class="buttons">
-              <a id="youtube-button-2" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTubeを見る</a>
+              <a id="youtube-button-2" class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTubeを見る</a>
             </div>
           </div>
         </div>
@@ -527,22 +527,15 @@
       if (settings.subtitle) {
         document.getElementById("site-subtitle").textContent = settings.subtitle;
       }
-      // YouTube URL
-      if (settings.youtubeUrl) {
-        document.getElementById("youtube-button").href = settings.youtubeUrl;
-        document.getElementById("youtube-button-2").href = settings.youtubeUrl;
-      }
 
-      // ★ 追加: LINE公式アカウントURL（microCMSに lineUrl があれば優先）
-      const lineButton = document.getElementById("line-button");
-      if (settings.lineUrl) {
-        lineButton.href = settings.lineUrl;
-      } else {
-        // デフォルトは CONFIG の値を使用
-        lineButton.href = CONFIG.LINE_OFFICIAL_URL;
-      }
+      // ★ YouTube URL（microCMSにあればそれを優先、なければデフォルト）
+      const youtubeUrl = settings.youtubeUrl || CONFIG.YOUTUBE_CHANNEL_URL;
+      document.getElementById("youtube-button").href = youtubeUrl;
+      document.getElementById("youtube-button-2").href = youtubeUrl;
 
-      // アイコンは表示しないので無視
+      // ★ LINE URL（microCMSにあればそれを優先、なければデフォルト）
+      const lineUrl = settings.lineUrl || CONFIG.LINE_OFFICIAL_URL;
+      document.getElementById("line-button").href = lineUrl;
 
       // ---- 2. お知らせを取得（news-kamiki エンドポイント） ----
       const newsData = await microCMSFetch(
