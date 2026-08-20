@@ -13,23 +13,24 @@
 
   <!-- ==========================================================
        ★★★ 設定はこの1箇所だけ！ ★★★
+       サービスドメインが2つあるので、それぞれ別に設定します。
   ========================================================== -->
   <script>
     const CONFIG = {
-      // ----- microCMS の設定 -----
-      MICROCMS_SERVICE_DOMAIN: "kamiki",  // ← あなたのサービスドメイン（設定済み）
-
-      // ▼ サイト設定用 API（sitesetting エンドポイント）
+      // ----- microCMS の設定（2つのサービス） -----
+      // ▼ サイト設定用（sitesetting サービス）
+      SITE_SETTINGS_SERVICE_DOMAIN: "sitesetting",   // ← https://sitesetting.microcms.io
       SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",   // ← sitesetting 用のAPIキー
-      SITE_SETTINGS_ENDPOINT: "sitesetting",
+      SITE_SETTINGS_ENDPOINT: "sitesetting",                 // ← エンドポイント名
 
-      // ▼ お知らせ用 API（news-kamiki エンドポイント）
+      // ▼ お知らせ用（news-kamiki サービス）
+      NOTICES_SERVICE_DOMAIN: "news-kamiki",         // ← https://news-kamiki.microcms.io
       NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",               // ← news-kamiki 用のAPIキー
-      NOTICES_ENDPOINT: "news-kamiki",
+      NOTICES_ENDPOINT: "news-kamiki",                       // ← エンドポイント名
 
       // ----- デフォルトURL（microCMSに値がない場合に使用） -----
-      YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",  // ← あなたのYouTubeチャンネルURL
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"                 // ← LINE公式アカウントURL
+      YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
     };
   </script>
   <!-- ========================================================== -->
@@ -90,7 +91,7 @@
       transition: opacity 0.3s ease;
     }
     .logo:hover { opacity: 0.8; }
-    .logo img { display: none; } /* アイコンは表示しない */
+    .logo img { display: none; }
     nav {
       display: flex;
       align-items: center;
@@ -165,7 +166,7 @@
       pointer-events: none;
     }
     .hero-inner { width: 100%; max-width: 850px; }
-    .hero-icon { display: none; } /* アイコンは表示しない */
+    .hero-icon { display: none; }
     .hero h1 {
       font-size: clamp(48px, 8vw, 90px);
       line-height: 1.1;
@@ -296,7 +297,6 @@
       transform: translateY(-3px);
       border-color: rgba(255,255,255,0.2);
     }
-    /* LINEボタン用アクセント */
     .button.line {
       background: #06C755;
       color: #fff;
@@ -370,9 +370,7 @@
         <h1 id="site-name">神木チャンネル</h1>
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
-          <!-- ★ YouTubeチャンネルへ飛ぶボタン（デフォルトURLを設定済み） -->
           <a id="youtube-button" class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">▶ YouTubeへ</a>
-          <!-- ★ LINE友達追加ボタン -->
           <a id="line-button" class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">💬 LINE友達追加</a>
         </div>
         <div class="scroll">SCROLL ↓</div>
@@ -490,17 +488,16 @@
   }
 
   /* ==================================================
-     microCMS 連携（2つのAPIエンドポイント、別々のAPIキー）
+     microCMS 連携（2つのサービスドメイン）
   ================================================== */
-  async function microCMSFetch(endpoint, apiKey) {
-    const domain = CONFIG.MICROCMS_SERVICE_DOMAIN;
-    if (!domain || domain === "YOUR_SERVICE_DOMAIN") {
+  async function microCMSFetch(serviceDomain, endpoint, apiKey) {
+    if (!serviceDomain || serviceDomain === "YOUR_SITE_SETTINGS_SERVICE_DOMAIN" || serviceDomain === "YOUR_NOTICES_SERVICE_DOMAIN") {
       throw new Error(`microCMS サービスドメインが設定されていません。 (${endpoint})`);
     }
     if (!apiKey || apiKey === "YOUR_SITE_SETTINGS_API_KEY" || apiKey === "YOUR_NOTICES_API_KEY") {
       throw new Error(`APIキーが未設定です (${endpoint})`);
     }
-    const url = `https://${domain}.microcms.io/api/v1/${endpoint}`;
+    const url = `https://${serviceDomain}.microcms.io/api/v1/${endpoint}`;
     console.log(`🔍 フェッチ中: ${url}`);
     const res = await fetch(url, { headers: { "X-MICROCMS-API-KEY": apiKey } });
     if (!res.ok) {
@@ -511,8 +508,9 @@
 
   async function loadSiteData() {
     try {
-      // ---- 1. サイト設定を取得（sitesetting エンドポイント） ----
+      // ---- 1. サイト設定を取得（sitesetting サービス） ----
       const settings = await microCMSFetch(
+        CONFIG.SITE_SETTINGS_SERVICE_DOMAIN,
         CONFIG.SITE_SETTINGS_ENDPOINT,
         CONFIG.SITE_SETTINGS_API_KEY
       );
@@ -528,17 +526,20 @@
         document.getElementById("site-subtitle").textContent = settings.subtitle;
       }
 
-      // ★ YouTube URL（microCMSにあればそれを優先、なければデフォルト）
-      const youtubeUrl = settings.youtubeUrl || CONFIG.YOUTUBE_CHANNEL_URL;
-      document.getElementById("youtube-button").href = youtubeUrl;
-      document.getElementById("youtube-button-2").href = youtubeUrl;
+      // YouTube URL（microCMSにあればそれを優先）
+      if (settings.youtubeUrl) {
+        document.getElementById("youtube-button").href = settings.youtubeUrl;
+        document.getElementById("youtube-button-2").href = settings.youtubeUrl;
+      }
 
-      // ★ LINE URL（microCMSにあればそれを優先、なければデフォルト）
-      const lineUrl = settings.lineUrl || CONFIG.LINE_OFFICIAL_URL;
-      document.getElementById("line-button").href = lineUrl;
+      // LINE URL（microCMSにあればそれを優先）
+      if (settings.lineUrl) {
+        document.getElementById("line-button").href = settings.lineUrl;
+      }
 
-      // ---- 2. お知らせを取得（news-kamiki エンドポイント） ----
+      // ---- 2. お知らせを取得（news-kamiki サービス） ----
       const newsData = await microCMSFetch(
+        CONFIG.NOTICES_SERVICE_DOMAIN,
         CONFIG.NOTICES_ENDPOINT,
         CONFIG.NOTICES_API_KEY
       );
