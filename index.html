@@ -3,87 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>神木チャンネル</title>
   <meta name="description" content="神木チャンネル公式ホームページ">
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-
   <style>
-    /* =========================
-       VARIABLES & RESET
-    ========================= */
     :root {
       --bg-color: #050505;
       --text-main: #ffffff;
       --text-sub: #999999;
       --accent-color: #8b5cf6;
       --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(255, 255, 255, 0.2);
+      --card-bg: rgba(255,255,255,0.03);
+      --card-border: rgba(255,255,255,0.08);
+      --card-hover: rgba(255,255,255,0.2);
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       background: var(--bg-color);
       color: var(--text-main);
-      font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+      font-family: 'Montserrat','Noto Sans JP',sans-serif;
       line-height: 1.7;
       overflow-x: hidden;
     }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font: inherit;
-      cursor: pointer;
-    }
-
-    /* =========================
-       ANIMATIONS
-    ========================= */
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    /* =========================
-       HEADER & NAVIGATION
-    ========================= */
     header {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       z-index: 1000;
-      background: rgba(5, 5, 5, 0.75);
+      background: rgba(5,5,5,0.75);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--card-border);
     }
-
     .nav {
       max-width: 1100px;
       height: 70px;
@@ -93,7 +53,6 @@
       align-items: center;
       justify-content: space-between;
     }
-
     .logo {
       display: flex;
       align-items: center;
@@ -104,22 +63,13 @@
       white-space: nowrap;
       transition: opacity 0.3s ease;
     }
-
-    .logo:hover {
-      opacity: 0.8;
-    }
-
-    /* ★ アイコン画像を完全に非表示 */
-    .logo img {
-      display: none;
-    }
-
+    .logo:hover { opacity: 0.8; }
+    .logo img { display: none; }
     nav {
       display: flex;
       align-items: center;
       gap: 30px;
     }
-
     nav a {
       color: var(--text-sub);
       font-size: 14px;
@@ -128,7 +78,6 @@
       position: relative;
       transition: color 0.3s ease;
     }
-
     nav a::after {
       content: '';
       position: absolute;
@@ -139,17 +88,8 @@
       background: var(--accent-gradient);
       transition: width 0.3s ease;
     }
-
-    nav a:hover,
-    nav a.active {
-      color: var(--text-main);
-    }
-
-    nav a.active::after {
-      width: 100%;
-    }
-
-    /* ---- 登録者数表示 ---- */
+    nav a:hover, nav a.active { color: var(--text-main); }
+    nav a.active::after { width: 100%; }
     .subscriber-display {
       display: inline-flex;
       align-items: center;
@@ -158,13 +98,12 @@
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.05em;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
       padding: 6px 14px;
       border-radius: 999px;
       border: 1px solid var(--card-border);
       white-space: nowrap;
     }
-
     .subscriber-display .count {
       color: var(--text-main);
       font-weight: 900;
@@ -172,8 +111,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    /* ハンバーガーメニュー (Mobile) */
     .menu-toggle {
       display: none;
       flex-direction: column;
@@ -181,7 +118,6 @@
       cursor: pointer;
       z-index: 1001;
     }
-
     .menu-toggle span {
       width: 25px;
       height: 2px;
@@ -189,33 +125,20 @@
       transition: 0.3s ease;
       transform-origin: left;
     }
-
-    /* =========================
-       PAGE LAYOUT
-    ========================= */
-    #app {
-      min-height: 100vh;
-    }
-
+    #app { min-height: 100vh; }
     .page {
       display: none;
       min-height: 100vh;
       padding-top: 70px;
     }
-
     .page.active {
       display: block;
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
     }
-
     .container {
       width: min(1100px, calc(100% - 40px));
       margin: auto;
     }
-
-    /* =========================
-       HOME HERO
-    ========================= */
     .hero {
       min-height: calc(100vh - 70px);
       display: flex;
@@ -225,30 +148,19 @@
       padding: 80px 20px;
       position: relative;
     }
-
     .hero::before {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
       width: 60vw;
       height: 60vw;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
       z-index: -1;
       pointer-events: none;
     }
-
-    .hero-inner {
-      width: 100%;
-      max-width: 850px;
-    }
-
-    /* ★ ヒーロー部分の大きなアイコンも完全に非表示 */
-    .hero-icon {
-      display: none;
-    }
-
+    .hero-inner { width: 100%; max-width: 850px; }
+    .hero-icon { display: none; }
     .hero h1 {
       font-size: clamp(48px, 8vw, 90px);
       line-height: 1.1;
@@ -259,14 +171,12 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .hero-subtitle {
       color: var(--text-sub);
       font-size: clamp(16px, 3vw, 22px);
       letter-spacing: 0.1em;
       font-weight: 700;
     }
-
     .scroll {
       margin-top: 80px;
       color: #666;
@@ -275,26 +185,17 @@
       font-weight: 700;
       animation: pulse 2s infinite;
     }
-
     @keyframes pulse {
-      0%, 100% { opacity: 0.5; transform: translateY(0); }
+      0%,100% { opacity: 0.5; transform: translateY(0); }
       50% { opacity: 1; transform: translateY(5px); }
     }
-
-    /* =========================
-       NORMAL SECTIONS
-    ========================= */
-    .section {
-      padding: 100px 0;
-    }
-
+    .section { padding: 100px 0; }
     .section-title {
       font-size: clamp(36px, 5vw, 54px);
       font-weight: 900;
       letter-spacing: 0.05em;
       margin-bottom: 10px;
     }
-
     .section-subtitle {
       color: var(--text-sub);
       font-weight: 700;
@@ -302,10 +203,6 @@
       margin-bottom: 50px;
       font-size: 14px;
     }
-
-    /* =========================
-       NOTICE
-    ========================= */
     .notice-box {
       overflow: hidden;
       border: 1px solid var(--card-border);
@@ -313,87 +210,47 @@
       background: var(--card-bg);
       backdrop-filter: blur(10px);
     }
-
     .notice {
       display: block;
       padding: 25px 30px;
       border-bottom: 1px solid var(--card-border);
       transition: background 0.3s ease;
     }
-
-    .notice:last-child {
-      border-bottom: none;
-    }
-
-    .notice:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
+    .notice:last-child { border-bottom: none; }
+    .notice:hover { background: rgba(255,255,255,0.05); }
     .notice-date {
       color: var(--accent-color);
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 8px;
     }
-
-    .notice-title {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.4;
-    }
-
+    .notice-title { font-size: 18px; font-weight: 700; line-height: 1.4; }
     .notice-description {
       color: var(--text-sub);
       font-size: 14px;
       margin-top: 8px;
     }
-
-    /* =========================
-       CARDS
-    ========================= */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
     }
-
     .card {
       padding: 40px 30px;
       border-radius: 24px;
       border: 1px solid var(--card-border);
       background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
       backdrop-filter: blur(10px);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
     }
-
     .card:hover {
       transform: translateY(-8px);
       border-color: var(--card-hover);
       box-shadow: 0 15px 30px rgba(0,0,0,0.5);
     }
-
-    .card h3 {
-      font-size: 24px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .card p {
-      color: var(--text-sub);
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    /* =========================
-       MEMBER
-    ========================= */
-    .member-card {
-      text-align: center;
-    }
-
-    /* =========================
-       BUTTON
-    ========================= */
+    .card h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+    .card p { color: var(--text-sub); font-size: 15px; line-height: 1.6; }
+    .member-card { text-align: center; }
     .buttons {
       display: flex;
       flex-wrap: wrap;
@@ -401,11 +258,7 @@
       gap: 16px;
       margin-top: 35px;
     }
-    
-    .card .buttons {
-      justify-content: flex-start;
-    }
-
+    .card .buttons { justify-content: flex-start; }
     .button {
       display: inline-flex;
       align-items: center;
@@ -418,34 +271,26 @@
       letter-spacing: 0.05em;
       transition: all 0.3s ease;
     }
-
     .button.primary {
       background: var(--accent-gradient);
       color: #fff;
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 8px 20px rgba(139,92,246,0.3);
     }
-
     .button.primary:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.5);
+      box-shadow: 0 12px 25px rgba(139,92,246,0.5);
     }
-
     .button.secondary {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
       color: var(--text-main);
       border: 1px solid var(--card-border);
       backdrop-filter: blur(5px);
     }
-
     .button.secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       transform: translateY(-3px);
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255,255,255,0.2);
     }
-
-    /* =========================
-       FOOTER
-    ========================= */
     footer {
       padding: 60px 20px;
       text-align: center;
@@ -455,26 +300,13 @@
       letter-spacing: 0.1em;
       border-top: 1px solid var(--card-border);
     }
-
-    /* =========================
-       MOBILE & RESPONSIVE
-    ========================= */
     @media (max-width: 768px) {
-      .nav {
-        height: 65px;
-      }
-      .page {
-        padding-top: 65px;
-      }
-      
-      .menu-toggle {
-        display: flex;
-      }
-
+      .nav { height: 65px; }
+      .page { padding-top: 65px; }
+      .menu-toggle { display: flex; }
       nav {
         position: fixed;
-        top: 65px;
-        left: 0;
+        top: 65px; left: 0;
         width: 100%;
         height: calc(100vh - 65px);
         background: var(--bg-color);
@@ -482,78 +314,41 @@
         justify-content: center;
         gap: 40px;
         transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
       }
-
-      nav.active {
-        transform: translateX(0);
-      }
-
-      nav a {
-        font-size: 20px;
-      }
-
+      nav.active { transform: translateX(0); }
+      nav a { font-size: 20px; }
       .subscriber-display {
         font-size: 16px;
         padding: 8px 20px;
         background: rgba(255,255,255,0.08);
         border-color: rgba(255,255,255,0.2);
       }
-
-      .menu-toggle.active span:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
-      }
-      .menu-toggle.active span:nth-child(2) {
-        opacity: 0;
-      }
-      .menu-toggle.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -5px);
-      }
-
-      .logo span {
-        display: none;
-      }
-
-      .hero {
-        min-height: calc(100vh - 65px);
-      }
-
-      .buttons {
-        flex-direction: column;
-      }
-      .button {
-        width: 100%;
-      }
+      .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+      .menu-toggle.active span:nth-child(2) { opacity: 0; }
+      .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+      .logo span { display: none; }
+      .hero { min-height: calc(100vh - 65px); }
+      .buttons { flex-direction: column; }
+      .button { width: 100%; }
     }
   </style>
 </head>
-
-
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
 <header>
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
-      <!-- ★ アイコン画像は完全に削除 -->
       <span>神木チャンネル</span>
     </a>
-
     <div class="menu-toggle" id="menu-toggle">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </div>
-
     <nav id="nav-menu">
       <a href="#q=home" data-page="home">HOME</a>
       <a href="#q=member" data-page="member">MEMBER</a>
       <a href="#q=video" data-page="video">VIDEO</a>
       <a href="#q=about" data-page="about">ABOUT</a>
-
-      <!-- ★ 登録者数表示（30秒ごとに自動更新） -->
       <span class="subscriber-display">
         👥 登録者 <span class="count" id="subscriber-count">--</span> 人
       </span>
@@ -561,42 +356,24 @@
   </div>
 </header>
 
-
-<!-- =========================
-     APP
-========================= -->
 <div id="app">
-
-  <!-- =====================
-       HOME
-  ====================== -->
+  <!-- HOME -->
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <!-- ★ ヒーロー部分のアイコンも完全に削除 -->
-
         <h1 id="site-name">神木チャンネル</h1>
         <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
-
         <div class="buttons">
-          <a id="youtube-button" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">
-            ▶ YouTubeへ
-          </a>
-          <a id="viewer-button" class="button secondary" href="#q=video">
-            登録者ビューアー
-          </a>
+          <a id="youtube-button" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">▶ YouTubeへ</a>
+          <a id="viewer-button" class="button secondary" href="#q=video">登録者ビューアー</a>
         </div>
-
         <div class="scroll">SCROLL ↓</div>
       </div>
     </section>
-
-    <!-- お知らせ（microCMS連携） -->
     <section class="section">
       <div class="container">
         <h2 class="section-title">NEWS</h2>
         <p class="section-subtitle">神木チャンネルからのお知らせ</p>
-
         <div id="notice-list" class="notice-box">
           <div class="notice">
             <div class="notice-date">Loading...</div>
@@ -608,59 +385,39 @@
     </section>
   </div>
 
-
-  <!-- =====================
-       MEMBER
-  ====================== -->
+  <!-- MEMBER -->
   <div id="page-member" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title">MEMBER</h2>
         <p class="section-subtitle">神木チャンネルのメンバー</p>
-
         <div class="cards">
-          <div class="card member-card">
-            <h3>カミト</h3>
-            <p>神木チャンネルのメンバー。</p>
-          </div>
-
-          <div class="card member-card">
-            <h3>きぃ</h3>
-            <p>神木チャンネルのメンバー。</p>
-          </div>
+          <div class="card member-card"><h3>カミト</h3><p>神木チャンネルのメンバー。</p></div>
+          <div class="card member-card"><h3>きぃ</h3><p>神木チャンネルのメンバー。</p></div>
         </div>
       </div>
     </section>
   </div>
 
-
-  <!-- =====================
-       VIDEO
-  ====================== -->
+  <!-- VIDEO -->
   <div id="page-video" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title">VIDEO</h2>
         <p class="section-subtitle">神木チャンネルの動画</p>
-
         <div class="cards">
           <div class="card">
             <h3>YouTube</h3>
             <p>神木チャンネルのメイン動画はこちらからご視聴いただけます。</p>
             <div class="buttons">
-              <a id="youtube-button-2" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">
-                YouTubeを見る
-              </a>
+              <a id="youtube-button-2" class="button primary" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTubeを見る</a>
             </div>
           </div>
-
           <div class="card">
             <h3>登録者ビューアー</h3>
             <p>チャンネルの現在の登録者数をリアルタイムで確認できます（メニューにも表示）。</p>
             <div class="buttons">
-              <a id="viewer-button-2" class="button secondary" href="#" target="_blank" rel="noopener">
-                登録者を見る
-              </a>
+              <a id="viewer-button-2" class="button secondary" href="#" target="_blank" rel="noopener">登録者を見る</a>
             </div>
           </div>
         </div>
@@ -668,211 +425,147 @@
     </section>
   </div>
 
-
-  <!-- =====================
-       ABOUT
-  ====================== -->
+  <!-- ABOUT -->
   <div id="page-about" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title">ABOUT</h2>
         <p class="section-subtitle">神木チャンネルについて</p>
-
         <div class="card">
           <h3>神木チャンネル</h3>
-          <p>
-            神木チャンネルは、2人でいろいろなことに挑戦していくチャンネルです。<br><br>
-            動画やお知らせなどを、このホームページから発信していきます。応援よろしくお願いします！
-          </p>
+          <p>神木チャンネルは、2人でいろいろなことに挑戦していくチャンネルです。<br><br>動画やお知らせなどを、このホームページから発信していきます。応援よろしくお願いします！</p>
         </div>
       </div>
     </section>
   </div>
-
 </div>
 
-<!-- =========================
-     FOOTER
-========================= -->
-<footer>
-  © 2026 神木チャンネル
-</footer>
+<footer>© 2026 神木チャンネル</footer>
 
 <script>
   /* ==================================================
-     ハンバーガーメニュー制御 (Mobile)
+     ★★★ 設定はこの1箇所だけ ★★★
+  ================================================== */
+  const CONFIG = {
+    // ----- YouTube API -----
+    YOUTUBE_API_KEY: "YOUR_YOUTUBE_API_KEY",   // ← ここにAPIキーを入れる
+    CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw",    // ← チャンネルID（設定済み）
+
+    // ----- microCMS（お知らせ用・任意） -----
+    MICROCMS_SERVICE_DOMAIN: "YOUR_SERVICE_DOMAIN",
+    MICROCMS_API_KEY: "YOUR_GET_ONLY_API_KEY",
+    DATA_ENDPOINT: "site-data"
+  };
+  /* ================================================== */
+
+
+  /* ==================================================
+     ハンバーガーメニュー
   ================================================== */
   const menuToggle = document.getElementById('menu-toggle');
   const navMenu = document.getElementById('nav-menu');
-  const navLinks = document.querySelectorAll('#nav-menu a');
-
-  menuToggle.addEventListener('click', () => {
-    menuToggle.classList.toggle('active');
-    navMenu.classList.toggle('active');
-  });
-
-  navLinks.forEach(link => {
+  document.querySelectorAll('#nav-menu a').forEach(link => {
     link.addEventListener('click', () => {
       menuToggle.classList.remove('active');
       navMenu.classList.remove('active');
     });
   });
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('active');
+    navMenu.classList.toggle('active');
+  });
 
   /* ==================================================
      ページ切り替え
   ================================================== */
-  const validPages = ["home", "member", "video", "about"];
-
+  const validPages = ["home","member","video","about"];
   function getPageFromHash() {
     const hash = window.location.hash;
     if (hash.startsWith("#q=")) {
-      const page = decodeURIComponent(hash.substring(3));
-      if (validPages.includes(page)) {
-        return page;
-      }
+      const p = decodeURIComponent(hash.substring(3));
+      if (validPages.includes(p)) return p;
     }
     return "home";
   }
-
   function showPage() {
     const page = getPageFromHash();
-
-    document.querySelectorAll(".page").forEach(element => {
-      element.classList.remove("active");
-    });
-
-    const target = document.getElementById("page-" + page);
-    if (target) {
-      setTimeout(() => {
-        target.classList.add("active");
-      }, 10);
-    }
-
+    document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
+    const target = document.getElementById("page-"+page);
+    if (target) setTimeout(() => target.classList.add("active"), 10);
     document.querySelectorAll("nav a[data-page]").forEach(link => {
       link.classList.toggle("active", link.dataset.page === page);
     });
-
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-
   window.addEventListener("hashchange", showPage);
   showPage();
 
-  /* ==================================================
-     HTMLエスケープ
-  ================================================== */
-  function escapeHTML(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+  function escapeHTML(v) {
+    return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
   }
 
-
   /* ==================================================
-     ★ YouTube Data API v3 で登録者数を取得（常時更新: 30秒間隔） ★
+     YouTube登録者数取得（30秒ごと自動更新）
   ================================================== */
-
-  // ----- ★ 設定（あなたの情報に書き換えてください） ★ -----
-  const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY";   // ← Google Cloud Console で発行した APIキー
-  const CHANNEL_ID = "UCFCWHBYTtv17ku33Jl2lImw";    // ← あなたのチャンネルID（設定済み）
-  // -------------------------------------------------------
-
   async function fetchSubscriberCount() {
-    const countElement = document.getElementById("subscriber-count");
-    if (!countElement) return;
-
-    // APIキーが未設定の場合
-    if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY") {
-      countElement.textContent = "🔑未設定";
+    const el = document.getElementById("subscriber-count");
+    if (!el) return;
+    const key = CONFIG.YOUTUBE_API_KEY;
+    const cid = CONFIG.CHANNEL_ID;
+    if (!key || key === "YOUR_YOUTUBE_API_KEY") {
+      el.textContent = "🔑未設定";
       return;
     }
-
     try {
-      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${YOUTUBE_API_KEY}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${cid}&key=${key}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
       if (data.items && data.items.length > 0) {
-        const subscriberCount = data.items[0].statistics.subscriberCount;
-        const formatted = Number(subscriberCount).toLocaleString();
-        countElement.textContent = formatted;
+        el.textContent = Number(data.items[0].statistics.subscriberCount).toLocaleString();
       } else {
         throw new Error("チャンネルが見つかりません");
       }
-    } catch (error) {
-      console.error("登録者数取得エラー:", error);
-      countElement.textContent = "❌エラー";
+    } catch (e) {
+      console.error("登録者数取得エラー:", e);
+      el.textContent = "❌エラー";
     }
   }
-
-  // 初回取得
   fetchSubscriberCount();
-
-  // ★ 30秒ごとに自動更新（「常時更新」を実現）★
-  // ※ YouTube API のクォータ（1日10,000ユニット）に注意。
-  //   30秒間隔 = 1日2,880リクエスト で、クォータ内に収まります。
-  setInterval(fetchSubscriberCount, 30 * 1000); // 30秒
-
+  setInterval(fetchSubscriberCount, 30 * 1000);
 
   /* ==================================================
-     microCMS 連携（お知らせ用・任意）
+     microCMS（お知らせ）
   ================================================== */
-
-  const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN"; // 例: "your-service"
-  const MICROCMS_API_KEY = "YOUR_GET_ONLY_API_KEY";      // 例: "abc123..."
-  const DATA_ENDPOINT = "site-data";                     // 統合APIのエンドポイント名
-
-  async function microCMSFetch(endpoint, params = "") {
-    if (!MICROCMS_SERVICE_DOMAIN || MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN") {
-      throw new Error("microCMS service domain 未設定");
-    }
-    if (!MICROCMS_API_KEY || MICROCMS_API_KEY === "YOUR_GET_ONLY_API_KEY") {
-      throw new Error("microCMS API key 未設定");
-    }
-
-    const url = `https://${MICROCMS_SERVICE_DOMAIN}.microcms.io/api/v1/${endpoint}${params}`;
-    const response = await fetch(url, {
-      headers: { "X-MICROCMS-API-KEY": MICROCMS_API_KEY }
-    });
-
-    if (!response.ok) {
-      throw new Error(`microCMS API Error: ${response.status}`);
-    }
-    return response.json();
+  async function microCMSFetch(endpoint, params="") {
+    const domain = CONFIG.MICROCMS_SERVICE_DOMAIN;
+    const key = CONFIG.MICROCMS_API_KEY;
+    if (!domain || domain === "YOUR_SERVICE_DOMAIN") throw new Error("microCMS domain未設定");
+    if (!key || key === "YOUR_GET_ONLY_API_KEY") throw new Error("microCMS API key未設定");
+    const url = `https://${domain}.microcms.io/api/v1/${endpoint}${params}`;
+    const res = await fetch(url, { headers: { "X-MICROCMS-API-KEY": key } });
+    if (!res.ok) throw new Error(`microCMS API Error: ${res.status}`);
+    return res.json();
   }
 
   async function loadSiteData() {
     try {
-      if (MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN" || MICROCMS_API_KEY === "YOUR_GET_ONLY_API_KEY") {
-        console.warn("microCMS 未設定のためデフォルト表示");
+      const domain = CONFIG.MICROCMS_SERVICE_DOMAIN;
+      const key = CONFIG.MICROCMS_API_KEY;
+      if (domain === "YOUR_SERVICE_DOMAIN" || key === "YOUR_GET_ONLY_API_KEY") {
+        console.warn("microCMS未設定のためデフォルト表示");
         document.getElementById("notice-list").innerHTML = `
-          <div class="notice">
-            <div class="notice-title">お知らせ</div>
-            <div class="notice-description">microCMSの接続設定を完了してください。</div>
-          </div>
+          <div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">microCMSの接続設定を完了してください。</div></div>
         `;
         return;
       }
-
-      const data = await microCMSFetch(DATA_ENDPOINT);
-      console.log("✅ microCMS レスポンス:", data);
-
+      const data = await microCMSFetch(CONFIG.DATA_ENDPOINT);
       const settings = data.settings || data;
-
       if (settings.siteName) {
         document.getElementById("site-name").textContent = settings.siteName;
         document.querySelector(".logo span").textContent = settings.siteName;
       }
-      if (settings.subtitle) {
-        document.getElementById("site-subtitle").textContent = settings.subtitle;
-      }
+      if (settings.subtitle) document.getElementById("site-subtitle").textContent = settings.subtitle;
       if (settings.youtubeUrl) {
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
@@ -881,46 +574,32 @@
         document.getElementById("viewer-button").href = settings.viewerUrl;
         document.getElementById("viewer-button-2").href = settings.viewerUrl;
       }
-
-      // ---- お知らせ ----
       const list = document.getElementById("notice-list");
       const notices = Array.isArray(data.notices) ? data.notices : [];
-
       if (notices.length === 0) {
-        list.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">現在、お知らせはありません。</div>
-          </div>
-        `;
+        list.innerHTML = `<div class="notice"><div class="notice-title">現在、お知らせはありません。</div></div>`;
         return;
       }
-
       list.innerHTML = notices.map(item => {
         const url = item.url || "";
         const dateStr = item.date ? escapeHTML(item.date) : "";
         const title = item.title ? escapeHTML(item.title) : "お知らせ";
-        const description = item.description ? escapeHTML(item.description) : "";
-
+        const desc = item.description ? escapeHTML(item.description) : "";
         return `
           ${url ? `<a class="notice" href="${escapeHTML(url)}" target="_blank" rel="noopener">` : `<div class="notice">`}
             ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
             <div class="notice-title">${title}</div>
-            ${description ? `<div class="notice-description">${description}</div>` : ''}
+            ${desc ? `<div class="notice-description">${desc}</div>` : ''}
           ${url ? `</a>` : `</div>`}
         `;
       }).join("");
-
-    } catch (error) {
-      console.error("❌ microCMS 読み込みエラー:", error);
+    } catch (e) {
+      console.error("microCMSエラー:", e);
       document.getElementById("notice-list").innerHTML = `
-        <div class="notice">
-          <div class="notice-title">お知らせ</div>
-          <div class="notice-description">ただいまお知らせを準備中です。</div>
-        </div>
+        <div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">ただいまお知らせを準備中です。</div></div>
       `;
     }
   }
-
   loadSiteData();
 </script>
 </body>
