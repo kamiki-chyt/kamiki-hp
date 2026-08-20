@@ -211,7 +211,6 @@
       position: relative;
     }
 
-    /* 背景の淡い光 */
     .hero::before {
       content: '';
       position: absolute;
@@ -503,7 +502,6 @@
         font-size: 20px;
       }
 
-      /* ハンバーガーアイコンのアニメーション */
       .menu-toggle.active span:nth-child(1) {
         transform: rotate(45deg) translate(5px, 5px);
       }
@@ -719,14 +717,6 @@
   });
 
   /* ==================================================
-     microCMS 設定
-  ================================================== */
-  const MICROCMS_SERVICE_DOMAIN = "YOUR_SERVICE_DOMAIN";
-  const MICROCMS_API_KEY = "YOUR_GET_ONLY_API_KEY";
-  const NOTICE_ENDPOINT = "notices";
-  const SETTINGS_ENDPOINT = "settings";
-
-  /* ==================================================
      ページ切り替え
   ================================================== */
   const validPages = ["home", "member", "video", "about"];
@@ -745,30 +735,22 @@
   function showPage() {
     const page = getPageFromHash();
 
-    // 全ページを非表示
     document.querySelectorAll(".page").forEach(element => {
       element.classList.remove("active");
     });
 
-    // 選択されたページだけ表示
     const target = document.getElementById("page-" + page);
     if (target) {
-      // 少し遅延を入れてアニメーションを確実にトリガー
       setTimeout(() => {
         target.classList.add("active");
       }, 10);
     }
 
-    // ナビゲーションのactive表示
     document.querySelectorAll("nav a[data-page]").forEach(link => {
       link.classList.toggle("active", link.dataset.page === page);
     });
 
-    // ページを切り替えたら上に戻す
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   window.addEventListener("hashchange", showPage);
@@ -786,9 +768,15 @@
       .replaceAll("'", "&#039;");
   }
 
+
   /* ==================================================
-     microCMS API
+     microCMS 連携設定（1つに統合）
   ================================================== */
+
+  const MICROCMS_SERVICE_DOMAIN = "apis"; // ドメイン部分を入力
+  const MICROCMS_API_KEY = "h8XMAOffzupxynUiA5tiTEfeSEM4XqOviWaQ";      // APIキーを入力
+  const DATA_ENDPOINT = "site-data";                     // 作成した統合APIのエンドポイント名
+
   async function microCMSFetch(endpoint, params = "") {
     if (!MICROCMS_SERVICE_DOMAIN || MICROCMS_SERVICE_DOMAIN === "YOUR_SERVICE_DOMAIN") {
       throw new Error("microCMS service domain is not configured.");
@@ -809,15 +797,48 @@
   }
 
   /* ==================================================
-     お知らせ
+     1回の通信で設定とお知らせを両方読み込む処理
   ================================================== */
-  async function loadNotices() {
-    const list = document.getElementById("notice-list");
-
+  async function loadSiteData() {
     try {
-      const data = await microCMSFetch(NOTICE_ENDPOINT, "?limit=10&orders=-publishedAt");
+      const data = await microCMSFetch(DATA_ENDPOINT);
 
-      if (!data.contents || data.contents.length === 0) {
+      // --- 1. サイト設定の反映 ---
+      // もし `settings` という親グループで囲んでいれば data.settings を、直接置いている場合は data そのままを参照します。
+      const settings = data.settings || data;
+
+      if (settings.siteName) {
+        document.getElementById("site-name").textContent = settings.siteName;
+        document.querySelector(".logo span").textContent = settings.siteName;
+      }
+
+      if (settings.subtitle) {
+        document.getElementById("site-subtitle").textContent = settings.subtitle;
+      }
+
+      if (settings.icon && settings.icon.url) {
+        const iconURL = settings.icon.url;
+        document.getElementById("header-icon").src = iconURL;
+        document.getElementById("hero-icon").src = iconURL;
+        document.getElementById("member-icon-1").src = iconURL;
+        document.getElementById("member-icon-2").src = iconURL;
+      }
+
+      if (settings.youtubeUrl) {
+        document.getElementById("youtube-button").href = settings.youtubeUrl;
+        document.getElementById("youtube-button-2").href = settings.youtubeUrl;
+      }
+
+      if (settings.viewerUrl) {
+        document.getElementById("viewer-button").href = settings.viewerUrl;
+        document.getElementById("viewer-button-2").href = settings.viewerUrl;
+      }
+
+      // --- 2. お知らせ（繰り返しフィールド）の反映 ---
+      const list = document.getElementById("notice-list");
+      const notices = data.notices || [];
+
+      if (notices.length === 0) {
         list.innerHTML = `
           <div class="notice">
             <div class="notice-title">現在、お知らせはありません。</div>
@@ -826,12 +847,14 @@
         return;
       }
 
-      list.innerHTML = data.contents.map(item => {
-        const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString("ja-JP") : "";
+      list.innerHTML = notices.map(item => {
         const url = item.url || "";
+        // 日付フィールド（date）がある場合は表示、なければ公開日時などはAPIの性質上取得できないため空文字にする
+        const dateStr = item.date ? escapeHTML(item.date) : ""; 
+        
         return `
           ${url ? `<a class="notice" href="${escapeHTML(url)}" target="_blank" rel="noopener">` : `<div class="notice">`}
-            <div class="notice-date">${escapeHTML(date)}</div>
+            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
             <div class="notice-title">${escapeHTML(item.title || "お知らせ")}</div>
             <div class="notice-description">${escapeHTML(item.description || "")}</div>
           ${url ? `</a>` : `</div>`}
@@ -839,8 +862,8 @@
       }).join("");
 
     } catch (error) {
-      console.log("microCMS notices:", error);
-      list.innerHTML = `
+      console.log("microCMS load error:", error);
+      document.getElementById("notice-list").innerHTML = `
         <div class="notice">
           <div class="notice-title">お知らせ</div>
           <div class="notice-description">現在、お知らせを準備中です。</div>
@@ -849,50 +872,8 @@
     }
   }
 
-  /* ==================================================
-     サイト設定
-  ================================================== */
-  async function loadSettings() {
-    try {
-      const data = await microCMSFetch(SETTINGS_ENDPOINT);
-
-      if (data.siteName) {
-        document.getElementById("site-name").textContent = data.siteName;
-        document.querySelector(".logo span").textContent = data.siteName;
-      }
-
-      if (data.subtitle) {
-        document.getElementById("site-subtitle").textContent = data.subtitle;
-      }
-
-      if (data.icon && data.icon.url) {
-        const iconURL = data.icon.url;
-        document.getElementById("header-icon").src = iconURL;
-        document.getElementById("hero-icon").src = iconURL;
-        document.getElementById("member-icon-1").src = iconURL;
-        document.getElementById("member-icon-2").src = iconURL;
-      }
-
-      if (data.youtubeUrl) {
-        document.getElementById("youtube-button").href = data.youtubeUrl;
-        document.getElementById("youtube-button-2").href = data.youtubeUrl;
-      }
-
-      if (data.viewerUrl) {
-        document.getElementById("viewer-button").href = data.viewerUrl;
-        document.getElementById("viewer-button-2").href = data.viewerUrl;
-      }
-
-    } catch (error) {
-      console.log("microCMS settings:", error);
-    }
-  }
-
-  /* ==================================================
-     起動
-  ================================================== */
-  loadNotices();
-  loadSettings();
+  // 起動時にデータを読み込む
+  loadSiteData();
 
 </script>
 </body>
