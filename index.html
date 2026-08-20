@@ -6,11 +6,17 @@
 
   <title>神木チャンネル</title>
 
+  <meta name="description" content="神木チャンネル公式ホームページ">
+
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -21,228 +27,869 @@
         sans-serif;
       background: #050505;
       color: #fff;
-      min-height: 100vh;
+      line-height: 1.7;
     }
 
-    .container {
-      width: min(900px, 90%);
-      margin: auto;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
+
+    /* --------------------
+       HEADER
+    -------------------- */
 
     header {
-      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+
+      background: rgba(5, 5, 5, 0.75);
+      backdrop-filter: blur(15px);
+
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: auto;
+
+      height: 70px;
+
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
+      justify-content: space-between;
+
+      padding: 0 20px;
     }
 
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.05em;
+    }
+
+    .logo img {
+      width: 38px;
+      height: 38px;
+
+      border-radius: 50%;
+      object-fit: cover;
+
+      background: #111;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: #aaa;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    /* --------------------
+       HERO
+    -------------------- */
+
+    .hero {
+      min-height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 120px 20px 80px;
+
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(255,255,255,0.06),
+          transparent 40%
+        );
+    }
+
+    .hero-inner {
+      max-width: 800px;
+    }
+
+    .hero-icon {
       width: 150px;
       height: 150px;
+
       object-fit: cover;
-      margin-bottom: 35px;
-      border-radius: 20px;
-      box-shadow: 0 0 50px rgba(255,255,255,0.08);
+
+      border-radius: 50%;
+
+      margin-bottom: 30px;
+
+      box-shadow:
+        0 0 60px rgba(255,255,255,0.12);
     }
 
-    h1 {
-      font-size: clamp(42px, 10vw, 90px);
+    .hero h1 {
+      font-size: clamp(42px, 8vw, 86px);
+      font-weight: 900;
       letter-spacing: 0.08em;
-      font-weight: 800;
+
+      margin-bottom: 20px;
     }
 
-    .sub {
-      margin-top: 15px;
+    .hero p {
       color: #aaa;
-      font-size: 15px;
-      letter-spacing: 0.2em;
-    }
-
-    .scroll {
-      margin-top: 60px;
-      font-size: 12px;
-      color: #777;
-      letter-spacing: 0.25em;
-    }
-
-    section {
-      padding: 100px 0;
-      border-top: 1px solid #222;
-    }
-
-    .section-title {
-      font-size: 14px;
-      color: #888;
-      letter-spacing: 0.25em;
-      margin-bottom: 25px;
-    }
-
-    .intro {
-      font-size: clamp(24px, 5vw, 42px);
-      line-height: 1.7;
-      font-weight: 700;
-    }
-
-    .members {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 40px;
-    }
-
-    .member {
-      padding: 35px 25px;
-      border: 1px solid #333;
-      border-radius: 18px;
-      background: #0d0d0d;
-    }
-
-    .member-name {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .member-role {
-      color: #888;
-      font-size: 13px;
-    }
-
-    .message {
-      color: #bbb;
-      line-height: 2;
-      margin-top: 20px;
-    }
-
-    .企画 {
-      padding: 30px;
-      margin-top: 30px;
-      border-radius: 18px;
-      background: #111;
-      border: 1px solid #292929;
-    }
-
-    .企画 h3 {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-
-    .企画 p {
-      color: #999;
-      line-height: 1.8;
-    }
-
-    footer {
-      padding: 50px 0;
-      text-align: center;
-      color: #555;
-      font-size: 12px;
+      font-size: 20px;
       letter-spacing: 0.15em;
     }
 
-    @media (max-width: 600px) {
-      .members {
-        grid-template-columns: 1fr;
+    .scroll {
+      margin-top: 70px;
+
+      color: #777;
+
+      font-size: 12px;
+      letter-spacing: 0.4em;
+    }
+
+    /* --------------------
+       COMMON
+    -------------------- */
+
+    section {
+      max-width: 1100px;
+      margin: auto;
+
+      padding: 110px 20px;
+    }
+
+    .section-title {
+      font-size: 36px;
+      font-weight: 900;
+
+      margin-bottom: 15px;
+    }
+
+    .section-subtitle {
+      color: #777;
+      margin-bottom: 45px;
+    }
+
+    /* --------------------
+       NOTICE
+    -------------------- */
+
+    .notice-box {
+      border: 1px solid rgba(255,255,255,0.12);
+
+      border-radius: 20px;
+
+      overflow: hidden;
+
+      background: rgba(255,255,255,0.025);
+    }
+
+    .notice {
+      display: block;
+
+      padding: 20px;
+
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+
+      transition: 0.3s;
+    }
+
+    .notice:last-child {
+      border-bottom: none;
+    }
+
+    .notice:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .notice-date {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .notice-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .notice-description {
+      color: #999;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    /* --------------------
+       CARDS
+    -------------------- */
+
+    .cards {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+      gap: 20px;
+    }
+
+    .card {
+      padding: 30px;
+
+      min-height: 180px;
+
+      border-radius: 20px;
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,0.07),
+          rgba(255,255,255,0.015)
+        );
+
+      transition:
+        transform 0.3s,
+        border-color 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #888;
+      font-size: 14px;
+    }
+
+    /* --------------------
+       BUTTONS
+    -------------------- */
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 15px;
+
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      min-width: 180px;
+
+      padding: 14px 22px;
+
+      border-radius: 999px;
+
+      background: #fff;
+      color: #000;
+
+      font-weight: 800;
+
+      transition: 0.3s;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+      opacity: 0.85;
+    }
+
+    .button.secondary {
+      background: #171717;
+      color: #fff;
+
+      border: 1px solid #333;
+    }
+
+    /* --------------------
+       MEMBER
+    -------------------- */
+
+    .member-card {
+      text-align: center;
+    }
+
+    .member-icon {
+      width: 100px;
+      height: 100px;
+
+      object-fit: cover;
+
+      border-radius: 50%;
+
+      margin-bottom: 15px;
+
+      background: #111;
+    }
+
+    /* --------------------
+       FOOTER
+    -------------------- */
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+
+      text-align: center;
+
+      padding: 50px 20px;
+
+      color: #555;
+
+      font-size: 13px;
+    }
+
+    /* --------------------
+       MOBILE
+    -------------------- */
+
+    @media (max-width: 700px) {
+
+      .nav {
+        height: 60px;
       }
 
-      .logo {
-        width: 120px;
-        height: 120px;
+      nav {
+        gap: 12px;
       }
+
+      nav a {
+        font-size: 11px;
+      }
+
+      .logo span {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 45px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      section {
+        padding: 80px 18px;
+      }
+
+      .section-title {
+        font-size: 30px;
+      }
+
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <div class="container">
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+  <div class="nav">
+
+    <a class="logo" href="/kamiki-hp/">
 
       <!-- アイコン -->
-      <img src="7550.png" alt="神木チャンネル アイコン" class="logo">
+      <img src="assets/icon.png" alt="神木チャンネル">
 
-      <h1>神木チャンネル</h1>
+      <span>神木チャンネル</span>
 
-      <p class="sub">
-        2人で、なんか面白いこと。
-      </p>
+    </a>
 
-      <p class="scroll">
-        SCROLL ↓
+    <nav>
+
+      <a href="/kamiki-hp/">HOME</a>
+
+      <a href="/kamiki-hp/member/">MEMBER</a>
+
+      <a href="/kamiki-hp/video/">VIDEO</a>
+
+      <a href="/kamiki-hp/about/">ABOUT</a>
+
+    </nav>
+
+  </div>
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<main>
+
+<section class="hero">
+
+  <div class="hero-inner">
+
+    <!-- ここにもアイコン -->
+    <img
+      class="hero-icon"
+      src="assets/icon.png"
+      alt="神木チャンネル アイコン"
+    >
+
+    <h1>神木チャンネル</h1>
+
+    <p>
+      2人で、なんか面白いこと。
+    </p>
+
+    <div class="buttons">
+
+      <a
+        class="button"
+        href="https://www.youtube.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        ▶ YouTubeへ
+      </a>
+
+      <a
+        class="button secondary"
+        href="#notice"
+      >
+        お知らせを見る
+      </a>
+
+    </div>
+
+    <div class="scroll">
+      SCROLL ↓
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     NOTICE
+========================= -->
+
+<section id="notice">
+
+  <h2 class="section-title">
+    お知らせ
+  </h2>
+
+  <p class="section-subtitle">
+    神木チャンネルからのお知らせ
+  </p>
+
+  <div
+    id="notice-list"
+    class="notice-box"
+  >
+
+    <div class="notice">
+      <div class="notice-date">
+        読み込み中...
+      </div>
+
+      <div class="notice-title">
+        お知らせを取得しています
+      </div>
+
+      <div class="notice-description">
+        microCMSから最新情報を読み込んでいます。
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     MEMBER
+========================= -->
+
+<section id="member">
+
+  <h2 class="section-title">
+    MEMBER
+  </h2>
+
+  <p class="section-subtitle">
+    神木チャンネルのメンバー
+  </p>
+
+  <div class="cards">
+
+    <div class="card member-card">
+
+      <img
+        class="member-icon"
+        src="assets/icon.png"
+        alt="メンバー"
+      >
+
+      <h3>神木</h3>
+
+      <p>
+        神木チャンネルのメンバー。
       </p>
 
     </div>
-  </header>
 
 
-  <section>
-    <div class="container">
+    <div class="card member-card">
 
-      <p class="section-title">ABOUT US</p>
+      <img
+        class="member-icon"
+        src="assets/icon.png"
+        alt="メンバー"
+      >
 
-      <p class="intro">
-        はじめまして。<br>
-        神木チャンネルです。
-      </p>
+      <h3>きぃ</h3>
 
-      <p class="message">
-        2人でいろんなことに挑戦して、<br>
-        「ちょっと面白い」を動画にしていきます。
+      <p>
+        神木チャンネルのメンバー。
       </p>
 
     </div>
-  </section>
+
+  </div>
+
+</section>
 
 
-  <section>
-    <div class="container">
+<!-- =========================
+     VIDEO
+========================= -->
 
-      <p class="section-title">MEMBERS</p>
+<section id="video">
 
-      <div class="members">
+  <h2 class="section-title">
+    VIDEO
+  </h2>
 
-        <div class="member">
-          <div class="member-name">かみと</div>
-          <div class="member-role">KAMITO</div>
-        </div>
+  <p class="section-subtitle">
+    最新動画はこちら
+  </p>
 
-        <div class="member">
-          <div class="member-name">きぃ</div>
-          <div class="member-role">KII</div>
-        </div>
+  <div class="cards">
+
+    <div class="card">
+
+      <h3>YouTube</h3>
+
+      <p>
+        神木チャンネルの動画をYouTubeでチェック。
+      </p>
+
+      <div class="buttons">
+
+        <a
+          class="button"
+          href="https://www.youtube.com/"
+          target="_blank"
+          rel="noopener"
+        >
+          YouTubeを見る
+        </a>
 
       </div>
 
     </div>
-  </section>
 
 
-  <section>
-    <div class="container">
+    <div class="card">
 
-      <p class="section-title">NEXT PROJECT</p>
+      <h3>登録者ビューアー</h3>
 
-      <p class="intro">
-        次は、<br>
-        何をする？
+      <p>
+        YouTubeチャンネルの登録者数を確認できます。
       </p>
 
-      <div class="企画">
-        <h3>COMING SOON...</h3>
-        <p>
-          神木チャンネルの2人が<br>
-          いろんな企画に挑戦します。
-        </p>
+      <div class="buttons">
+
+        <a
+          class="button secondary"
+          href="https://www.youtube.com/"
+          target="_blank"
+          rel="noopener"
+        >
+          登録者を見る
+        </a>
+
       </div>
 
     </div>
-  </section>
+
+  </div>
+
+</section>
 
 
-  <footer>
-    KAMIKI CHANNEL © 2026
-  </footer>
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section id="about">
+
+  <h2 class="section-title">
+    ABOUT
+  </h2>
+
+  <p class="section-subtitle">
+    神木チャンネルについて
+  </p>
+
+  <div class="card">
+
+    <h3>
+      神木チャンネル
+    </h3>
+
+    <p>
+      神木チャンネルは、2人でいろいろなことに
+      挑戦していくチャンネルです。
+      <br><br>
+      動画やお知らせなどを、このホームページから
+      発信していきます。
+    </p>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+  © 2026 神木チャンネル
+
+</footer>
+
+
+<!-- =========================
+     microCMS
+========================= -->
+
+<script>
+
+  /*
+   * ==========================================
+   * microCMS設定
+   * ==========================================
+   *
+   * 例：
+   *
+   * const MICROCMS_SERVICE_DOMAIN = "kamiki";
+   *
+   * なら
+   *
+   * https://kamiki.microcms.io
+   *
+   * というサービスを使います。
+   */
+
+  const MICROCMS_SERVICE_DOMAIN =
+    "YOUR_SERVICE_DOMAIN";
+
+  const MICROCMS_API_KEY =
+    "YOUR_GET_ONLY_API_KEY";
+
+  /*
+   * microCMSで作るAPIのエンドポイント
+   *
+   * 例：
+   * notices
+   */
+
+  const NOTICE_ENDPOINT =
+    "notices";
+
+
+  /*
+   * お知らせ取得
+   */
+
+  async function loadNotices() {
+
+    const list =
+      document.getElementById("notice-list");
+
+    try {
+
+      const url =
+        `https://${MICROCMS_SERVICE_DOMAIN}.microcms.io/api/v1/${NOTICE_ENDPOINT}?limit=10`;
+
+      const response =
+        await fetch(url, {
+
+          headers: {
+            "X-MICROCMS-API-KEY":
+              MICROCMS_API_KEY
+          }
+
+        });
+
+      if (!response.ok) {
+        throw new Error(
+          "microCMS API Error"
+        );
+      }
+
+      const data =
+        await response.json();
+
+
+      /*
+       * microCMSのお知らせを表示
+       */
+
+      if (
+        !data.contents ||
+        data.contents.length === 0
+      ) {
+
+        list.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">
+              現在、お知らせはありません。
+            </div>
+          </div>
+        `;
+
+        return;
+      }
+
+
+      list.innerHTML =
+        data.contents.map(item => {
+
+          const date =
+            item.publishedAt
+              ? new Date(
+                  item.publishedAt
+                ).toLocaleDateString(
+                  "ja-JP"
+                )
+              : "";
+
+
+          return `
+
+            <a
+              class="notice"
+              href="${item.url || "#"}"
+              ${item.url
+                ? 'target="_blank" rel="noopener"'
+                : ""}
+            >
+
+              <div class="notice-date">
+                ${escapeHTML(date)}
+              </div>
+
+              <div class="notice-title">
+                ${escapeHTML(
+                  item.title || "お知らせ"
+                )}
+              </div>
+
+              <div class="notice-description">
+                ${escapeHTML(
+                  item.description || ""
+                )}
+              </div>
+
+            </a>
+
+          `;
+
+        }).join("");
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      list.innerHTML = `
+
+        <div class="notice">
+
+          <div class="notice-title">
+            お知らせを準備中です
+          </div>
+
+          <div class="notice-description">
+            microCMSの設定が完了すると、
+            ここに最新のお知らせが表示されます。
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+  }
+
+
+  /*
+   * HTMLエスケープ
+   */
+
+  function escapeHTML(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  /*
+   * 起動
+   */
+
+  loadNotices();
+
+</script>
 
 </body>
 </html>
