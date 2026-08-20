@@ -13,22 +13,19 @@
 
   <!-- ==========================================================
        ★★★ 設定はこの1箇所だけ！ ★★★
-       サービスドメインが2つあるので、それぞれ別に設定します。
   ========================================================== -->
   <script>
     const CONFIG = {
       // ----- microCMS の設定（2つのサービス） -----
-      // ▼ サイト設定用（sitesetting サービス）
-      SITE_SETTINGS_SERVICE_DOMAIN: "sitesetting",   // ← https://sitesetting.microcms.io
-      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",   // ← sitesetting 用のAPIキー
-      SITE_SETTINGS_ENDPOINT: "sitesetting",                 // ← エンドポイント名
+      SITE_SETTINGS_SERVICE_DOMAIN: "sitesetting",
+      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",
+      SITE_SETTINGS_ENDPOINT: "sitesetting",
 
-      // ▼ お知らせ用（news-kamiki サービス）
-      NOTICES_SERVICE_DOMAIN: "news-kamiki",         // ← https://news-kamiki.microcms.io
-      NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",               // ← news-kamiki 用のAPIキー
-      NOTICES_ENDPOINT: "news-kamiki",                       // ← エンドポイント名
+      NOTICES_SERVICE_DOMAIN: "news-kamiki",
+      NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",
+      NOTICES_ENDPOINT: "news-kamiki",
 
-      // ----- デフォルトURL（microCMSに値がない場合に使用） -----
+      // ----- デフォルトURL -----
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
     };
@@ -140,6 +137,35 @@
     .page.active {
       display: block;
       animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    /* =========================
+       404ページ
+    ========================= */
+    #page-404 {
+      display: none;
+      min-height: 100vh;
+      padding-top: 70px;
+      background: var(--bg-color);
+    }
+    #page-404.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    #page-404 h1 {
+      font-size: clamp(80px, 15vw, 160px);
+      font-weight: 900;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    #page-404 p {
+      color: var(--text-sub);
+      font-size: clamp(18px, 2.5vw, 28px);
+      font-weight: 700;
+      letter-spacing: 0.1em;
     }
     .container {
       width: min(1100px, calc(100% - 40px));
@@ -318,6 +344,7 @@
     @media (max-width: 768px) {
       .nav { height: 65px; }
       .page { padding-top: 65px; }
+      #page-404 { padding-top: 65px; }
       .menu-toggle { display: flex; }
       nav {
         position: fixed;
@@ -437,6 +464,17 @@
       </div>
     </section>
   </div>
+
+  <!-- =========================
+       404ページ
+  ========================= -->
+  <div id="page-404">
+    <div>
+      <h1>404</h1>
+      <p>Not Found</p>
+    </div>
+  </div>
+
 </div>
 
 <footer>© 2026 神木チャンネル</footer>
@@ -459,27 +497,52 @@
   });
 
   /* ==================================================
-     ページ切り替え
+     ページ切り替え（存在しないページは404）
   ================================================== */
-  const validPages = ["home","member","video","about"];
+  const validPages = ["home", "member", "video", "about"];
+
   function getPageFromHash() {
     const hash = window.location.hash;
     if (hash.startsWith("#q=")) {
       const p = decodeURIComponent(hash.substring(3));
-      if (validPages.includes(p)) return p;
+      if (validPages.includes(p)) {
+        return p;
+      }
+      // 存在しないページ → 404
+      return "404";
     }
     return "home";
   }
+
   function showPage() {
     const page = getPageFromHash();
+
+    // 全てのページと404を非表示
     document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
-    const target = document.getElementById("page-"+page);
-    if (target) setTimeout(() => target.classList.add("active"), 10);
-    document.querySelectorAll("nav a[data-page]").forEach(link => {
-      link.classList.toggle("active", link.dataset.page === page);
-    });
+    document.getElementById("page-404").classList.remove("active");
+
+    if (page === "404") {
+      // 404ページを表示
+      document.getElementById("page-404").classList.add("active");
+      // ナビのアクティブを解除
+      document.querySelectorAll("nav a[data-page]").forEach(link => {
+        link.classList.remove("active");
+      });
+    } else {
+      // 通常ページを表示
+      const target = document.getElementById("page-" + page);
+      if (target) {
+        setTimeout(() => target.classList.add("active"), 10);
+      }
+      // ナビのアクティブを設定
+      document.querySelectorAll("nav a[data-page]").forEach(link => {
+        link.classList.toggle("active", link.dataset.page === page);
+      });
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+
   window.addEventListener("hashchange", showPage);
   showPage();
 
@@ -516,23 +579,17 @@
       );
       console.log("✅ サイト設定取得成功:", settings);
 
-      // サイト名
       if (settings.siteName) {
         document.getElementById("site-name").textContent = settings.siteName;
         document.querySelector(".logo span").textContent = settings.siteName;
       }
-      // サブタイトル
       if (settings.subtitle) {
         document.getElementById("site-subtitle").textContent = settings.subtitle;
       }
-
-      // YouTube URL（microCMSにあればそれを優先）
       if (settings.youtubeUrl) {
         document.getElementById("youtube-button").href = settings.youtubeUrl;
         document.getElementById("youtube-button-2").href = settings.youtubeUrl;
       }
-
-      // LINE URL（microCMSにあればそれを優先）
       if (settings.lineUrl) {
         document.getElementById("line-button").href = settings.lineUrl;
       }
@@ -547,7 +604,6 @@
 
       const list = document.getElementById("notice-list");
 
-      // データ構造のバリエーションに対応
       let notices = [];
       if (Array.isArray(newsData.notices)) {
         notices = newsData.notices;
@@ -571,7 +627,6 @@
         return;
       }
 
-      // お知らせを表示
       list.innerHTML = notices.map(item => {
         const url = item.url || "";
         const dateStr = item.date ? escapeHTML(item.date) : "";
@@ -600,7 +655,6 @@
     }
   }
 
-  // ページ読み込み時に実行
   loadSiteData();
 </script>
 </body>
