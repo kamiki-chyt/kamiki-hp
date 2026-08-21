@@ -21,7 +21,10 @@
       GITHUB_TOKEN: "",
       GITHUB_LABEL: "",
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
+      TWITTER_URL: "https://twitter.com/",
+      INSTAGRAM_URL: "https://www.instagram.com/",
+      TIKTOK_URL: "https://www.tiktok.com/"
     };
 
     const MEMBERS = {
@@ -42,6 +45,14 @@
     };
 
     const MEMBER_IDS = Object.keys(MEMBERS);
+
+    // スケジュールデータ（手動更新）
+    const SCHEDULE = [
+      { date: '2026-08-25', title: 'YouTubeライブ配信', time: '21:00〜', description: 'みんなで雑談！' },
+      { date: '2026-08-27', title: '新作動画公開', time: '18:00', description: 'BEYBLADE対決！' },
+      { date: '2026-08-30', title: 'コラボ配信', time: '20:00〜', description: 'ゲストを呼んで企画！' },
+      { date: '2026-09-01', title: 'メンバー会議', time: '15:00〜', description: '今月の企画会議' }
+    ];
   </script>
   <!-- ========================================================== -->
 
@@ -124,10 +135,6 @@
       90% { opacity: 1; }
       100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
-    @keyframes rotate3d {
-      0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-      100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
-    }
     @keyframes glowPulse {
       0%, 100% { text-shadow: 0 0 20px rgba(139,92,246,0.3); }
       50% { text-shadow: 0 0 40px rgba(139,92,246,0.6), 0 0 60px rgba(139,92,246,0.3); }
@@ -139,12 +146,6 @@
     @keyframes slideInRight {
       from { opacity: 0; transform: translateX(60px); }
       to { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes bounceIn {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.1); }
-      70% { transform: scale(0.95); }
-      100% { transform: scale(1); opacity: 1; }
     }
     @keyframes typewriter {
       from { width: 0; }
@@ -173,59 +174,6 @@
       -webkit-text-fill-color: transparent;
       animation: gradientMove 6s ease infinite;
       display: inline-block;
-    }
-
-    /* ==========================================================
-       3D キューブコンテナ（ヒーロー用）
-    ========================================================== */
-    .cube-container {
-      perspective: 1000px;
-      width: 200px;
-      height: 200px;
-      margin: 0 auto 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .cube {
-      width: 150px;
-      height: 150px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
-    }
-    .cube-face {
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 0.05em;
-      border: 2px solid rgba(139,92,246,0.3);
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      backface-visibility: visible;
-    }
-    .cube-face-front  { transform: translateZ(75px); background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.4); }
-    .cube-face-back   { transform: rotateY(180deg) translateZ(75px); background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); }
-    .cube-face-right  { transform: rotateY(90deg) translateZ(75px); background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.3); }
-    .cube-face-left   { transform: rotateY(-90deg) translateZ(75px); background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); }
-    .cube-face-top    { transform: rotateX(90deg) translateZ(75px); background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
-    .cube-face-bottom { transform: rotateX(-90deg) translateZ(75px); background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.2); }
-    .cube-face span {
-      font-size: 14px;
-      text-align: center;
-      padding: 8px;
-      line-height: 1.4;
-      color: var(--text-main);
-    }
-    .cube-face .small {
-      font-size: 11px;
-      color: var(--text-sub);
     }
 
     /* ==========================================================
@@ -413,7 +361,6 @@
       animation: float 2s ease-in-out infinite;
     }
 
-    /* タイプライター風サブタイトル */
     .typewriter-wrap {
       display: inline-block;
       overflow: hidden;
@@ -463,6 +410,85 @@
     }
     .card h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
     .card p { color: var(--text-sub); font-size: 15px; line-height: 1.6; }
+
+    /* ==========================================================
+       リンク集（SNSアイコン）
+    ========================================================== */
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.03);
+      transition: all 0.3s ease;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .social-link:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-color);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 8px 25px rgba(139,92,246,0.15);
+    }
+    .social-link .icon {
+      font-size: 22px;
+    }
+    .social-link.youtube:hover { border-color: #FF0000; }
+    .social-link.line:hover { border-color: #06C755; }
+    .social-link.twitter:hover { border-color: #1DA1F2; }
+    .social-link.instagram:hover { border-color: #E4405F; }
+    .social-link.tiktok:hover { border-color: #000; }
+
+    /* ==========================================================
+       スケジュールテーブル
+    ========================================================== */
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .schedule-table thead {
+      background: rgba(139,92,246,0.15);
+      border-bottom: 2px solid var(--card-border);
+    }
+    .schedule-table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+    .schedule-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+    .schedule-table tr:last-child td {
+      border-bottom: none;
+    }
+    .schedule-table tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+    .schedule-table .date-col {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+    .schedule-table .title-col {
+      color: var(--text-main);
+      font-weight: 700;
+    }
 
     /* ==========================================================
        メンバーカード
@@ -774,7 +800,7 @@
     }
 
     /* ==========================================================
-       ギャラリー/作品紹介ページ
+       ギャラリー
     ========================================================== */
     .gallery-grid {
       display: grid;
@@ -856,30 +882,23 @@
       .notice {
         padding: 18px 20px;
       }
-      .cube {
-        width: 120px;
-        height: 120px;
-      }
-      .cube-face {
-        width: 120px;
-        height: 120px;
-        font-size: 14px;
-      }
-      .cube-face-front  { transform: translateZ(60px); }
-      .cube-face-back   { transform: rotateY(180deg) translateZ(60px); }
-      .cube-face-right  { transform: rotateY(90deg) translateZ(60px); }
-      .cube-face-left   { transform: rotateY(-90deg) translateZ(60px); }
-      .cube-face-top    { transform: rotateX(90deg) translateZ(60px); }
-      .cube-face-bottom { transform: rotateX(-90deg) translateZ(60px); }
-      .cube-container {
-        width: 150px;
-        height: 150px;
-      }
       .typewriter-wrap {
         white-space: normal;
         border-right: none;
         animation: none;
         width: 100%;
+      }
+      .schedule-table th,
+      .schedule-table td {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+      .social-link {
+        font-size: 13px;
+        padding: 10px 16px;
+      }
+      .social-link .icon {
+        font-size: 18px;
       }
     }
 
@@ -918,6 +937,8 @@
       <a href="#q=member" data-page="member">MEMBER</a>
       <a href="#q=gallery" data-page="gallery">GALLERY</a>
       <a href="#q=video" data-page="video">VIDEO</a>
+      <a href="#q=links" data-page="links">LINKS</a>
+      <a href="#q=schedule" data-page="schedule">SCHEDULE</a>
       <a href="#q=about" data-page="about">ABOUT</a>
     </nav>
   </div>
@@ -932,18 +953,6 @@
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <!-- 3Dキューブ -->
-        <div class="cube-container" id="cube-container">
-          <div class="cube" id="cube">
-            <div class="cube-face cube-face-front"><span>神木<br><span class="small">チャンネル</span></span></div>
-            <div class="cube-face cube-face-back"><span>2人で<br><span class="small">なんか面白いこと</span></span></div>
-            <div class="cube-face cube-face-right"><span>YouTube<br><span class="small">配信中</span></span></div>
-            <div class="cube-face cube-face-left"><span>メンバー<br><span class="small">2人</span></span></div>
-            <div class="cube-face cube-face-top"><span>NEWS<br><span class="small">更新中</span></span></div>
-            <div class="cube-face cube-face-bottom"><span>応援<br><span class="small">よろしく！</span></span></div>
-          </div>
-        </div>
-
         <h1><span class="gradient-text">神木チャンネル</span></h1>
         <p class="hero-subtitle">
           <span class="typewriter-wrap">2人で、なんか面白いこと。</span>
@@ -999,7 +1008,7 @@
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">GALLERY</span></h2>
         <p class="section-subtitle">神木チャンネルの活動ギャラリー</p>
-        <div class="gallery-grid" id="gallery-grid">
+        <div class="gallery-grid">
           <div class="gallery-item">
             <div>
               <div class="icon">🎬</div>
@@ -1062,6 +1071,64 @@
               <a class="button secondary" href="https://www.youtube.com/@kamiki-ch/videos" target="_blank" rel="noopener">動画一覧</a>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- LINKS -->
+  <div id="page-links" class="page">
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="gradient-text">LINKS</span></h2>
+        <p class="section-subtitle">神木チャンネルの各種リンク</p>
+        <div class="social-links">
+          <a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener" class="social-link youtube">
+            <span class="icon">▶</span> YouTube
+          </a>
+          <a href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener" class="social-link line">
+            <span class="icon">💬</span> LINE
+          </a>
+          <a href="https://twitter.com/" target="_blank" rel="noopener" class="social-link twitter">
+            <span class="icon">🐦</span> Twitter
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener" class="social-link instagram">
+            <span class="icon">📷</span> Instagram
+          </a>
+          <a href="https://www.tiktok.com/" target="_blank" rel="noopener" class="social-link tiktok">
+            <span class="icon">🎵</span> TikTok
+          </a>
+        </div>
+        <div style="margin-top:40px; text-align:center; color:var(--text-sub); font-size:14px;">
+          <p>各種SNSで情報発信中！フォローお願いします。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div id="page-schedule" class="page">
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="gradient-text">SCHEDULE</span></h2>
+        <p class="section-subtitle">神木チャンネルの活動予定</p>
+        <div class="card" style="padding:0; overflow:hidden;">
+          <table class="schedule-table" id="schedule-table">
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>予定</th>
+                <th>時間</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-body">
+              <!-- JavaScriptで動的に生成 -->
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:20px; text-align:center; color:var(--text-sub); font-size:13px;">
+          ※ 予定は変更になる場合があります。
         </div>
       </div>
     </section>
@@ -1160,157 +1227,6 @@
     })();
 
     /* ==================================================
-       3Dキューブ制御
-    ================================================== */
-    (function() {
-      const cube = document.getElementById('cube');
-      if (!cube) return;
-
-      let isMobile = window.innerWidth < 768;
-      let autoRotate = true;
-      let rotX = 0;
-      let rotY = 0;
-      let targetRotX = 0;
-      let targetRotY = 0;
-      let animationId = null;
-
-      // 自動回転（PC: ぐるぐる、スマホ: ゆっくり）
-      function autoRotateCube() {
-        if (!autoRotate) return;
-        if (isMobile) {
-          // スマホ: ゆっくりランダムな方向に
-          targetRotX += (Math.random() - 0.5) * 0.3;
-          targetRotY += (Math.random() - 0.5) * 0.3;
-          // 範囲制限
-          targetRotX = Math.max(-30, Math.min(30, targetRotX));
-          targetRotY = Math.max(-30, Math.min(30, targetRotY));
-        } else {
-          // PC: ぐるぐる回転
-          targetRotX += 0.3;
-          targetRotY += 0.5;
-        }
-        requestAnimationFrame(autoRotateCube);
-      }
-
-      // スムーズに追従
-      function smoothRotate() {
-        rotX += (targetRotX - rotX) * 0.08;
-        rotY += (targetRotY - rotY) * 0.08;
-        cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-        animationId = requestAnimationFrame(smoothRotate);
-      }
-
-      // スマホ: ジャイロスコープ対応
-      if (isMobile && window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', function(e) {
-          const beta = e.beta || 0;  // -180〜180
-          const gamma = e.gamma || 0; // -90〜90
-          // スマホの傾きに合わせてキューブを回転
-          targetRotX = beta * 0.5;
-          targetRotY = gamma * 0.5;
-          // 自動回転をオフ
-          autoRotate = false;
-        }, { passive: true });
-      }
-
-      // スマホ: タッチドラッグでも操作可能に
-      if (isMobile) {
-        let startX = 0, startY = 0;
-        let isDragging = false;
-
-        cube.addEventListener('touchstart', function(e) {
-          const touch = e.touches[0];
-          startX = touch.clientX;
-          startY = touch.clientY;
-          isDragging = true;
-          autoRotate = false;
-        }, { passive: true });
-
-        cube.addEventListener('touchmove', function(e) {
-          if (!isDragging) return;
-          const touch = e.touches[0];
-          const deltaX = touch.clientX - startX;
-          const deltaY = touch.clientY - startY;
-          targetRotY += deltaX * 0.3;
-          targetRotX += deltaY * 0.3;
-          startX = touch.clientX;
-          startY = touch.clientY;
-        }, { passive: true });
-
-        cube.addEventListener('touchend', function() {
-          isDragging = false;
-          // しばらくして自動回転再開
-          setTimeout(() => {
-            if (!isDragging) {
-              autoRotate = true;
-            }
-          }, 5000);
-        }, { passive: true });
-      }
-
-      // PC: マウスドラッグ
-      if (!isMobile) {
-        let isDragging = false;
-        let startX = 0, startY = 0;
-
-        cube.addEventListener('mousedown', function(e) {
-          isDragging = true;
-          startX = e.clientX;
-          startY = e.clientY;
-          autoRotate = false;
-        });
-
-        window.addEventListener('mousemove', function(e) {
-          if (!isDragging) return;
-          const deltaX = e.clientX - startX;
-          const deltaY = e.clientY - startY;
-          targetRotY += deltaX * 0.5;
-          targetRotX += deltaY * 0.5;
-          startX = e.clientX;
-          startY = e.clientY;
-        });
-
-        window.addEventListener('mouseup', function() {
-          if (isDragging) {
-            isDragging = false;
-            setTimeout(() => {
-              if (!isDragging) {
-                autoRotate = true;
-              }
-            }, 3000);
-          }
-        });
-      }
-
-      // 画面リサイズ対応
-      window.addEventListener('resize', function() {
-        isMobile = window.innerWidth < 768;
-        if (!isMobile && !autoRotate) {
-          autoRotate = true;
-        }
-      });
-
-      // 起動
-      smoothRotate();
-      setTimeout(() => {
-        autoRotate = true;
-        autoRotateCube();
-      }, 1000);
-
-      // 一定時間操作がないと自動回転再開
-      let inactivityTimer;
-      document.addEventListener('mousemove', function() {
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-          if (!isDragging) {
-            autoRotate = true;
-          }
-        }, 10000);
-      });
-
-    })();
-
-    /* ==================================================
        スクロールアニメーション
     ================================================== */
     (function() {
@@ -1358,7 +1274,7 @@
     /* ==================================================
        ページルーティング
     ================================================== */
-    const validPages = ['home', 'member', 'video', 'about', 'notices', 'gallery'];
+    const validPages = ['home', 'member', 'video', 'about', 'notices', 'gallery', 'links', 'schedule'];
     const memberIds = MEMBER_IDS || [];
 
     function getPageFromHash() {
@@ -1425,6 +1341,9 @@
         if (page === 'notices') {
           renderAllNotices();
         }
+        if (page === 'schedule') {
+          renderSchedule();
+        }
       }
       document.querySelectorAll('nav a[data-page]').forEach(link => {
         link.classList.toggle('active', link.dataset.page === page);
@@ -1433,6 +1352,34 @@
     }
 
     window.addEventListener('hashchange', showPage);
+
+    /* ==================================================
+       スケジュール表示
+    ================================================== */
+    function renderSchedule() {
+      const tbody = document.getElementById('schedule-body');
+      if (!tbody) return;
+
+      if (!SCHEDULE || SCHEDULE.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align:center; padding:30px; color:var(--text-sub);">
+              現在、予定はありません。
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = SCHEDULE.map(item => `
+        <tr>
+          <td class="date-col">${item.date || '-'}</td>
+          <td class="title-col">${item.title || '-'}</td>
+          <td>${item.time || '-'}</td>
+          <td style="color:var(--text-sub);">${item.description || ''}</td>
+        </tr>
+      `).join('');
+    }
 
     /* ==================================================
        メンバー一覧
@@ -1672,6 +1619,7 @@
        初期化
     ================================================== */
     renderMemberList();
+    renderSchedule();
     fetchNotices();
     showPage();
 
