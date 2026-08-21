@@ -24,11 +24,7 @@
 
       // ----- デフォルトURL -----
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
-
-      // ----- メッセージ送信先（Formspree） -----
-      // https://formspree.io/ でフォームを作成し、IDを入れてください
-      FORMSPREE_ID: "YOUR_FORMSPREE_ID"
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
     };
 
     // ★ メンバーデータ（ここに追加・編集）
@@ -39,18 +35,14 @@
         name: 'カミト',
         hobby: 'BEYBLADE',
         skill: 'ゲーム',
-        role: '企画説明 / 挨拶',
-        icon: '🎯',
-        description: '神木チャンネルのリーダー。元気いっぱい！'
+        role: '企画説明 / 挨拶'
       },
       kii: {
         id: 'kii',
         name: 'きぃ',
         hobby: '推し活',
         skill: 'プログラミング',
-        role: '撮影 / 編集',
-        icon: '💻',
-        description: '神木チャンネルの編集担当。裏方のプロ！'
+        role: '撮影 / 編集'
       }
     };
 
@@ -401,10 +393,6 @@
       display: inline-block;
       font-size: 28px;
     }
-    .member-card h3 .icon {
-      font-size: 20px;
-      margin-right: 6px;
-    }
     .member-card .click-hint {
       font-size: 12px;
       color: var(--text-sub);
@@ -437,23 +425,11 @@
       backdrop-filter: blur(10px);
       animation: fadeInScale 0.5s ease forwards;
     }
-    .member-detail-card .member-icon {
-      font-size: 64px;
-      text-align: center;
-      margin-bottom: 10px;
-      display: block;
-    }
     .member-detail-card h1 {
       font-size: 36px;
       font-weight: 900;
       text-align: center;
-      margin-bottom: 8px;
-    }
-    .member-detail-card .member-desc {
-      text-align: center;
-      color: var(--text-sub);
-      font-size: 16px;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
     .member-detail-item {
       display: flex;
@@ -484,89 +460,11 @@
       font-weight: 700;
       transition: color 0.3s ease;
       cursor: pointer;
+      text-align: center;
+      width: 100%;
     }
     .member-detail .back-link:hover {
       color: var(--text-main);
-    }
-
-    /* ==========================================================
-       メッセージフォーム
-    ========================================================== */
-    .message-form {
-      margin-top: 30px;
-      padding-top: 30px;
-      border-top: 1px solid var(--card-border);
-    }
-    .message-form label {
-      display: block;
-      color: var(--text-sub);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
-    }
-    .message-form input,
-    .message-form textarea {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      font-size: 15px;
-      font-family: inherit;
-      transition: border-color 0.3s ease;
-      margin-bottom: 16px;
-    }
-    .message-form input:focus,
-    .message-form textarea:focus {
-      border-color: var(--accent-color);
-      outline: none;
-    }
-    .message-form textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-    .message-form .submit-btn {
-      background: var(--accent-gradient);
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      width: 100%;
-    }
-    .message-form .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(139,92,246,0.4);
-    }
-    .message-form .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .message-form .form-success {
-      display: none;
-      color: #06C755;
-      text-align: center;
-      padding: 12px;
-      font-weight: 700;
-    }
-    .message-form .form-success.show {
-      display: block;
-    }
-    .message-form .form-error {
-      display: none;
-      color: #ff6b6b;
-      text-align: center;
-      padding: 12px;
-      font-weight: 700;
-    }
-    .message-form .form-error.show {
-      display: block;
     }
 
     /* ==========================================================
@@ -866,10 +764,10 @@
         <h1><span class="gradient-text">神木チャンネル</span></h1>
         <p class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
-          <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">▶ YouTubeへ</a>
-          <a class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">💬 LINE友達追加</a>
+          <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTubeへ</a>
+          <a class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">LINE友達追加</a>
         </div>
-        <div class="scroll">SCROLL ↓</div>
+        <div class="scroll">SCROLL</div>
       </div>
     </section>
 
@@ -887,7 +785,7 @@
         </div>
         <!-- もっと見るボタン（5件超えたら表示） -->
         <div class="load-more-wrap" id="load-more-wrap" style="display:none;">
-          <a class="load-more-btn" href="#q=notices">もっと見る →</a>
+          <a class="load-more-btn" href="#q=notices">もっと見る</a>
         </div>
       </div>
     </section>
@@ -980,7 +878,7 @@
 <!-- =========================
      フッター
 ========================= -->
-<footer>© 2026 神木チャンネル</footer>
+<footer>&copy; 2026 神木チャンネル</footer>
 
 <!-- =========================
      JavaScript
@@ -1065,7 +963,6 @@
       if (!hash || hash === '#') return 'home';
       if (hash.startsWith('#q=')) {
         const path = decodeURIComponent(hash.substring(3));
-        // メンバー詳細チェック (/member/kamito など)
         if (path.startsWith('member/')) {
           const id = path.split('/')[1];
           if (memberIds.includes(id)) {
@@ -1073,401 +970,4 @@
           }
           return '404';
         }
-        if (validPages.includes(path)) {
-          return path;
-        }
-        return '404';
-      }
-      return 'home';
-    }
-
-    function getMemberIdFromHash() {
-      const hash = window.location.hash;
-      if (hash.startsWith('#q=member/')) {
-        const id = decodeURIComponent(hash.substring(3)).split('/')[1];
-        if (memberIds.includes(id)) return id;
-      }
-      return null;
-    }
-
-    function showPage() {
-      const page = getPageFromHash();
-      const memberId = getMemberIdFromHash();
-
-      // 全ページ非表示
-      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-      document.getElementById('page-404').classList.remove('active');
-
-      if (page === '404') {
-        document.getElementById('page-404').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.remove('active');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      if (page === 'member-detail' && memberId) {
-        // メンバー詳細ページを表示
-        const target = document.getElementById('page-member-detail');
-        if (target) {
-          target.classList.add('active');
-          renderMemberDetail(memberId);
-        }
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.toggle('active', link.dataset.page === 'member');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      // 通常ページ
-      const target = document.getElementById('page-' + page);
-      if (target) {
-        target.classList.add('active');
-        // お知らせ全件表示ページならデータ読み込み
-        if (page === 'notices') {
-          renderAllNotices();
-        }
-      }
-      document.querySelectorAll('nav a[data-page]').forEach(link => {
-        link.classList.toggle('active', link.dataset.page === page);
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    window.addEventListener('hashchange', showPage);
-
-    /* ==================================================
-       メンバー一覧レンダリング
-    ================================================== */
-    function renderMemberList() {
-      const container = document.getElementById('member-list');
-      if (!container) return;
-
-      const ids = Object.keys(MEMBERS);
-      if (ids.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>';
-        return;
-      }
-
-      container.innerHTML = ids.map(id => {
-        const m = MEMBERS[id];
-        return `
-          <a href="#q=member/${id}" class="card member-card scroll-animate">
-            <h3><span class="icon">${m.icon || '👤'}</span>${m.name}</h3>
-            <p>${m.description || '神木チャンネルのメンバー。'}</p>
-            <div class="click-hint">タップして詳細を見る</div>
-          </a>
-        `;
-      }).join('');
-
-      // スクロールアニメーション再適用
-      setTimeout(() => {
-        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
-          if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add('visible');
-                }
-              });
-            }, { threshold: 0.15 });
-            observer.observe(el);
-          } else {
-            el.classList.add('visible');
-          }
-        });
-      }, 100);
-    }
-
-    /* ==================================================
-       メンバー詳細レンダリング
-    ================================================== */
-    function renderMemberDetail(id) {
-      const container = document.getElementById('member-detail-content');
-      if (!container) return;
-
-      const m = MEMBERS[id];
-      if (!m) {
-        container.innerHTML = `
-          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
-          <div style="text-align:center;margin-top:20px;">
-            <a class="button secondary" href="#q=member">戻る</a>
-          </div>
-        `;
-        return;
-      }
-
-      const formId = CONFIG.FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
-
-      container.innerHTML = `
-        <span class="member-icon">${m.icon || '👤'}</span>
-        <h1>${m.name}</h1>
-        <p class="member-desc">${m.description || ''}</p>
-        <div class="member-detail-item">
-          <span class="label">趣味</span>
-          <span class="value">${m.hobby || '-'}</span>
-        </div>
-        <div class="member-detail-item">
-          <span class="label">得意なこと</span>
-          <span class="value">${m.skill || '-'}</span>
-        </div>
-        <div class="member-detail-item">
-          <span class="label">役割</span>
-          <span class="value">${m.role || '-'}</span>
-        </div>
-
-        <!-- メッセージフォーム -->
-        <div class="message-form">
-          <h4 style="color:var(--text-main);font-weight:700;margin-bottom:16px;font-size:18px;">
-            💬 ${m.name}にメッセージを送る
-          </h4>
-          <form id="message-form" action="https://formspree.io/f/${formId}" method="POST">
-            <input type="hidden" name="_subject" value="神木チャンネルへのメッセージ（${m.name}宛）">
-            <input type="hidden" name="_gotcha" style="display:none;">
-            <div>
-              <label for="sender-name">あなたの名前</label>
-              <input type="text" id="sender-name" name="name" placeholder="例: 神木ファン" required>
-            </div>
-            <div>
-              <label for="sender-email">メールアドレス（任意）</label>
-              <input type="email" id="sender-email" name="_replyto" placeholder="example@email.com">
-            </div>
-            <div>
-              <label for="sender-message">メッセージ</label>
-              <textarea id="sender-message" name="message" placeholder="${m.name}さんへのメッセージを書いてください..." required></textarea>
-            </div>
-            <button type="submit" class="submit-btn" id="message-submit">送信する</button>
-            <div class="form-success" id="form-success">✅ メッセージを送信しました！</div>
-            <div class="form-error" id="form-error">❌ 送信に失敗しました。もう一度お試しください。</div>
-          </form>
-        </div>
-
-        <div style="text-align:center;margin-top:24px;">
-          <a class="back-link" href="#q=member">← メンバー一覧に戻る</a>
-        </div>
-      `;
-
-      // フォーム送信処理
-      const form = document.getElementById('message-form');
-      if (form) {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const submitBtn = document.getElementById('message-submit');
-          const success = document.getElementById('form-success');
-          const error = document.getElementById('form-error');
-
-          submitBtn.disabled = true;
-          submitBtn.textContent = '送信中...';
-          success.classList.remove('show');
-          error.classList.remove('show');
-
-          try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-              method: 'POST',
-              body: formData,
-              headers: {
-                'Accept': 'application/json'
-              }
-            });
-
-            if (response.ok) {
-              success.classList.add('show');
-              form.reset();
-            } else {
-              error.classList.add('show');
-            }
-          } catch (err) {
-            error.classList.add('show');
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = '送信する';
-          }
-        });
-      }
-    }
-
-    /* ==================================================
-       GitHub API でお知らせ取得（最新5件 + 全件）
-    ================================================== */
-    const noticeList = document.getElementById('notice-list');
-    const allNoticesList = document.getElementById('all-notices-list');
-    const loadMoreWrap = document.getElementById('load-more-wrap');
-    const skeleton = document.getElementById('skeleton-loader');
-    let allIssues = [];
-    let noticesLoaded = false;
-
-    function escapeHTML(v) {
-      return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-    }
-
-    function formatDate(dateStr) {
-      try {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
-      } catch { return dateStr; }
-    }
-
-    function renderNotices(issues, container, limit) {
-      const items = limit ? issues.slice(0, limit) : issues;
-      if (!items || items.length === 0) {
-        container.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">📢 お知らせ</div>
-            <div class="notice-description">現在、お知らせはありません。</div>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = items.map(issue => {
-        const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
-        const title = issue.title || 'お知らせ';
-        const body = issue.body ? issue.body.slice(0, 150) + (issue.body.length > 150 ? '...' : '') : '';
-        const labels = issue.labels.map(l => l.name).join(' ');
-
-        return `
-          <div class="notice">
-            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
-            <div class="notice-title">
-              <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a>
-            </div>
-            ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
-            ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
-          </div>
-        `;
-      }).join('');
-    }
-
-    async function fetchNotices() {
-      const owner = CONFIG.GITHUB_OWNER;
-      const repo = CONFIG.GITHUB_REPO;
-      const token = CONFIG.GITHUB_TOKEN || '';
-      const label = CONFIG.GITHUB_LABEL || '';
-
-      if (!owner || !repo) {
-        noticeList.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">📢 お知らせ</div>
-            <div class="notice-description">GitHubリポジトリが設定されていません。</div>
-          </div>
-        `;
-        return;
-      }
-
-      try {
-        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
-        if (label) url += `&labels=${encodeURIComponent(label)}`;
-
-        const headers = {};
-        if (token) headers['Authorization'] = `token ${token}`;
-
-        const res = await fetch(url, { headers });
-
-        if (res.status === 404) {
-          noticeList.innerHTML = `
-            <div class="notice">
-              <div class="notice-title">📢 お知らせ</div>
-              <div class="notice-description">
-                リポジトリが見つかりません。<br>
-                <span style="font-size:12px; color:#666;">「${owner}/${repo}」を確認してください。</span>
-              </div>
-            </div>
-          `;
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`GitHub API Error: ${res.status}`);
-        }
-
-        const issues = await res.json();
-        allIssues = issues;
-
-        // 最新5件を表示
-        renderNotices(issues, noticeList, 5);
-
-        // 5件超えたら「もっと見る」ボタン表示
-        if (issues.length > 5) {
-          loadMoreWrap.style.display = 'block';
-        } else {
-          loadMoreWrap.style.display = 'none';
-        }
-
-        noticesLoaded = true;
-
-      } catch (err) {
-        console.error('お知らせ取得エラー:', err);
-        noticeList.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">⚠️ お知らせの読み込みに失敗しました</div>
-            <div class="notice-description">
-              エラー: ${escapeHTML(err.message)}
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    // 全件表示用
-    async function renderAllNotices() {
-      if (!allNoticesList) return;
-
-      if (allIssues.length > 0) {
-        renderNotices(allIssues, allNoticesList, null);
-        return;
-      }
-
-      // まだ取得していない場合は再取得
-      const owner = CONFIG.GITHUB_OWNER;
-      const repo = CONFIG.GITHUB_REPO;
-      const token = CONFIG.GITHUB_TOKEN || '';
-      const label = CONFIG.GITHUB_LABEL || '';
-
-      try {
-        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
-        if (label) url += `&labels=${encodeURIComponent(label)}`;
-
-        const headers = {};
-        if (token) headers['Authorization'] = `token ${token}`;
-
-        const res = await fetch(url, { headers });
-        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
-
-        const issues = await res.json();
-        allIssues = issues;
-        renderNotices(issues, allNoticesList, null);
-
-      } catch (err) {
-        console.error('全件取得エラー:', err);
-        allNoticesList.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">⚠️ 読み込みに失敗しました</div>
-            <div class="notice-description">${escapeHTML(err.message)}</div>
-          </div>
-        `;
-      }
-    }
-
-    /* ==================================================
-       初期化
-    ================================================== */
-    renderMemberList();
-    fetchNotices();
-    showPage();
-
-    // ページ遷移時にメンバーリスト再レンダリング（必要に応じて）
-    window.addEventListener('hashchange', () => {
-      // メンバー一覧ページが表示されたら再レンダリング（既に表示済みならスキップ）
-      if (window.location.hash.includes('q=member') && !window.location.hash.includes('member/')) {
-        // 既にレンダリング済みなので何もしない
-      }
-    });
-
-  })();
-</script>
-
-</body>
-</html>
+        if (valid
