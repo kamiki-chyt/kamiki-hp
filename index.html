@@ -11,6 +11,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 
+  <!-- ==========================================================
+       ★★★ 設定はこの1箇所だけ！ ★★★
+  ========================================================== -->
+  <script>
+    const CONFIG = {
+      // ----- GitHub API 設定（お知らせ取得用） -----
+      // お知らせを管理する GitHub リポジトリ
+      GITHUB_OWNER: "kamiki-ch",        // GitHubのユーザー名 or 組織名
+      GITHUB_REPO: "notices",           // リポジトリ名
+      GITHUB_TOKEN: "",                 // 任意（空の場合はパブリックリポジトリのみ対応）
+      GITHUB_LABEL: "お知らせ",          // 取得するIssueのラベル（空の場合は全て）
+
+      // ----- デフォルトURL -----
+      YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
+    };
+  </script>
+  <!-- ========================================================== -->
+
   <style>
     /* ==========================================================
        リセット & ベース
@@ -26,15 +45,16 @@
       --card-hover: rgba(255,255,255,0.2);
     }
 
-    /* ★ 全要素でタップハイライトを消す ★ */
     * {
       -webkit-tap-highlight-color: transparent;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* アクティブ時の背景色変化も防ぐ */
     a, button, .clickable {
       -webkit-tap-highlight-color: transparent;
       outline: none;
@@ -43,7 +63,6 @@
       background-color: transparent;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg-color);
@@ -59,8 +78,53 @@
        アニメーション
     ========================================================== */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(40px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+      50% { box-shadow: 0 0 40px rgba(139,92,246,0.6); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* スクロールアニメーション用 */
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scroll-animate.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* タイトルグラデーションアニメーション */
+    .gradient-text {
+      background: linear-gradient(270deg, #fff, #8b5cf6, #3b82f6, #fff);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 6s ease infinite;
     }
 
     /* ==========================================================
@@ -75,6 +139,10 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--card-border);
+      transition: background 0.3s ease;
+    }
+    header.scrolled {
+      background: rgba(5,5,5,0.95);
     }
     .nav {
       max-width: 1100px;
@@ -126,7 +194,6 @@
     nav a:hover, nav a.active { color: var(--text-main); }
     nav a.active::after { width: 100%; }
 
-    /* ハンバーガー */
     .menu-toggle {
       display: none;
       flex-direction: column;
@@ -169,6 +236,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      animation: fadeInScale 0.5s ease forwards;
     }
     #page-404 h1 {
       font-size: clamp(80px, 15vw, 160px);
@@ -177,6 +245,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
+      animation: float 3s ease-in-out infinite;
     }
     #page-404 p {
       color: var(--text-sub);
@@ -201,6 +270,7 @@
       text-align: center;
       padding: 80px 20px;
       position: relative;
+      overflow: hidden;
     }
     .hero::before {
       content: '';
@@ -212,6 +282,7 @@
       background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
       z-index: -1;
       pointer-events: none;
+      animation: pulseGlow 4s ease-in-out infinite;
     }
     .hero-inner { width: 100%; max-width: 850px; }
     .hero-icon { display: none; }
@@ -221,15 +292,24 @@
       font-weight: 900;
       letter-spacing: 0.05em;
       margin-bottom: 20px;
-      background: -webkit-linear-gradient(0deg, #fff, #bbb);
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(270deg, #fff, #8b5cf6, #3b82f6, #fff);
+      background-size: 300% 100%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      animation: gradientMove 6s ease infinite;
+      display: inline-block;
     }
     .hero-subtitle {
       color: var(--text-sub);
       font-size: clamp(16px, 3vw, 22px);
       letter-spacing: 0.1em;
       font-weight: 700;
+      animation: fadeInUp 1s ease 0.3s both;
+    }
+    .hero .buttons {
+      animation: fadeInUp 1s ease 0.6s both;
     }
     .scroll {
       margin-top: 80px;
@@ -237,11 +317,7 @@
       font-size: 12px;
       letter-spacing: 0.3em;
       font-weight: 700;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 0.5; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(5px); }
+      animation: float 2s ease-in-out infinite;
     }
 
     /* ==========================================================
@@ -253,6 +329,14 @@
       font-weight: 900;
       letter-spacing: 0.05em;
       margin-bottom: 10px;
+    }
+    .section-title .gradient-text {
+      background: linear-gradient(270deg, #fff, #8b5cf6, #3b82f6, #fff);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 6s ease infinite;
+      display: inline-block;
     }
     .section-subtitle {
       color: var(--text-sub);
@@ -272,42 +356,48 @@
       border: 1px solid var(--card-border);
       background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
       backdrop-filter: blur(10px);
-      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      perspective: 800px;
+      transform-style: preserve-3d;
     }
     .card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
       border-color: var(--card-hover);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 40px rgba(139,92,246,0.05);
     }
     .card h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
     .card p { color: var(--text-sub); font-size: 15px; line-height: 1.6; }
 
     /* ==========================================================
-       メンバーカード（クリックでモーダル）
+       メンバーカード
     ========================================================== */
     .member-card {
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       -webkit-tap-highlight-color: transparent;
     }
     .member-card:hover {
       transform: translateY(-8px) scale(1.02);
       border-color: var(--accent-color);
+      box-shadow: 0 20px 40px rgba(139,92,246,0.15);
     }
     .member-card h3 {
       position: relative;
       display: inline-block;
+      font-size: 28px;
     }
     .member-card h3::after {
       content: '👤';
-      font-size: 14px;
+      font-size: 16px;
       margin-left: 8px;
       opacity: 0.5;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: inline-block;
     }
     .member-card:hover h3::after {
       opacity: 1;
+      transform: scale(1.1);
     }
     .member-card .click-hint {
       font-size: 12px;
@@ -315,7 +405,80 @@
       opacity: 0.6;
       margin-top: 8px;
       letter-spacing: 0.05em;
+      transition: opacity 0.3s ease;
     }
+    .member-card:hover .click-hint {
+      opacity: 1;
+    }
+
+    /* ==========================================================
+       お知らせ（GitHub API）
+    ========================================================== */
+    .notice-box {
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+    }
+    .notice {
+      display: block;
+      padding: 25px 30px;
+      border-bottom: 1px solid var(--card-border);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .notice:last-child { border-bottom: none; }
+    .notice:hover {
+      background: rgba(255,255,255,0.05);
+      transform: translateX(4px);
+    }
+    .notice-date {
+      color: var(--accent-color);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .notice-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .notice-title a {
+      color: var(--text-main);
+      transition: color 0.3s ease;
+    }
+    .notice-title a:hover {
+      color: var(--accent-color);
+    }
+    .notice-description {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    .notice-label {
+      display: inline-block;
+      background: rgba(139,92,246,0.2);
+      color: var(--accent-color);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 12px;
+      border-radius: 999px;
+      margin-top: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ローディングスケルトン */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      border-radius: 8px;
+      height: 20px;
+      margin: 4px 0;
+    }
+    .skeleton-title { height: 24px; width: 70%; }
+    .skeleton-date { height: 14px; width: 30%; }
+    .skeleton-desc { height: 16px; width: 90%; }
 
     /* ==========================================================
        ボタン
@@ -338,13 +501,31 @@
       font-size: 15px;
       font-weight: 800;
       letter-spacing: 0.05em;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       -webkit-tap-highlight-color: transparent;
       outline: none;
       border: none;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
-    .button:active { background-color: inherit; }
+    .button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      transform: scale(0.5);
+    }
+    .button:hover::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .button:active { transform: scale(0.96); }
     .button.primary {
       background: var(--accent-gradient);
       color: #fff;
@@ -352,7 +533,7 @@
     }
     .button.primary:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(139,92,246,0.5);
+      box-shadow: 0 12px 30px rgba(139,92,246,0.5);
     }
     .button.line {
       background: #06C755;
@@ -361,11 +542,11 @@
     }
     .button.line:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(6, 199, 85, 0.5);
+      box-shadow: 0 12px 30px rgba(6, 199, 85, 0.5);
     }
 
     /* ==========================================================
-       モーダル（メンバー詳細）
+       モーダル
     ========================================================== */
     .modal-overlay {
       display: none;
@@ -383,6 +564,7 @@
     }
     .modal-overlay.active {
       display: flex;
+      animation: fadeInUp 0.3s ease forwards;
     }
     .modal-content {
       background: #111;
@@ -392,8 +574,9 @@
       max-width: 480px;
       width: 100%;
       box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-      animation: fadeInUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       position: relative;
+      transform-origin: center;
     }
     .modal-close {
       position: absolute;
@@ -402,12 +585,13 @@
       font-size: 28px;
       color: var(--text-sub);
       cursor: pointer;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, transform 0.3s ease;
       line-height: 1;
       -webkit-tap-highlight-color: transparent;
     }
     .modal-close:hover {
       color: #fff;
+      transform: rotate(90deg);
     }
     .modal-content h2 {
       font-size: 32px;
@@ -424,6 +608,12 @@
       align-items: baseline;
       padding: 12px 0;
       border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s ease;
+    }
+    .modal-detail:hover {
+      background: rgba(255,255,255,0.02);
+      padding-left: 8px;
+      border-radius: 8px;
     }
     .modal-detail:last-of-type {
       border-bottom: none;
@@ -454,6 +644,7 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       border-top: 1px solid var(--card-border);
+      animation: fadeInUp 1s ease;
     }
 
     /* ==========================================================
@@ -474,7 +665,7 @@
         justify-content: center;
         gap: 40px;
         transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       }
       nav.active { transform: translateX(0); }
       nav a { font-size: 20px; }
@@ -504,15 +695,49 @@
       .modal-content h2 {
         font-size: 28px;
       }
+      .notice {
+        padding: 18px 20px;
+      }
+    }
+
+    /* ==========================================================
+       パーティクル（背景装飾）
+    ========================================================== */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(139,92,246,0.15);
+      border-radius: 50%;
+      animation: floatParticle 15s ease-in-out infinite;
+    }
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
   </style>
 </head>
 <body>
 
+<!-- パーティクル背景 -->
+<div class="particles" id="particles"></div>
+
 <!-- =========================
      ヘッダー
 ========================= -->
-<header>
+<header id="header">
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
       <span>神木チャンネル</span>
@@ -538,7 +763,7 @@
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <h1>神木チャンネル</h1>
+        <h1><span class="gradient-text">神木チャンネル</span></h1>
         <p class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
           <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">▶ YouTubeへ</a>
@@ -547,23 +772,37 @@
         <div class="scroll">SCROLL ↓</div>
       </div>
     </section>
+
+    <!-- お知らせ（GitHub API から取得） -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="gradient-text">NEWS</span></h2>
+        <p class="section-subtitle">神木チャンネルからのお知らせ</p>
+        <div id="notice-list" class="notice-box">
+          <!-- スケルトンローダー -->
+          <div class="notice" id="skeleton-loader">
+            <div class="skeleton skeleton-date"></div>
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-desc"></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- MEMBER -->
   <div id="page-member" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title">MEMBER</h2>
+        <h2 class="section-title"><span class="gradient-text">MEMBER</span></h2>
         <p class="section-subtitle">神木チャンネルのメンバー</p>
         <div class="cards">
-          <!-- カミト -->
-          <div class="card member-card" data-member="kamito">
+          <div class="card member-card scroll-animate" data-member="kamito">
             <h3>カミト</h3>
             <p>神木チャンネルのメンバー。</p>
             <div class="click-hint">タップして詳細を見る</div>
           </div>
-          <!-- きぃ -->
-          <div class="card member-card" data-member="kii">
+          <div class="card member-card scroll-animate" data-member="kii">
             <h3>きぃ</h3>
             <p>神木チャンネルのメンバー。</p>
             <div class="click-hint">タップして詳細を見る</div>
@@ -577,10 +816,10 @@
   <div id="page-video" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title">VIDEO</h2>
+        <h2 class="section-title"><span class="gradient-text">VIDEO</span></h2>
         <p class="section-subtitle">神木チャンネルの動画</p>
         <div class="cards">
-          <div class="card">
+          <div class="card scroll-animate">
             <h3>YouTube</h3>
             <p>神木チャンネルのメイン動画はこちらからご視聴いただけます。</p>
             <div class="buttons">
@@ -596,9 +835,9 @@
   <div id="page-about" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title">ABOUT</h2>
+        <h2 class="section-title"><span class="gradient-text">ABOUT</span></h2>
         <p class="section-subtitle">神木チャンネルについて</p>
-        <div class="card">
+        <div class="card scroll-animate">
           <h3>神木チャンネル</h3>
           <p>神木チャンネルは、2人でいろいろなことに挑戦していくチャンネルです。<br><br>動画やお知らせなどを、このホームページから発信していきます。応援よろしくお願いします！</p>
         </div>
@@ -649,6 +888,63 @@
 <script>
   (function() {
     'use strict';
+
+    /* ==================================================
+       パーティクル生成
+    ================================================== */
+    (function createParticles() {
+      const container = document.getElementById('particles');
+      if (!container) return;
+      const count = 30;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.width = (2 + Math.random() * 4) + 'px';
+        p.style.height = p.style.width;
+        p.style.animationDelay = (Math.random() * 20) + 's';
+        p.style.animationDuration = (12 + Math.random() * 15) + 's';
+        p.style.opacity = 0.1 + Math.random() * 0.3;
+        container.appendChild(p);
+      }
+    })();
+
+    /* ==================================================
+       スクロールアニメーション（Intersection Observer）
+    ================================================== */
+    (function initScrollAnimation() {
+      const elements = document.querySelectorAll('.scroll-animate');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, {
+          threshold: 0.15,
+          rootMargin: '0px 0px -50px 0px'
+        });
+        elements.forEach(el => observer.observe(el));
+      } else {
+        // フォールバック：全て表示
+        elements.forEach(el => el.classList.add('visible'));
+      }
+    })();
+
+    /* ==================================================
+       ヘッダー スクロール時透過制御
+    ================================================== */
+    (function headerScroll() {
+      const header = document.getElementById('header');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
+    })();
 
     /* ==================================================
        ハンバーガーメニュー
@@ -753,7 +1049,6 @@
       document.body.style.overflow = '';
     }
 
-    // メンバーカードクリック
     document.querySelectorAll('.member-card').forEach(card => {
       card.addEventListener('click', (e) => {
         const memberId = card.dataset.member;
@@ -761,20 +1056,112 @@
       });
     });
 
-    // 閉じるボタン
     modalClose.addEventListener('click', closeModal);
-
-    // オーバーレイクリックで閉じる
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
+      if (e.target === modal) closeModal();
     });
-
-    // ESCキーで閉じる
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeModal();
     });
+
+    /* ==================================================
+       GitHub API でお知らせを取得
+    ================================================== */
+    const noticeList = document.getElementById('notice-list');
+    const skeleton = document.getElementById('skeleton-loader');
+
+    async function fetchNotices() {
+      const { GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, GITHUB_LABEL } = CONFIG;
+
+      // 設定が空の場合はエラーメッセージ
+      if (!GITHUB_OWNER || !GITHUB_REPO || GITHUB_OWNER === "kamiki-ch") {
+        noticeList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">📢 お知らせ</div>
+            <div class="notice-description">
+              GitHubリポジトリを設定してください。<br>
+              <span style="font-size:12px; color:#666;">
+                設定方法: CONFIG.GITHUB_OWNER / CONFIG.GITHUB_REPO を設定
+              </span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        let url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?state=open&sort=created&direction=desc&per_page=10`;
+        if (GITHUB_LABEL) {
+          url += `&labels=${encodeURIComponent(GITHUB_LABEL)}`;
+        }
+
+        const headers = {};
+        if (GITHUB_TOKEN) {
+          headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+        }
+
+        const res = await fetch(url, { headers });
+        if (!res.ok) {
+          throw new Error(`GitHub API Error: ${res.status}`);
+        }
+
+        const issues = await res.json();
+
+        if (!issues || issues.length === 0) {
+          noticeList.innerHTML = `
+            <div class="notice">
+              <div class="notice-title">📢 お知らせ</div>
+              <div class="notice-description">現在、お知らせはありません。</div>
+            </div>
+          `;
+          return;
+        }
+
+        // 表示
+        noticeList.innerHTML = issues.map(issue => {
+          const date = new Date(issue.created_at);
+          const dateStr = date.toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          });
+          const labels = issue.labels.map(l => l.name).join(' ');
+          const body = issue.body ? issue.body.slice(0, 120) + (issue.body.length > 120 ? '...' : '') : '';
+
+          return `
+            <div class="notice">
+              <div class="notice-date">${dateStr}</div>
+              <div class="notice-title">
+                <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(issue.title)}</a>
+              </div>
+              ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
+              ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('お知らせ取得エラー:', err);
+        noticeList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">⚠️ お知らせの読み込みに失敗しました</div>
+            <div class="notice-description">
+              エラー: ${escapeHTML(err.message)}<br>
+              <span style="font-size:12px; color:#666;">
+                GitHubリポジトリの設定を確認してください。
+              </span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function escapeHTML(v) {
+      return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+
+    // お知らせ取得実行
+    fetchNotices();
 
   })();
 </script>
