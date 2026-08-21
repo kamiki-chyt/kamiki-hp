@@ -970,4 +970,310 @@
           }
           return '404';
         }
-        if (valid
+        if (validPages.includes(path)) {
+          return path;
+        }
+        return '404';
+      }
+      return 'home';
+    }
+
+    function getMemberIdFromHash() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#q=member/')) {
+        const id = decodeURIComponent(hash.substring(3)).split('/')[1];
+        if (memberIds.includes(id)) return id;
+      }
+      return null;
+    }
+
+    function showPage() {
+      const page = getPageFromHash();
+      const memberId = getMemberIdFromHash();
+
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.getElementById('page-404').classList.remove('active');
+
+      if (page === '404') {
+        document.getElementById('page-404').classList.add('active');
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          link.classList.remove('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      if (page === 'member-detail' && memberId) {
+        const target = document.getElementById('page-member-detail');
+        if (target) {
+          target.classList.add('active');
+          renderMemberDetail(memberId);
+        }
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          link.classList.toggle('active', link.dataset.page === 'member');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const target = document.getElementById('page-' + page);
+      if (target) {
+        target.classList.add('active');
+        if (page === 'notices') {
+          renderAllNotices();
+        }
+      }
+      document.querySelectorAll('nav a[data-page]').forEach(link => {
+        link.classList.toggle('active', link.dataset.page === page);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('hashchange', showPage);
+
+    /* ==================================================
+       メンバー一覧レンダリング
+    ================================================== */
+    function renderMemberList() {
+      const container = document.getElementById('member-list');
+      if (!container) return;
+
+      const ids = Object.keys(MEMBERS);
+      if (ids.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>';
+        return;
+      }
+
+      container.innerHTML = ids.map(id => {
+        const m = MEMBERS[id];
+        return `
+          <a href="#q=member/${id}" class="card member-card scroll-animate">
+            <h3>${m.name}</h3>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </a>
+        `;
+      }).join('');
+
+      setTimeout(() => {
+        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('visible');
+                }
+              });
+            }, { threshold: 0.15 });
+            observer.observe(el);
+          } else {
+            el.classList.add('visible');
+          }
+        });
+      }, 100);
+    }
+
+    /* ==================================================
+       メンバー詳細レンダリング
+    ================================================== */
+    function renderMemberDetail(id) {
+      const container = document.getElementById('member-detail-content');
+      if (!container) return;
+
+      const m = MEMBERS[id];
+      if (!m) {
+        container.innerHTML = `
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
+          <div style="text-align:center;margin-top:20px;">
+            <a class="button secondary" href="#q=member">戻る</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <h1>${m.name}</h1>
+        <div class="member-detail-item">
+          <span class="label">趣味</span>
+          <span class="value">${m.hobby || '-'}</span>
+        </div>
+        <div class="member-detail-item">
+          <span class="label">得意なこと</span>
+          <span class="value">${m.skill || '-'}</span>
+        </div>
+        <div class="member-detail-item">
+          <span class="label">役割</span>
+          <span class="value">${m.role || '-'}</span>
+        </div>
+        <div style="text-align:center;margin-top:24px;">
+          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
+        </div>
+      `;
+    }
+
+    /* ==================================================
+       GitHub API でお知らせ取得
+    ================================================== */
+    const noticeList = document.getElementById('notice-list');
+    const allNoticesList = document.getElementById('all-notices-list');
+    const loadMoreWrap = document.getElementById('load-more-wrap');
+    let allIssues = [];
+
+    function escapeHTML(v) {
+      return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+
+    function formatDate(dateStr) {
+      try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      } catch { return dateStr; }
+    }
+
+    function renderNotices(issues, container, limit) {
+      const items = limit ? issues.slice(0, limit) : issues;
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">現在、お知らせはありません。</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(issue => {
+        const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
+        const title = issue.title || 'お知らせ';
+        const body = issue.body ? issue.body.slice(0, 150) + (issue.body.length > 150 ? '...' : '') : '';
+        const labels = issue.labels.map(l => l.name).join(' ');
+
+        return `
+          <div class="notice">
+            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
+            <div class="notice-title">
+              <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a>
+            </div>
+            ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
+            ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function fetchNotices() {
+      const owner = CONFIG.GITHUB_OWNER;
+      const repo = CONFIG.GITHUB_REPO;
+      const token = CONFIG.GITHUB_TOKEN || '';
+      const label = CONFIG.GITHUB_LABEL || '';
+
+      if (!owner || !repo) {
+        noticeList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">GitHubリポジトリが設定されていません。</div>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
+        if (label) url += `&labels=${encodeURIComponent(label)}`;
+
+        const headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+
+        const res = await fetch(url, { headers });
+
+        if (res.status === 404) {
+          noticeList.innerHTML = `
+            <div class="notice">
+              <div class="notice-title">お知らせ</div>
+              <div class="notice-description">
+                リポジトリが見つかりません。<br>
+                <span style="font-size:12px; color:#666;">「${owner}/${repo}」を確認してください。</span>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        if (!res.ok) {
+          throw new Error(`GitHub API Error: ${res.status}`);
+        }
+
+        const issues = await res.json();
+        allIssues = issues;
+
+        renderNotices(issues, noticeList, 5);
+
+        if (issues.length > 5) {
+          loadMoreWrap.style.display = 'block';
+        } else {
+          loadMoreWrap.style.display = 'none';
+        }
+
+      } catch (err) {
+        console.error('お知らせ取得エラー:', err);
+        noticeList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせの読み込みに失敗しました</div>
+            <div class="notice-description">
+              エラー: ${escapeHTML(err.message)}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    async function renderAllNotices() {
+      if (!allNoticesList) return;
+
+      if (allIssues.length > 0) {
+        renderNotices(allIssues, allNoticesList, null);
+        return;
+      }
+
+      const owner = CONFIG.GITHUB_OWNER;
+      const repo = CONFIG.GITHUB_REPO;
+      const token = CONFIG.GITHUB_TOKEN || '';
+      const label = CONFIG.GITHUB_LABEL || '';
+
+      try {
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
+        if (label) url += `&labels=${encodeURIComponent(label)}`;
+
+        const headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+
+        const res = await fetch(url, { headers });
+        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
+
+        const issues = await res.json();
+        allIssues = issues;
+        renderNotices(issues, allNoticesList, null);
+
+      } catch (err) {
+        console.error('全件取得エラー:', err);
+        allNoticesList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">読み込みに失敗しました</div>
+            <div class="notice-description">${escapeHTML(err.message)}</div>
+          </div>
+        `;
+      }
+    }
+
+    /* ==================================================
+       初期化
+    ================================================== */
+    renderMemberList();
+    fetchNotices();
+    showPage();
+
+  })();
+</script>
+
+</body>
+</html>
