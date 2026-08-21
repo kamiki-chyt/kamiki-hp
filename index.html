@@ -18,7 +18,7 @@
     const CONFIG = {
       // ----- microCMS の設定（2つのサービス） -----
       SITE_SETTINGS_SERVICE_DOMAIN: "sitesetting",
-      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWIPmDtq4relmk9k3nMcKjL",
+      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWlPmDtq4relmk9k3nMcKjL",
       SITE_SETTINGS_ENDPOINT: "sitesetting",
 
       NOTICES_SERVICE_DOMAIN: "news-kamiki",
@@ -44,6 +44,16 @@
       --card-hover: rgba(255,255,255,0.2);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    a, button, .clickable {
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      user-select: none;
+    }
+    a:active, button:active, .clickable:active {
+      background-color: transparent;
+    }
+
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg-color);
@@ -101,6 +111,8 @@
       letter-spacing: 0.1em;
       position: relative;
       transition: color 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
     }
     nav a::after {
       content: '';
@@ -120,6 +132,7 @@
       gap: 5px;
       cursor: pointer;
       z-index: 1001;
+      -webkit-tap-highlight-color: transparent;
     }
     .menu-toggle span {
       width: 25px;
@@ -138,9 +151,7 @@
       display: block;
       animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
     }
-    /* =========================
-       404ページ
-    ========================= */
+    /* 404ページ */
     #page-404 {
       display: none;
       min-height: 100vh;
@@ -282,7 +293,39 @@
     }
     .card h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
     .card p { color: var(--text-sub); font-size: 15px; line-height: 1.6; }
-    .member-card { text-align: center; }
+    
+    /* メンバーカード クリックスタイル */
+    .member-card {
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .member-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: var(--accent-color);
+    }
+    .member-card h3 {
+      position: relative;
+      display: inline-block;
+    }
+    .member-card h3::after {
+      content: '👤';
+      font-size: 14px;
+      margin-left: 8px;
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+    }
+    .member-card:hover h3::after {
+      opacity: 1;
+    }
+    .member-card .click-hint {
+      font-size: 12px;
+      color: var(--text-sub);
+      opacity: 0.6;
+      margin-top: 8px;
+      letter-spacing: 0.05em;
+    }
+
     .buttons {
       display: flex;
       flex-wrap: wrap;
@@ -302,7 +345,12 @@
       font-weight: 800;
       letter-spacing: 0.05em;
       transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      border: none;
+      cursor: pointer;
     }
+    .button:active { background-color: inherit; }
     .button.primary {
       background: var(--accent-gradient);
       color: #fff;
@@ -332,6 +380,86 @@
       transform: translateY(-3px);
       box-shadow: 0 12px 25px rgba(6, 199, 85, 0.5);
     }
+
+    /* =========================
+       モーダル（メンバー詳細）
+    ========================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: #111;
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 40px 45px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      animation: fadeInUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 22px;
+      font-size: 28px;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: color 0.3s ease;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .modal-close:hover {
+      color: #fff;
+    }
+    .modal-content h2 {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 24px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding-right: 30px;
+    }
+    .modal-detail {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .modal-detail:last-of-type {
+      border-bottom: none;
+    }
+    .modal-detail .label {
+      color: var(--text-sub);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .modal-detail .value {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: right;
+      max-width: 60%;
+      word-break: break-word;
+    }
+
     footer {
       padding: 60px 20px;
       text-align: center;
@@ -367,6 +495,25 @@
       .hero { min-height: calc(100vh - 65px); }
       .buttons { flex-direction: column; }
       .button { width: 100%; }
+      
+      .modal-content {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      .modal-detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 10px 0;
+      }
+      .modal-detail .value {
+        text-align: left;
+        max-width: 100%;
+        font-size: 16px;
+      }
+      .modal-content h2 {
+        font-size: 28px;
+      }
     }
   </style>
 </head>
@@ -425,8 +572,18 @@
         <h2 class="section-title">MEMBER</h2>
         <p class="section-subtitle">神木チャンネルのメンバー</p>
         <div class="cards">
-          <div class="card member-card"><h3>カミト</h3><p>神木チャンネルのメンバー。</p></div>
-          <div class="card member-card"><h3>きぃ</h3><p>神木チャンネルのメンバー。</p></div>
+          <!-- カミト -->
+          <div class="card member-card" data-member="kamito">
+            <h3>カミト</h3>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </div>
+          <!-- きぃ -->
+          <div class="card member-card" data-member="kii">
+            <h3>きぃ</h3>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </div>
         </div>
       </div>
     </section>
@@ -465,9 +622,7 @@
     </section>
   </div>
 
-  <!-- =========================
-       404ページ
-  ========================= -->
+  <!-- 404ページ -->
   <div id="page-404">
     <div>
       <h1>404</h1>
@@ -475,6 +630,28 @@
     </div>
   </div>
 
+</div>
+
+<!-- =========================
+     メンバー詳細モーダル
+========================= -->
+<div id="member-modal" class="modal-overlay">
+  <div class="modal-content">
+    <span class="modal-close" id="modal-close">&times;</span>
+    <h2 id="modal-name"></h2>
+    <div class="modal-detail">
+      <span class="label">趣味</span>
+      <span class="value" id="modal-hobby"></span>
+    </div>
+    <div class="modal-detail">
+      <span class="label">得意なこと</span>
+      <span class="value" id="modal-skill"></span>
+    </div>
+    <div class="modal-detail">
+      <span class="label">役割</span>
+      <span class="value" id="modal-role"></span>
+    </div>
+  </div>
 </div>
 
 <footer>© 2026 神木チャンネル</footer>
@@ -508,7 +685,6 @@
       if (validPages.includes(p)) {
         return p;
       }
-      // 存在しないページ → 404
       return "404";
     }
     return "home";
@@ -517,24 +693,19 @@
   function showPage() {
     const page = getPageFromHash();
 
-    // 全てのページと404を非表示
     document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
     document.getElementById("page-404").classList.remove("active");
 
     if (page === "404") {
-      // 404ページを表示
       document.getElementById("page-404").classList.add("active");
-      // ナビのアクティブを解除
       document.querySelectorAll("nav a[data-page]").forEach(link => {
         link.classList.remove("active");
       });
     } else {
-      // 通常ページを表示
       const target = document.getElementById("page-" + page);
       if (target) {
         setTimeout(() => target.classList.add("active"), 10);
       }
-      // ナビのアクティブを設定
       document.querySelectorAll("nav a[data-page]").forEach(link => {
         link.classList.toggle("active", link.dataset.page === page);
       });
@@ -549,6 +720,73 @@
   function escapeHTML(v) {
     return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
   }
+
+  /* ==================================================
+     メンバー詳細モーダル
+  ================================================== */
+  const memberData = {
+    kamito: {
+      name: 'カミト',
+      hobby: 'BEYBLADE',
+      skill: 'ゲーム',
+      role: '企画説明 / 挨拶'
+    },
+    kii: {
+      name: 'きぃ',
+      hobby: '推し活',
+      skill: 'プログラミング',
+      role: '撮影 / 編集'
+    }
+  };
+
+  const modal = document.getElementById('member-modal');
+  const modalClose = document.getElementById('modal-close');
+  const modalName = document.getElementById('modal-name');
+  const modalHobby = document.getElementById('modal-hobby');
+  const modalSkill = document.getElementById('modal-skill');
+  const modalRole = document.getElementById('modal-role');
+
+  function openModal(memberId) {
+    const data = memberData[memberId];
+    if (!data) return;
+
+    modalName.textContent = data.name;
+    modalHobby.textContent = data.hobby;
+    modalSkill.textContent = data.skill;
+    modalRole.textContent = data.role;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // スクロール防止
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // メンバーカードクリック
+  document.querySelectorAll('.member-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      const memberId = card.dataset.member;
+      openModal(memberId);
+    });
+  });
+
+  // 閉じるボタン
+  modalClose.addEventListener('click', closeModal);
+
+  // オーバーレイクリックで閉じる
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // ESCキーで閉じる
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
 
   /* ==================================================
      microCMS 連携（2つのサービスドメイン）
