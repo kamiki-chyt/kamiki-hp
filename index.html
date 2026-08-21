@@ -11,28 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 
-  <!-- ==========================================================
-       ★★★ 設定はこの1箇所だけ！ ★★★
-  ========================================================== -->
-  <script>
-    const CONFIG = {
-      // ----- microCMS の設定（2つのサービス） -----
-      SITE_SETTINGS_SERVICE_DOMAIN: "sitesetting",
-      SITE_SETTINGS_API_KEY: "WPNFnZFIsCcCOdWlPmDtq4relmk9k3nMcKjL",
-      SITE_SETTINGS_ENDPOINT: "sitesetting",
-
-      NOTICES_SERVICE_DOMAIN: "news-kamiki",
-      NOTICES_API_KEY: "HTXmCZMkN9pFEF58N0xkkuoqZ5DM40VMvN9s",
-      NOTICES_ENDPOINT: "news-kamiki",
-
-      // ----- デフォルトURL -----
-      YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
-    };
-  </script>
-  <!-- ========================================================== -->
-
   <style>
+    /* ==========================================================
+       リセット & ベース
+    ========================================================== */
     :root {
       --bg-color: #050505;
       --text-main: #ffffff;
@@ -43,17 +25,25 @@
       --card-border: rgba(255,255,255,0.08);
       --card-hover: rgba(255,255,255,0.2);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ★ 全要素でタップハイライトを消す ★ */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* アクティブ時の背景色変化も防ぐ */
     a, button, .clickable {
       -webkit-tap-highlight-color: transparent;
       outline: none;
-      user-select: none;
     }
     a:active, button:active, .clickable:active {
       background-color: transparent;
     }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg-color);
@@ -64,10 +54,18 @@
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; cursor: pointer; }
+
+    /* ==========================================================
+       アニメーション
+    ========================================================== */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ==========================================================
+       ヘッダー
+    ========================================================== */
     header {
       position: fixed;
       top: 0; left: 0;
@@ -96,6 +94,7 @@
       letter-spacing: 0.05em;
       white-space: nowrap;
       transition: opacity 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
     }
     .logo:hover { opacity: 0.8; }
     .logo img { display: none; }
@@ -126,6 +125,8 @@
     }
     nav a:hover, nav a.active { color: var(--text-main); }
     nav a.active::after { width: 100%; }
+
+    /* ハンバーガー */
     .menu-toggle {
       display: none;
       flex-direction: column;
@@ -141,6 +142,10 @@
       transition: 0.3s ease;
       transform-origin: left;
     }
+
+    /* ==========================================================
+       ページ共通
+    ========================================================== */
     #app { min-height: 100vh; }
     .page {
       display: none;
@@ -151,6 +156,7 @@
       display: block;
       animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
     }
+
     /* 404ページ */
     #page-404 {
       display: none;
@@ -178,10 +184,15 @@
       font-weight: 700;
       letter-spacing: 0.1em;
     }
+
     .container {
       width: min(1100px, calc(100% - 40px));
       margin: auto;
     }
+
+    /* ==========================================================
+       ヒーロー
+    ========================================================== */
     .hero {
       min-height: calc(100vh - 70px);
       display: flex;
@@ -232,6 +243,10 @@
       0%,100% { opacity: 0.5; transform: translateY(0); }
       50% { opacity: 1; transform: translateY(5px); }
     }
+
+    /* ==========================================================
+       セクション & カード
+    ========================================================== */
     .section { padding: 100px 0; }
     .section-title {
       font-size: clamp(36px, 5vw, 54px);
@@ -245,33 +260,6 @@
       letter-spacing: 0.05em;
       margin-bottom: 50px;
       font-size: 14px;
-    }
-    .notice-box {
-      overflow: hidden;
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-    }
-    .notice {
-      display: block;
-      padding: 25px 30px;
-      border-bottom: 1px solid var(--card-border);
-      transition: background 0.3s ease;
-    }
-    .notice:last-child { border-bottom: none; }
-    .notice:hover { background: rgba(255,255,255,0.05); }
-    .notice-date {
-      color: var(--accent-color);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .notice-title { font-size: 18px; font-weight: 700; line-height: 1.4; }
-    .notice-description {
-      color: var(--text-sub);
-      font-size: 14px;
-      margin-top: 8px;
     }
     .cards {
       display: grid;
@@ -293,12 +281,15 @@
     }
     .card h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
     .card p { color: var(--text-sub); font-size: 15px; line-height: 1.6; }
-    
-    /* メンバーカード クリックスタイル */
+
+    /* ==========================================================
+       メンバーカード（クリックでモーダル）
+    ========================================================== */
     .member-card {
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
     }
     .member-card:hover {
       transform: translateY(-8px) scale(1.02);
@@ -326,6 +317,9 @@
       letter-spacing: 0.05em;
     }
 
+    /* ==========================================================
+       ボタン
+    ========================================================== */
     .buttons {
       display: flex;
       flex-wrap: wrap;
@@ -360,17 +354,6 @@
       transform: translateY(-3px);
       box-shadow: 0 12px 25px rgba(139,92,246,0.5);
     }
-    .button.secondary {
-      background: rgba(255,255,255,0.05);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(5px);
-    }
-    .button.secondary:hover {
-      background: rgba(255,255,255,0.1);
-      transform: translateY(-3px);
-      border-color: rgba(255,255,255,0.2);
-    }
     .button.line {
       background: #06C755;
       color: #fff;
@@ -381,9 +364,9 @@
       box-shadow: 0 12px 25px rgba(6, 199, 85, 0.5);
     }
 
-    /* =========================
+    /* ==========================================================
        モーダル（メンバー詳細）
-    ========================= */
+    ========================================================== */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -460,6 +443,9 @@
       word-break: break-word;
     }
 
+    /* ==========================================================
+       フッター
+    ========================================================== */
     footer {
       padding: 60px 20px;
       text-align: center;
@@ -469,6 +455,10 @@
       letter-spacing: 0.1em;
       border-top: 1px solid var(--card-border);
     }
+
+    /* ==========================================================
+       レスポンシブ
+    ========================================================== */
     @media (max-width: 768px) {
       .nav { height: 65px; }
       .page { padding-top: 65px; }
@@ -495,7 +485,7 @@
       .hero { min-height: calc(100vh - 65px); }
       .buttons { flex-direction: column; }
       .button { width: 100%; }
-      
+
       .modal-content {
         padding: 30px 20px;
         margin: 10px;
@@ -519,6 +509,9 @@
 </head>
 <body>
 
+<!-- =========================
+     ヘッダー
+========================= -->
 <header>
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
@@ -536,31 +529,22 @@
   </div>
 </header>
 
+<!-- =========================
+     メインコンテンツ
+========================= -->
 <div id="app">
+
   <!-- HOME -->
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <h1 id="site-name">神木チャンネル</h1>
-        <p id="site-subtitle" class="hero-subtitle">2人で、なんか面白いこと。</p>
+        <h1>神木チャンネル</h1>
+        <p class="hero-subtitle">2人で、なんか面白いこと。</p>
         <div class="buttons">
-          <a id="youtube-button" class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">▶ YouTubeへ</a>
-          <a id="line-button" class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">💬 LINE友達追加</a>
+          <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">▶ YouTubeへ</a>
+          <a class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">💬 LINE友達追加</a>
         </div>
         <div class="scroll">SCROLL ↓</div>
-      </div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">NEWS</h2>
-        <p class="section-subtitle">神木チャンネルからのお知らせ</p>
-        <div id="notice-list" class="notice-box">
-          <div class="notice">
-            <div class="notice-date">Loading...</div>
-            <div class="notice-title">お知らせを取得しています</div>
-            <div class="notice-description">microCMSから最新情報を読み込んでいます。</div>
-          </div>
-        </div>
       </div>
     </section>
   </div>
@@ -600,7 +584,7 @@
             <h3>YouTube</h3>
             <p>神木チャンネルのメイン動画はこちらからご視聴いただけます。</p>
             <div class="buttons">
-              <a id="youtube-button-2" class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTubeを見る</a>
+              <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTubeを見る</a>
             </div>
           </div>
         </div>
@@ -654,246 +638,146 @@
   </div>
 </div>
 
+<!-- =========================
+     フッター
+========================= -->
 <footer>© 2026 神木チャンネル</footer>
 
+<!-- =========================
+     JavaScript
+========================= -->
 <script>
-  /* ==================================================
-     ハンバーガーメニュー
-  ================================================== */
-  const menuToggle = document.getElementById('menu-toggle');
-  const navMenu = document.getElementById('nav-menu');
-  document.querySelectorAll('#nav-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-      menuToggle.classList.remove('active');
-      navMenu.classList.remove('active');
-    });
-  });
-  menuToggle.addEventListener('click', () => {
-    menuToggle.classList.toggle('active');
-    navMenu.classList.toggle('active');
-  });
+  (function() {
+    'use strict';
 
-  /* ==================================================
-     ページ切り替え（存在しないページは404）
-  ================================================== */
-  const validPages = ["home", "member", "video", "about"];
-
-  function getPageFromHash() {
-    const hash = window.location.hash;
-    if (hash.startsWith("#q=")) {
-      const p = decodeURIComponent(hash.substring(3));
-      if (validPages.includes(p)) {
-        return p;
-      }
-      return "404";
-    }
-    return "home";
-  }
-
-  function showPage() {
-    const page = getPageFromHash();
-
-    document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
-    document.getElementById("page-404").classList.remove("active");
-
-    if (page === "404") {
-      document.getElementById("page-404").classList.add("active");
-      document.querySelectorAll("nav a[data-page]").forEach(link => {
-        link.classList.remove("active");
+    /* ==================================================
+       ハンバーガーメニュー
+    ================================================== */
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    document.querySelectorAll('#nav-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navMenu.classList.remove('active');
       });
-    } else {
-      const target = document.getElementById("page-" + page);
-      if (target) {
-        setTimeout(() => target.classList.add("active"), 10);
-      }
-      document.querySelectorAll("nav a[data-page]").forEach(link => {
-        link.classList.toggle("active", link.dataset.page === page);
-      });
-    }
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  window.addEventListener("hashchange", showPage);
-  showPage();
-
-  function escapeHTML(v) {
-    return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-  }
-
-  /* ==================================================
-     メンバー詳細モーダル
-  ================================================== */
-  const memberData = {
-    kamito: {
-      name: 'カミト',
-      hobby: 'BEYBLADE',
-      skill: 'ゲーム',
-      role: '企画説明 / 挨拶'
-    },
-    kii: {
-      name: 'きぃ',
-      hobby: '推し活',
-      skill: 'プログラミング',
-      role: '撮影 / 編集'
-    }
-  };
-
-  const modal = document.getElementById('member-modal');
-  const modalClose = document.getElementById('modal-close');
-  const modalName = document.getElementById('modal-name');
-  const modalHobby = document.getElementById('modal-hobby');
-  const modalSkill = document.getElementById('modal-skill');
-  const modalRole = document.getElementById('modal-role');
-
-  function openModal(memberId) {
-    const data = memberData[memberId];
-    if (!data) return;
-
-    modalName.textContent = data.name;
-    modalHobby.textContent = data.hobby;
-    modalSkill.textContent = data.skill;
-    modalRole.textContent = data.role;
-
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // スクロール防止
-  }
-
-  function closeModal() {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  // メンバーカードクリック
-  document.querySelectorAll('.member-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      const memberId = card.dataset.member;
-      openModal(memberId);
     });
-  });
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
 
-  // 閉じるボタン
-  modalClose.addEventListener('click', closeModal);
+    /* ==================================================
+       ページ切り替え（存在しないページは404）
+    ================================================== */
+    const validPages = ["home", "member", "video", "about"];
 
-  // オーバーレイクリックで閉じる
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
-
-  // ESCキーで閉じる
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-  });
-
-
-  /* ==================================================
-     microCMS 連携（2つのサービスドメイン）
-  ================================================== */
-  async function microCMSFetch(serviceDomain, endpoint, apiKey) {
-    if (!serviceDomain || serviceDomain === "YOUR_SITE_SETTINGS_SERVICE_DOMAIN" || serviceDomain === "YOUR_NOTICES_SERVICE_DOMAIN") {
-      throw new Error(`microCMS サービスドメインが設定されていません。 (${endpoint})`);
-    }
-    if (!apiKey || apiKey === "YOUR_SITE_SETTINGS_API_KEY" || apiKey === "YOUR_NOTICES_API_KEY") {
-      throw new Error(`APIキーが未設定です (${endpoint})`);
-    }
-    const url = `https://${serviceDomain}.microcms.io/api/v1/${endpoint}`;
-    console.log(`🔍 フェッチ中: ${url}`);
-    const res = await fetch(url, { headers: { "X-MICROCMS-API-KEY": apiKey } });
-    if (!res.ok) {
-      throw new Error(`microCMS API Error: ${res.status} (${endpoint})`);
-    }
-    return res.json();
-  }
-
-  async function loadSiteData() {
-    try {
-      // ---- 1. サイト設定を取得（sitesetting サービス） ----
-      const settings = await microCMSFetch(
-        CONFIG.SITE_SETTINGS_SERVICE_DOMAIN,
-        CONFIG.SITE_SETTINGS_ENDPOINT,
-        CONFIG.SITE_SETTINGS_API_KEY
-      );
-      console.log("✅ サイト設定取得成功:", settings);
-
-      if (settings.siteName) {
-        document.getElementById("site-name").textContent = settings.siteName;
-        document.querySelector(".logo span").textContent = settings.siteName;
+    function getPageFromHash() {
+      const hash = window.location.hash;
+      if (hash.startsWith("#q=")) {
+        const p = decodeURIComponent(hash.substring(3));
+        if (validPages.includes(p)) {
+          return p;
+        }
+        return "404";
       }
-      if (settings.subtitle) {
-        document.getElementById("site-subtitle").textContent = settings.subtitle;
-      }
-      if (settings.youtubeUrl) {
-        document.getElementById("youtube-button").href = settings.youtubeUrl;
-        document.getElementById("youtube-button-2").href = settings.youtubeUrl;
-      }
-      if (settings.lineUrl) {
-        document.getElementById("line-button").href = settings.lineUrl;
-      }
+      return "home";
+    }
 
-      // ---- 2. お知らせを取得（news-kamiki サービス） ----
-      const newsData = await microCMSFetch(
-        CONFIG.NOTICES_SERVICE_DOMAIN,
-        CONFIG.NOTICES_ENDPOINT,
-        CONFIG.NOTICES_API_KEY
-      );
-      console.log("✅ お知らせ取得成功:", newsData);
+    function showPage() {
+      const page = getPageFromHash();
 
-      const list = document.getElementById("notice-list");
+      document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
+      document.getElementById("page-404").classList.remove("active");
 
-      let notices = [];
-      if (Array.isArray(newsData.notices)) {
-        notices = newsData.notices;
-      } else if (Array.isArray(newsData.contents)) {
-        notices = newsData.contents;
-      } else if (Array.isArray(newsData)) {
-        notices = newsData;
+      if (page === "404") {
+        document.getElementById("page-404").classList.add("active");
+        document.querySelectorAll("nav a[data-page]").forEach(link => {
+          link.classList.remove("active");
+        });
       } else {
-        console.warn("想定外のデータ構造です:", newsData);
-        list.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">お知らせ</div>
-            <div class="notice-description">データ構造が想定と異なります。コンソール(F12)を確認してください。</div>
-          </div>
-        `;
-        return;
+        const target = document.getElementById("page-" + page);
+        if (target) {
+          setTimeout(() => target.classList.add("active"), 10);
+        }
+        document.querySelectorAll("nav a[data-page]").forEach(link => {
+          link.classList.toggle("active", link.dataset.page === page);
+        });
       }
 
-      if (notices.length === 0) {
-        list.innerHTML = `<div class="notice"><div class="notice-title">現在、お知らせはありません。</div></div>`;
-        return;
-      }
-
-      list.innerHTML = notices.map(item => {
-        const url = item.url || "";
-        const dateStr = item.date ? escapeHTML(item.date) : "";
-        const title = item.title ? escapeHTML(item.title) : "お知らせ";
-        const desc = item.description ? escapeHTML(item.description) : "";
-        return `
-          ${url ? `<a class="notice" href="${escapeHTML(url)}" target="_blank" rel="noopener">` : `<div class="notice">`}
-            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
-            <div class="notice-title">${title}</div>
-            ${desc ? `<div class="notice-description">${desc}</div>` : ''}
-          ${url ? `</a>` : `</div>`}
-        `;
-      }).join("");
-
-    } catch (e) {
-      console.error("❌ microCMS エラー:", e);
-      document.getElementById("notice-list").innerHTML = `
-        <div class="notice">
-          <div class="notice-title">⚠️ お知らせの読み込みに失敗しました</div>
-          <div class="notice-description">エラー: ${escapeHTML(e.message)}</div>
-          <div class="notice-description" style="margin-top:8px; font-size:12px; color:#666;">
-            設定（APIキー・エンドポイント名）を確認してください。
-          </div>
-        </div>
-      `;
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }
 
-  loadSiteData();
+    window.addEventListener("hashchange", showPage);
+    showPage();
+
+    /* ==================================================
+       メンバー詳細モーダル
+    ================================================== */
+    const memberData = {
+      kamito: {
+        name: 'カミト',
+        hobby: 'BEYBLADE',
+        skill: 'ゲーム',
+        role: '企画説明 / 挨拶'
+      },
+      kii: {
+        name: 'きぃ',
+        hobby: '推し活',
+        skill: 'プログラミング',
+        role: '撮影 / 編集'
+      }
+    };
+
+    const modal = document.getElementById('member-modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalName = document.getElementById('modal-name');
+    const modalHobby = document.getElementById('modal-hobby');
+    const modalSkill = document.getElementById('modal-skill');
+    const modalRole = document.getElementById('modal-role');
+
+    function openModal(memberId) {
+      const data = memberData[memberId];
+      if (!data) return;
+
+      modalName.textContent = data.name;
+      modalHobby.textContent = data.hobby;
+      modalSkill.textContent = data.skill;
+      modalRole.textContent = data.role;
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // メンバーカードクリック
+    document.querySelectorAll('.member-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const memberId = card.dataset.member;
+        openModal(memberId);
+      });
+    });
+
+    // 閉じるボタン
+    modalClose.addEventListener('click', closeModal);
+
+    // オーバーレイクリックで閉じる
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // ESCキーで閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+  })();
 </script>
+
 </body>
 </html>
