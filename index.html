@@ -17,11 +17,10 @@
   <script>
     const CONFIG = {
       // ----- GitHub API 設定（お知らせ取得用） -----
-      // お知らせを管理する GitHub リポジトリ
-      GITHUB_OWNER: "kamiki-ch",        // GitHubのユーザー名 or 組織名
-      GITHUB_REPO: "kamiki-ch-notices",           // リポジトリ名
-      GITHUB_TOKEN: "",                 // 任意（空の場合はパブリックリポジトリのみ対応）
-      GITHUB_LABEL: "お知らせ",          // 取得するIssueのラベル（空の場合は全て）
+      GITHUB_OWNER: "kamiki-chyt",              // ← あなたのユーザー名
+      GITHUB_REPO: "kamiki-ch-notices",         // ← お知らせ用リポジトリ
+      GITHUB_TOKEN: "",                         // 空でOK（Publicリポジトリ）
+      GITHUB_LABEL: "",                         // 空でOK（全てのIssueを取得）
 
       // ----- デフォルトURL -----
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
@@ -102,11 +101,13 @@
       0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
       50% { box-shadow: 0 0 40px rgba(139,92,246,0.6); }
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
 
-    /* スクロールアニメーション用 */
     .scroll-animate {
       opacity: 0;
       transform: translateY(50px);
@@ -118,13 +119,13 @@
       transform: translateY(0);
     }
 
-    /* タイトルグラデーションアニメーション */
     .gradient-text {
       background: linear-gradient(270deg, #fff, #8b5cf6, #3b82f6, #fff);
       background-size: 300% 100%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: gradientMove 6s ease infinite;
+      display: inline-block;
     }
 
     /* ==========================================================
@@ -224,7 +225,6 @@
       animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
     }
 
-    /* 404ページ */
     #page-404 {
       display: none;
       min-height: 100vh;
@@ -293,14 +293,6 @@
       letter-spacing: 0.05em;
       margin-bottom: 20px;
     }
-    .hero h1 .gradient-text {
-      background: linear-gradient(270deg, #fff, #8b5cf6, #3b82f6, #fff);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientMove 6s ease infinite;
-      display: inline-block;
-    }
     .hero-subtitle {
       color: var(--text-sub);
       font-size: clamp(16px, 3vw, 22px);
@@ -330,14 +322,6 @@
       letter-spacing: 0.05em;
       margin-bottom: 10px;
     }
-    .section-title .gradient-text {
-      background: linear-gradient(270deg, #fff, #8b5cf6, #3b82f6, #fff);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientMove 6s ease infinite;
-      display: inline-block;
-    }
     .section-subtitle {
       color: var(--text-sub);
       font-weight: 700;
@@ -357,7 +341,6 @@
       background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
       backdrop-filter: blur(10px);
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      perspective: 800px;
       transform-style: preserve-3d;
     }
     .card:hover {
@@ -466,8 +449,13 @@
       margin-top: 8px;
       letter-spacing: 0.05em;
     }
+    .notice-empty {
+      padding: 30px;
+      text-align: center;
+      color: var(--text-sub);
+    }
 
-    /* ローディングスケルトン */
+    /* スケルトンローダー */
     .skeleton {
       background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
       background-size: 200% 100%;
@@ -576,7 +564,6 @@
       box-shadow: 0 25px 60px rgba(0,0,0,0.8);
       animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       position: relative;
-      transform-origin: center;
     }
     .modal-close {
       position: absolute;
@@ -648,6 +635,28 @@
     }
 
     /* ==========================================================
+       パーティクル
+    ========================================================== */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(139,92,246,0.15);
+      border-radius: 50%;
+      animation: floatParticle 15s ease-in-out infinite;
+    }
+
+    /* ==========================================================
        レスポンシブ
     ========================================================== */
     @media (max-width: 768px) {
@@ -699,39 +708,11 @@
         padding: 18px 20px;
       }
     }
-
-    /* ==========================================================
-       パーティクル（背景装飾）
-    ========================================================== */
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-      overflow: hidden;
-    }
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: rgba(139,92,246,0.15);
-      border-radius: 50%;
-      animation: floatParticle 15s ease-in-out infinite;
-    }
-    @keyframes floatParticle {
-      0% { transform: translateY(100vh) scale(0); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-    }
   </style>
 </head>
 <body>
 
-<!-- パーティクル背景 -->
+<!-- パーティクル -->
 <div class="particles" id="particles"></div>
 
 <!-- =========================
@@ -773,13 +754,12 @@
       </div>
     </section>
 
-    <!-- お知らせ（GitHub API から取得） -->
+    <!-- お知らせ -->
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">NEWS</span></h2>
         <p class="section-subtitle">神木チャンネルからのお知らせ</p>
         <div id="notice-list" class="notice-box">
-          <!-- スケルトンローダー -->
           <div class="notice" id="skeleton-loader">
             <div class="skeleton skeleton-date"></div>
             <div class="skeleton skeleton-title"></div>
@@ -845,7 +825,7 @@
     </section>
   </div>
 
-  <!-- 404ページ -->
+  <!-- 404 -->
   <div id="page-404">
     <div>
       <h1>404</h1>
@@ -856,7 +836,7 @@
 </div>
 
 <!-- =========================
-     メンバー詳細モーダル
+     メンバーモーダル
 ========================= -->
 <div id="member-modal" class="modal-overlay">
   <div class="modal-content">
@@ -890,18 +870,18 @@
     'use strict';
 
     /* ==================================================
-       パーティクル生成
+       パーティクル
     ================================================== */
-    (function createParticles() {
+    (function() {
       const container = document.getElementById('particles');
       if (!container) return;
-      const count = 30;
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < 30; i++) {
         const p = document.createElement('div');
         p.className = 'particle';
         p.style.left = Math.random() * 100 + '%';
-        p.style.width = (2 + Math.random() * 4) + 'px';
-        p.style.height = p.style.width;
+        const size = 2 + Math.random() * 4;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
         p.style.animationDelay = (Math.random() * 20) + 's';
         p.style.animationDuration = (12 + Math.random() * 15) + 's';
         p.style.opacity = 0.1 + Math.random() * 0.3;
@@ -910,9 +890,9 @@
     })();
 
     /* ==================================================
-       スクロールアニメーション（Intersection Observer）
+       スクロールアニメーション
     ================================================== */
-    (function initScrollAnimation() {
+    (function() {
       const elements = document.querySelectorAll('.scroll-animate');
       if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
@@ -921,33 +901,25 @@
               entry.target.classList.add('visible');
             }
           });
-        }, {
-          threshold: 0.15,
-          rootMargin: '0px 0px -50px 0px'
-        });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
         elements.forEach(el => observer.observe(el));
       } else {
-        // フォールバック：全て表示
         elements.forEach(el => el.classList.add('visible'));
       }
     })();
 
     /* ==================================================
-       ヘッダー スクロール時透過制御
+       ヘッダー スクロール
     ================================================== */
-    (function headerScroll() {
+    (function() {
       const header = document.getElementById('header');
       window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-          header.classList.add('scrolled');
-        } else {
-          header.classList.remove('scrolled');
-        }
+        header.classList.toggle('scrolled', window.scrollY > 50);
       });
     })();
 
     /* ==================================================
-       ハンバーガーメニュー
+       ハンバーガー
     ================================================== */
     const menuToggle = document.getElementById('menu-toggle');
     const navMenu = document.getElementById('nav-menu');
@@ -963,7 +935,7 @@
     });
 
     /* ==================================================
-       ページ切り替え（存在しないページは404）
+       ページ切り替え
     ================================================== */
     const validPages = ["home", "member", "video", "about"];
 
@@ -971,9 +943,7 @@
       const hash = window.location.hash;
       if (hash.startsWith("#q=")) {
         const p = decodeURIComponent(hash.substring(3));
-        if (validPages.includes(p)) {
-          return p;
-        }
+        if (validPages.includes(p)) return p;
         return "404";
       }
       return "home";
@@ -981,7 +951,6 @@
 
     function showPage() {
       const page = getPageFromHash();
-
       document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
       document.getElementById("page-404").classList.remove("active");
 
@@ -992,14 +961,11 @@
         });
       } else {
         const target = document.getElementById("page-" + page);
-        if (target) {
-          setTimeout(() => target.classList.add("active"), 10);
-        }
+        if (target) setTimeout(() => target.classList.add("active"), 10);
         document.querySelectorAll("nav a[data-page]").forEach(link => {
           link.classList.toggle("active", link.dataset.page === page);
         });
       }
-
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -1007,21 +973,11 @@
     showPage();
 
     /* ==================================================
-       メンバー詳細モーダル
+       メンバーモーダル
     ================================================== */
     const memberData = {
-      kamito: {
-        name: 'カミト',
-        hobby: 'BEYBLADE',
-        skill: 'ゲーム',
-        role: '企画説明 / 挨拶'
-      },
-      kii: {
-        name: 'きぃ',
-        hobby: '推し活',
-        skill: 'プログラミング',
-        role: '撮影 / 編集'
-      }
+      kamito: { name: 'カミト', hobby: 'BEYBLADE', skill: 'ゲーム', role: '企画説明 / 挨拶' },
+      kii: { name: 'きぃ', hobby: '推し活', skill: 'プログラミング', role: '撮影 / 編集' }
     };
 
     const modal = document.getElementById('member-modal');
@@ -1031,15 +987,13 @@
     const modalSkill = document.getElementById('modal-skill');
     const modalRole = document.getElementById('modal-role');
 
-    function openModal(memberId) {
-      const data = memberData[memberId];
+    function openModal(id) {
+      const data = memberData[id];
       if (!data) return;
-
       modalName.textContent = data.name;
       modalHobby.textContent = data.hobby;
       modalSkill.textContent = data.skill;
       modalRole.textContent = data.role;
-
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -1050,57 +1004,66 @@
     }
 
     document.querySelectorAll('.member-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        const memberId = card.dataset.member;
-        openModal(memberId);
-      });
+      card.addEventListener('click', () => openModal(card.dataset.member));
     });
-
     modalClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
     /* ==================================================
-       GitHub API でお知らせを取得
+       GitHub API でお知らせ取得（CONFIG に設定済み）
     ================================================== */
     const noticeList = document.getElementById('notice-list');
     const skeleton = document.getElementById('skeleton-loader');
 
-    async function fetchNotices() {
-      const { GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN, GITHUB_LABEL } = CONFIG;
+    function escapeHTML(v) {
+      return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
 
-      // 設定が空の場合はエラーメッセージ
-      if (!GITHUB_OWNER || !GITHUB_REPO || GITHUB_OWNER === "kamiki-ch") {
-        noticeList.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">📢 お知らせ</div>
-            <div class="notice-description">
-              GitHubリポジトリを設定してください。<br>
-              <span style="font-size:12px; color:#666;">
-                設定方法: CONFIG.GITHUB_OWNER / CONFIG.GITHUB_REPO を設定
-              </span>
-            </div>
-          </div>
-        `;
-        return;
+    function formatDate(dateStr) {
+      try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+      } catch { return dateStr; }
+    }
+
+    async function fetchNotices() {
+      const owner = CONFIG.GITHUB_OWNER;
+      const repo = CONFIG.GITHUB_REPO;
+      const token = CONFIG.GITHUB_TOKEN || '';
+      const label = CONFIG.GITHUB_LABEL || '';
+
+      // 設定チェック
+      if (!owner || !repo || owner === 'kamiki-chyt' && repo === 'kamiki-ch-notices') {
+        // GitHubリポジトリは正しく設定されているので、実際に取得を試みる
+        // （初回は「kamiki-chyt/kamiki-ch-notices」が存在するか確認）
       }
 
       try {
-        let url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?state=open&sort=created&direction=desc&per_page=10`;
-        if (GITHUB_LABEL) {
-          url += `&labels=${encodeURIComponent(GITHUB_LABEL)}`;
-        }
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=10`;
+        if (label) url += `&labels=${encodeURIComponent(label)}`;
 
         const headers = {};
-        if (GITHUB_TOKEN) {
-          headers['Authorization'] = `token ${GITHUB_TOKEN}`;
-        }
+        if (token) headers['Authorization'] = `token ${token}`;
 
         const res = await fetch(url, { headers });
+
+        if (res.status === 404) {
+          // リポジトリが見つからない場合
+          noticeList.innerHTML = `
+            <div class="notice">
+              <div class="notice-title">📢 お知らせ</div>
+              <div class="notice-description">
+                リポジトリが見つかりません。<br>
+                <span style="font-size:12px; color:#666;">
+                  GitHubリポジトリ「${owner}/${repo}」が存在するか確認してください。
+                </span>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
         if (!res.ok) {
           throw new Error(`GitHub API Error: ${res.status}`);
         }
@@ -1119,20 +1082,16 @@
 
         // 表示
         noticeList.innerHTML = issues.map(issue => {
-          const date = new Date(issue.created_at);
-          const dateStr = date.toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          });
-          const labels = issue.labels.map(l => l.name).join(' ');
+          const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
+          const title = issue.title || 'お知らせ';
           const body = issue.body ? issue.body.slice(0, 120) + (issue.body.length > 120 ? '...' : '') : '';
+          const labels = issue.labels.map(l => l.name).join(' ');
 
           return `
             <div class="notice">
-              <div class="notice-date">${dateStr}</div>
+              ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
               <div class="notice-title">
-                <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(issue.title)}</a>
+                <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a>
               </div>
               ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
               ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
@@ -1148,16 +1107,12 @@
             <div class="notice-description">
               エラー: ${escapeHTML(err.message)}<br>
               <span style="font-size:12px; color:#666;">
-                GitHubリポジトリの設定を確認してください。
+                GitHubリポジトリ「${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}」を確認してください。
               </span>
             </div>
           </div>
         `;
       }
-    }
-
-    function escapeHTML(v) {
-      return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
     }
 
     // お知らせ取得実行
