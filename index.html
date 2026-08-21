@@ -17,15 +17,45 @@
   <script>
     const CONFIG = {
       // ----- GitHub API 設定（お知らせ取得用） -----
-      GITHUB_OWNER: "kamiki-chyt",              // ← あなたのユーザー名
-      GITHUB_REPO: "kamiki-ch-notices",         // ← お知らせ用リポジトリ
-      GITHUB_TOKEN: "",                         // 空でOK（Publicリポジトリ）
-      GITHUB_LABEL: "",                         // 空でOK（全てのIssueを取得）
+      GITHUB_OWNER: "kamiki-chyt",
+      GITHUB_REPO: "kamiki-ch-notices",
+      GITHUB_TOKEN: "",
+      GITHUB_LABEL: "",
 
       // ----- デフォルトURL -----
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
+
+      // ----- メッセージ送信先（Formspree） -----
+      // https://formspree.io/ でフォームを作成し、IDを入れてください
+      FORMSPREE_ID: "YOUR_FORMSPREE_ID"
     };
+
+    // ★ メンバーデータ（ここに追加・編集）
+    // URL: /member/kamito または /member/kii でアクセス
+    const MEMBERS = {
+      kamito: {
+        id: 'kamito',
+        name: 'カミト',
+        hobby: 'BEYBLADE',
+        skill: 'ゲーム',
+        role: '企画説明 / 挨拶',
+        icon: '🎯',
+        description: '神木チャンネルのリーダー。元気いっぱい！'
+      },
+      kii: {
+        id: 'kii',
+        name: 'きぃ',
+        hobby: '推し活',
+        skill: 'プログラミング',
+        role: '撮影 / 編集',
+        icon: '💻',
+        description: '神木チャンネルの編集担当。裏方のプロ！'
+      }
+    };
+
+    // メンバーIDのリスト（ルーティング用）
+    const MEMBER_IDS = Object.keys(MEMBERS);
   </script>
   <!-- ========================================================== -->
 
@@ -69,6 +99,7 @@
       font-family: 'Montserrat','Noto Sans JP',sans-serif;
       line-height: 1.7;
       overflow-x: hidden;
+      min-height: 100vh;
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; cursor: pointer; }
@@ -352,7 +383,7 @@
     .card p { color: var(--text-sub); font-size: 15px; line-height: 1.6; }
 
     /* ==========================================================
-       メンバーカード
+       メンバーカード（一覧用）
     ========================================================== */
     .member-card {
       text-align: center;
@@ -370,17 +401,9 @@
       display: inline-block;
       font-size: 28px;
     }
-    .member-card h3::after {
-      content: '👤';
-      font-size: 16px;
-      margin-left: 8px;
-      opacity: 0.5;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      display: inline-block;
-    }
-    .member-card:hover h3::after {
-      opacity: 1;
-      transform: scale(1.1);
+    .member-card h3 .icon {
+      font-size: 20px;
+      margin-right: 6px;
     }
     .member-card .click-hint {
       font-size: 12px;
@@ -395,7 +418,159 @@
     }
 
     /* ==========================================================
-       お知らせ（GitHub API）
+       メンバー詳細ページ（/member/kamito など）
+    ========================================================== */
+    .member-detail {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .member-detail-card {
+      max-width: 600px;
+      width: 100%;
+      padding: 50px 45px;
+      border-radius: 32px;
+      border: 1px solid var(--card-border);
+      background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      backdrop-filter: blur(10px);
+      animation: fadeInScale 0.5s ease forwards;
+    }
+    .member-detail-card .member-icon {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .member-detail-card h1 {
+      font-size: 36px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .member-detail-card .member-desc {
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+    .member-detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .member-detail-item:last-child {
+      border-bottom: none;
+    }
+    .member-detail-item .label {
+      color: var(--text-sub);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+    .member-detail-item .value {
+      color: #fff;
+      font-weight: 700;
+      font-size: 17px;
+      text-align: right;
+    }
+    .member-detail .back-link {
+      display: inline-block;
+      margin-top: 24px;
+      color: var(--text-sub);
+      font-size: 14px;
+      font-weight: 700;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+    .member-detail .back-link:hover {
+      color: var(--text-main);
+    }
+
+    /* ==========================================================
+       メッセージフォーム
+    ========================================================== */
+    .message-form {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid var(--card-border);
+    }
+    .message-form label {
+      display: block;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .message-form input,
+    .message-form textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.3s ease;
+      margin-bottom: 16px;
+    }
+    .message-form input:focus,
+    .message-form textarea:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .message-form textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .message-form .submit-btn {
+      background: var(--accent-gradient);
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .message-form .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139,92,246,0.4);
+    }
+    .message-form .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .message-form .form-success {
+      display: none;
+      color: #06C755;
+      text-align: center;
+      padding: 12px;
+      font-weight: 700;
+    }
+    .message-form .form-success.show {
+      display: block;
+    }
+    .message-form .form-error {
+      display: none;
+      color: #ff6b6b;
+      text-align: center;
+      padding: 12px;
+      font-weight: 700;
+    }
+    .message-form .form-error.show {
+      display: block;
+    }
+
+    /* ==========================================================
+       お知らせ
     ========================================================== */
     .notice-box {
       overflow: hidden;
@@ -453,6 +628,29 @@
       padding: 30px;
       text-align: center;
       color: var(--text-sub);
+    }
+
+    /* もっと見るボタン */
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .load-more-btn {
+      display: inline-block;
+      padding: 14px 40px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .load-more-btn:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+      border-color: var(--accent-color);
     }
 
     /* スケルトンローダー */
@@ -532,106 +730,15 @@
       transform: translateY(-3px);
       box-shadow: 0 12px 30px rgba(6, 199, 85, 0.5);
     }
-
-    /* ==========================================================
-       モーダル
-    ========================================================== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .modal-overlay.active {
-      display: flex;
-      animation: fadeInUp 0.3s ease forwards;
-    }
-    .modal-content {
-      background: #111;
+    .button.secondary {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
       border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 40px 45px;
-      max-width: 480px;
-      width: 100%;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-      animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      position: relative;
     }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 22px;
-      font-size: 28px;
-      color: var(--text-sub);
-      cursor: pointer;
-      transition: color 0.3s ease, transform 0.3s ease;
-      line-height: 1;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .modal-close:hover {
-      color: #fff;
-      transform: rotate(90deg);
-    }
-    .modal-content h2 {
-      font-size: 32px;
-      font-weight: 900;
-      margin-bottom: 24px;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      padding-right: 30px;
-    }
-    .modal-detail {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      transition: background 0.3s ease;
-    }
-    .modal-detail:hover {
-      background: rgba(255,255,255,0.02);
-      padding-left: 8px;
-      border-radius: 8px;
-    }
-    .modal-detail:last-of-type {
-      border-bottom: none;
-    }
-    .modal-detail .label {
-      color: var(--text-sub);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-    .modal-detail .value {
-      color: #fff;
-      font-size: 18px;
-      font-weight: 700;
-      text-align: right;
-      max-width: 60%;
-      word-break: break-word;
-    }
-
-    /* ==========================================================
-       フッター
-    ========================================================== */
-    footer {
-      padding: 60px 20px;
-      text-align: center;
-      color: #555;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      border-top: 1px solid var(--card-border);
-      animation: fadeInUp 1s ease;
+    .button.secondary:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.2);
     }
 
     /* ==========================================================
@@ -654,6 +761,20 @@
       background: rgba(139,92,246,0.15);
       border-radius: 50%;
       animation: floatParticle 15s ease-in-out infinite;
+    }
+
+    /* ==========================================================
+       フッター
+    ========================================================== */
+    footer {
+      padding: 60px 20px;
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      border-top: 1px solid var(--card-border);
+      animation: fadeInUp 1s ease;
     }
 
     /* ==========================================================
@@ -686,23 +807,21 @@
       .buttons { flex-direction: column; }
       .button { width: 100%; }
 
-      .modal-content {
+      .member-detail-card {
         padding: 30px 20px;
-        margin: 10px;
       }
-      .modal-detail {
+      .member-detail-card h1 {
+        font-size: 28px;
+      }
+      .member-detail-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
         padding: 10px 0;
       }
-      .modal-detail .value {
+      .member-detail-item .value {
         text-align: left;
-        max-width: 100%;
         font-size: 16px;
-      }
-      .modal-content h2 {
-        font-size: 28px;
       }
       .notice {
         padding: 18px 20px;
@@ -754,7 +873,7 @@
       </div>
     </section>
 
-    <!-- お知らせ -->
+    <!-- お知らせ（最新5件） -->
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">NEWS</span></h2>
@@ -766,27 +885,50 @@
             <div class="skeleton skeleton-desc"></div>
           </div>
         </div>
+        <!-- もっと見るボタン（5件超えたら表示） -->
+        <div class="load-more-wrap" id="load-more-wrap" style="display:none;">
+          <a class="load-more-btn" href="#q=notices">もっと見る →</a>
+        </div>
       </div>
     </section>
   </div>
 
-  <!-- MEMBER -->
+  <!-- MEMBER（一覧） -->
   <div id="page-member" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">MEMBER</span></h2>
         <p class="section-subtitle">神木チャンネルのメンバー</p>
-        <div class="cards">
-          <div class="card member-card scroll-animate" data-member="kamito">
-            <h3>カミト</h3>
-            <p>神木チャンネルのメンバー。</p>
-            <div class="click-hint">タップして詳細を見る</div>
+        <div class="cards" id="member-list">
+          <!-- JavaScriptで動的に生成 -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- メンバー詳細（/member/kamito または /member/kii） -->
+  <div id="page-member-detail" class="page">
+    <section class="member-detail">
+      <div class="member-detail-card" id="member-detail-content">
+        <!-- JavaScriptで動的に生成 -->
+      </div>
+    </section>
+  </div>
+
+  <!-- お知らせ全件表示（/notices） -->
+  <div id="page-notices" class="page">
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="gradient-text">すべてのお知らせ</span></h2>
+        <p class="section-subtitle">神木チャンネルからのお知らせ一覧</p>
+        <div id="all-notices-list" class="notice-box">
+          <div class="notice">
+            <div class="notice-date">Loading...</div>
+            <div class="notice-title">読み込み中...</div>
           </div>
-          <div class="card member-card scroll-animate" data-member="kii">
-            <h3>きぃ</h3>
-            <p>神木チャンネルのメンバー。</p>
-            <div class="click-hint">タップして詳細を見る</div>
-          </div>
+        </div>
+        <div style="margin-top:24px; text-align:center;">
+          <a class="button secondary" href="#q=home">ホームに戻る</a>
         </div>
       </div>
     </section>
@@ -833,28 +975,6 @@
     </div>
   </div>
 
-</div>
-
-<!-- =========================
-     メンバーモーダル
-========================= -->
-<div id="member-modal" class="modal-overlay">
-  <div class="modal-content">
-    <span class="modal-close" id="modal-close">&times;</span>
-    <h2 id="modal-name"></h2>
-    <div class="modal-detail">
-      <span class="label">趣味</span>
-      <span class="value" id="modal-hobby"></span>
-    </div>
-    <div class="modal-detail">
-      <span class="label">得意なこと</span>
-      <span class="value" id="modal-skill"></span>
-    </div>
-    <div class="modal-detail">
-      <span class="label">役割</span>
-      <span class="value" id="modal-role"></span>
-    </div>
-  </div>
 </div>
 
 <!-- =========================
@@ -935,86 +1055,249 @@
     });
 
     /* ==================================================
-       ページ切り替え
+       ページルーティング（SPA風）
     ================================================== */
-    const validPages = ["home", "member", "video", "about"];
+    const validPages = ['home', 'member', 'video', 'about', 'notices'];
+    const memberIds = MEMBER_IDS || [];
 
     function getPageFromHash() {
       const hash = window.location.hash;
-      if (hash.startsWith("#q=")) {
-        const p = decodeURIComponent(hash.substring(3));
-        if (validPages.includes(p)) return p;
-        return "404";
+      if (!hash || hash === '#') return 'home';
+      if (hash.startsWith('#q=')) {
+        const path = decodeURIComponent(hash.substring(3));
+        // メンバー詳細チェック (/member/kamito など)
+        if (path.startsWith('member/')) {
+          const id = path.split('/')[1];
+          if (memberIds.includes(id)) {
+            return 'member-detail';
+          }
+          return '404';
+        }
+        if (validPages.includes(path)) {
+          return path;
+        }
+        return '404';
       }
-      return "home";
+      return 'home';
+    }
+
+    function getMemberIdFromHash() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#q=member/')) {
+        const id = decodeURIComponent(hash.substring(3)).split('/')[1];
+        if (memberIds.includes(id)) return id;
+      }
+      return null;
     }
 
     function showPage() {
       const page = getPageFromHash();
-      document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
-      document.getElementById("page-404").classList.remove("active");
+      const memberId = getMemberIdFromHash();
 
-      if (page === "404") {
-        document.getElementById("page-404").classList.add("active");
-        document.querySelectorAll("nav a[data-page]").forEach(link => {
-          link.classList.remove("active");
+      // 全ページ非表示
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.getElementById('page-404').classList.remove('active');
+
+      if (page === '404') {
+        document.getElementById('page-404').classList.add('active');
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          link.classList.remove('active');
         });
-      } else {
-        const target = document.getElementById("page-" + page);
-        if (target) setTimeout(() => target.classList.add("active"), 10);
-        document.querySelectorAll("nav a[data-page]").forEach(link => {
-          link.classList.toggle("active", link.dataset.page === page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      if (page === 'member-detail' && memberId) {
+        // メンバー詳細ページを表示
+        const target = document.getElementById('page-member-detail');
+        if (target) {
+          target.classList.add('active');
+          renderMemberDetail(memberId);
+        }
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          link.classList.toggle('active', link.dataset.page === 'member');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // 通常ページ
+      const target = document.getElementById('page-' + page);
+      if (target) {
+        target.classList.add('active');
+        // お知らせ全件表示ページならデータ読み込み
+        if (page === 'notices') {
+          renderAllNotices();
+        }
+      }
+      document.querySelectorAll('nav a[data-page]').forEach(link => {
+        link.classList.toggle('active', link.dataset.page === page);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('hashchange', showPage);
+
+    /* ==================================================
+       メンバー一覧レンダリング
+    ================================================== */
+    function renderMemberList() {
+      const container = document.getElementById('member-list');
+      if (!container) return;
+
+      const ids = Object.keys(MEMBERS);
+      if (ids.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>';
+        return;
+      }
+
+      container.innerHTML = ids.map(id => {
+        const m = MEMBERS[id];
+        return `
+          <a href="#q=member/${id}" class="card member-card scroll-animate">
+            <h3><span class="icon">${m.icon || '👤'}</span>${m.name}</h3>
+            <p>${m.description || '神木チャンネルのメンバー。'}</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </a>
+        `;
+      }).join('');
+
+      // スクロールアニメーション再適用
+      setTimeout(() => {
+        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('visible');
+                }
+              });
+            }, { threshold: 0.15 });
+            observer.observe(el);
+          } else {
+            el.classList.add('visible');
+          }
+        });
+      }, 100);
+    }
+
+    /* ==================================================
+       メンバー詳細レンダリング
+    ================================================== */
+    function renderMemberDetail(id) {
+      const container = document.getElementById('member-detail-content');
+      if (!container) return;
+
+      const m = MEMBERS[id];
+      if (!m) {
+        container.innerHTML = `
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
+          <div style="text-align:center;margin-top:20px;">
+            <a class="button secondary" href="#q=member">戻る</a>
+          </div>
+        `;
+        return;
+      }
+
+      const formId = CONFIG.FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
+
+      container.innerHTML = `
+        <span class="member-icon">${m.icon || '👤'}</span>
+        <h1>${m.name}</h1>
+        <p class="member-desc">${m.description || ''}</p>
+        <div class="member-detail-item">
+          <span class="label">趣味</span>
+          <span class="value">${m.hobby || '-'}</span>
+        </div>
+        <div class="member-detail-item">
+          <span class="label">得意なこと</span>
+          <span class="value">${m.skill || '-'}</span>
+        </div>
+        <div class="member-detail-item">
+          <span class="label">役割</span>
+          <span class="value">${m.role || '-'}</span>
+        </div>
+
+        <!-- メッセージフォーム -->
+        <div class="message-form">
+          <h4 style="color:var(--text-main);font-weight:700;margin-bottom:16px;font-size:18px;">
+            💬 ${m.name}にメッセージを送る
+          </h4>
+          <form id="message-form" action="https://formspree.io/f/${formId}" method="POST">
+            <input type="hidden" name="_subject" value="神木チャンネルへのメッセージ（${m.name}宛）">
+            <input type="hidden" name="_gotcha" style="display:none;">
+            <div>
+              <label for="sender-name">あなたの名前</label>
+              <input type="text" id="sender-name" name="name" placeholder="例: 神木ファン" required>
+            </div>
+            <div>
+              <label for="sender-email">メールアドレス（任意）</label>
+              <input type="email" id="sender-email" name="_replyto" placeholder="example@email.com">
+            </div>
+            <div>
+              <label for="sender-message">メッセージ</label>
+              <textarea id="sender-message" name="message" placeholder="${m.name}さんへのメッセージを書いてください..." required></textarea>
+            </div>
+            <button type="submit" class="submit-btn" id="message-submit">送信する</button>
+            <div class="form-success" id="form-success">✅ メッセージを送信しました！</div>
+            <div class="form-error" id="form-error">❌ 送信に失敗しました。もう一度お試しください。</div>
+          </form>
+        </div>
+
+        <div style="text-align:center;margin-top:24px;">
+          <a class="back-link" href="#q=member">← メンバー一覧に戻る</a>
+        </div>
+      `;
+
+      // フォーム送信処理
+      const form = document.getElementById('message-form');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const submitBtn = document.getElementById('message-submit');
+          const success = document.getElementById('form-success');
+          const error = document.getElementById('form-error');
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = '送信中...';
+          success.classList.remove('show');
+          error.classList.remove('show');
+
+          try {
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'Accept': 'application/json'
+              }
+            });
+
+            if (response.ok) {
+              success.classList.add('show');
+              form.reset();
+            } else {
+              error.classList.add('show');
+            }
+          } catch (err) {
+            error.classList.add('show');
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送信する';
+          }
         });
       }
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-
-    window.addEventListener("hashchange", showPage);
-    showPage();
 
     /* ==================================================
-       メンバーモーダル
-    ================================================== */
-    const memberData = {
-      kamito: { name: 'カミト', hobby: 'BEYBLADE', skill: 'ゲーム', role: '企画説明 / 挨拶' },
-      kii: { name: 'きぃ', hobby: '推し活', skill: 'プログラミング', role: '撮影 / 編集' }
-    };
-
-    const modal = document.getElementById('member-modal');
-    const modalClose = document.getElementById('modal-close');
-    const modalName = document.getElementById('modal-name');
-    const modalHobby = document.getElementById('modal-hobby');
-    const modalSkill = document.getElementById('modal-skill');
-    const modalRole = document.getElementById('modal-role');
-
-    function openModal(id) {
-      const data = memberData[id];
-      if (!data) return;
-      modalName.textContent = data.name;
-      modalHobby.textContent = data.hobby;
-      modalSkill.textContent = data.skill;
-      modalRole.textContent = data.role;
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    document.querySelectorAll('.member-card').forEach(card => {
-      card.addEventListener('click', () => openModal(card.dataset.member));
-    });
-    modalClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-    /* ==================================================
-       GitHub API でお知らせ取得（CONFIG に設定済み）
+       GitHub API でお知らせ取得（最新5件 + 全件）
     ================================================== */
     const noticeList = document.getElementById('notice-list');
+    const allNoticesList = document.getElementById('all-notices-list');
+    const loadMoreWrap = document.getElementById('load-more-wrap');
     const skeleton = document.getElementById('skeleton-loader');
+    let allIssues = [];
+    let noticesLoaded = false;
 
     function escapeHTML(v) {
       return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
@@ -1027,20 +1310,55 @@
       } catch { return dateStr; }
     }
 
+    function renderNotices(issues, container, limit) {
+      const items = limit ? issues.slice(0, limit) : issues;
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">📢 お知らせ</div>
+            <div class="notice-description">現在、お知らせはありません。</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(issue => {
+        const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
+        const title = issue.title || 'お知らせ';
+        const body = issue.body ? issue.body.slice(0, 150) + (issue.body.length > 150 ? '...' : '') : '';
+        const labels = issue.labels.map(l => l.name).join(' ');
+
+        return `
+          <div class="notice">
+            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
+            <div class="notice-title">
+              <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a>
+            </div>
+            ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
+            ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
     async function fetchNotices() {
       const owner = CONFIG.GITHUB_OWNER;
       const repo = CONFIG.GITHUB_REPO;
       const token = CONFIG.GITHUB_TOKEN || '';
       const label = CONFIG.GITHUB_LABEL || '';
 
-      // 設定チェック
-      if (!owner || !repo || owner === 'kamiki-chyt' && repo === 'kamiki-ch-notices') {
-        // GitHubリポジトリは正しく設定されているので、実際に取得を試みる
-        // （初回は「kamiki-chyt/kamiki-ch-notices」が存在するか確認）
+      if (!owner || !repo) {
+        noticeList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">📢 お知らせ</div>
+            <div class="notice-description">GitHubリポジトリが設定されていません。</div>
+          </div>
+        `;
+        return;
       }
 
       try {
-        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=10`;
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
         if (label) url += `&labels=${encodeURIComponent(label)}`;
 
         const headers = {};
@@ -1049,15 +1367,12 @@
         const res = await fetch(url, { headers });
 
         if (res.status === 404) {
-          // リポジトリが見つからない場合
           noticeList.innerHTML = `
             <div class="notice">
               <div class="notice-title">📢 お知らせ</div>
               <div class="notice-description">
                 リポジトリが見つかりません。<br>
-                <span style="font-size:12px; color:#666;">
-                  GitHubリポジトリ「${owner}/${repo}」が存在するか確認してください。
-                </span>
+                <span style="font-size:12px; color:#666;">「${owner}/${repo}」を確認してください。</span>
               </div>
             </div>
           `;
@@ -1069,35 +1384,19 @@
         }
 
         const issues = await res.json();
+        allIssues = issues;
 
-        if (!issues || issues.length === 0) {
-          noticeList.innerHTML = `
-            <div class="notice">
-              <div class="notice-title">📢 お知らせ</div>
-              <div class="notice-description">現在、お知らせはありません。</div>
-            </div>
-          `;
-          return;
+        // 最新5件を表示
+        renderNotices(issues, noticeList, 5);
+
+        // 5件超えたら「もっと見る」ボタン表示
+        if (issues.length > 5) {
+          loadMoreWrap.style.display = 'block';
+        } else {
+          loadMoreWrap.style.display = 'none';
         }
 
-        // 表示
-        noticeList.innerHTML = issues.map(issue => {
-          const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
-          const title = issue.title || 'お知らせ';
-          const body = issue.body ? issue.body.slice(0, 120) + (issue.body.length > 120 ? '...' : '') : '';
-          const labels = issue.labels.map(l => l.name).join(' ');
-
-          return `
-            <div class="notice">
-              ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
-              <div class="notice-title">
-                <a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a>
-              </div>
-              ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
-              ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
-            </div>
-          `;
-        }).join('');
+        noticesLoaded = true;
 
       } catch (err) {
         console.error('お知らせ取得エラー:', err);
@@ -1105,18 +1404,67 @@
           <div class="notice">
             <div class="notice-title">⚠️ お知らせの読み込みに失敗しました</div>
             <div class="notice-description">
-              エラー: ${escapeHTML(err.message)}<br>
-              <span style="font-size:12px; color:#666;">
-                GitHubリポジトリ「${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}」を確認してください。
-              </span>
+              エラー: ${escapeHTML(err.message)}
             </div>
           </div>
         `;
       }
     }
 
-    // お知らせ取得実行
+    // 全件表示用
+    async function renderAllNotices() {
+      if (!allNoticesList) return;
+
+      if (allIssues.length > 0) {
+        renderNotices(allIssues, allNoticesList, null);
+        return;
+      }
+
+      // まだ取得していない場合は再取得
+      const owner = CONFIG.GITHUB_OWNER;
+      const repo = CONFIG.GITHUB_REPO;
+      const token = CONFIG.GITHUB_TOKEN || '';
+      const label = CONFIG.GITHUB_LABEL || '';
+
+      try {
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
+        if (label) url += `&labels=${encodeURIComponent(label)}`;
+
+        const headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+
+        const res = await fetch(url, { headers });
+        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
+
+        const issues = await res.json();
+        allIssues = issues;
+        renderNotices(issues, allNoticesList, null);
+
+      } catch (err) {
+        console.error('全件取得エラー:', err);
+        allNoticesList.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">⚠️ 読み込みに失敗しました</div>
+            <div class="notice-description">${escapeHTML(err.message)}</div>
+          </div>
+        `;
+      }
+    }
+
+    /* ==================================================
+       初期化
+    ================================================== */
+    renderMemberList();
     fetchNotices();
+    showPage();
+
+    // ページ遷移時にメンバーリスト再レンダリング（必要に応じて）
+    window.addEventListener('hashchange', () => {
+      // メンバー一覧ページが表示されたら再レンダリング（既に表示済みならスキップ）
+      if (window.location.hash.includes('q=member') && !window.location.hash.includes('member/')) {
+        // 既にレンダリング済みなので何もしない
+      }
+    });
 
   })();
 </script>
