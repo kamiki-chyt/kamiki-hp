@@ -6,24 +6,30 @@
   <title>神木チャンネル</title>
   <meta name="description" content="神木チャンネル公式ホームページ">
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-
-  <!-- ==========================================================
-       ★★★ 設定はこの1箇所だけ！ ★★★
-  ========================================================== -->
+  <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
+  <!-- ★★★ 設定はこの1箇所だけ！ ★★★ -->
+  <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
   <script>
     const CONFIG = {
-      GITHUB_OWNER: "kamiki-chyt",
-      GITHUB_REPO: "kamiki-ch-notices",
-      GITHUB_TOKEN: "",
-      GITHUB_LABEL: "",
+      // ----- GitHub API（お知らせ取得用） -----
+      GITHUB_OWNER: "kamiki-chyt",                 // ← あなたのGitHubユーザー名
+      GITHUB_REPO: "kamiki-ch-notices",            // ← お知らせ用リポジトリ名
+      GITHUB_TOKEN: "",                           // 空でOK（Publicリポジトリ）
+      GITHUB_LABEL: "",                           // 空でOK（全てのIssueを取得）
+
+      // ----- YouTube Data API（最新動画表示用） -----
+      YOUTUBE_API_KEY: "YOUR_YOUTUBE_API_KEY",     // ← Google Cloud Console で発行したAPIキー
+      YOUTUBE_CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw", // ← チャンネルID（設定済み）
+
+      // ----- Formspree（お問い合わせフォーム） -----
+      FORMSPREE_ID: "xljrvlvd",                    // ← Formspree のフォームID（設定済み）
+
+      // ----- 各種リンク -----
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
     };
 
+    // ★ メンバーデータ（変更・追加はここで）
     const MEMBERS = {
       kamito: {
         id: 'kamito',
@@ -43,7 +49,11 @@
 
     const MEMBER_IDS = Object.keys(MEMBERS);
   </script>
-  <!-- ========================================================== -->
+  <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================
@@ -551,7 +561,7 @@
     }
 
     /* ==========================================================
-       お知らせ（英語表記）
+       お知らせ
     ========================================================== */
     .notice-box {
       overflow: hidden;
@@ -612,11 +622,6 @@
       margin-top: 8px;
       letter-spacing: 0.05em;
     }
-    .notice-empty {
-      padding: 30px;
-      text-align: center;
-      color: var(--text-sub);
-    }
 
     .load-more-wrap {
       text-align: center;
@@ -652,6 +657,217 @@
     .skeleton-title { height: 24px; width: 70%; }
     .skeleton-date { height: 14px; width: 30%; }
     .skeleton-desc { height: 16px; width: 90%; }
+
+    /* ==========================================================
+       検索バー
+    ========================================================== */
+    .search-box {
+      margin-bottom: 40px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .search-box input {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+      outline: none;
+    }
+    .search-box input:focus {
+      border-color: var(--accent-color);
+    }
+    .search-box input::placeholder {
+      color: var(--text-sub);
+    }
+    .search-box .search-clear {
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .search-box .search-clear:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--accent-color);
+      color: #fff;
+    }
+    .search-result-info {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* ==========================================================
+       お問い合わせフォーム (Formspree AJAX)
+    ========================================================== */
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .contact-form label {
+      display: block;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.3s ease;
+      margin-bottom: 6px;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .contact-form textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .contact-form .field-error {
+      display: block;
+      font-size: 13px;
+      color: #ff6b6b;
+      margin-bottom: 10px;
+      min-height: 20px;
+    }
+    .contact-form .field-error:empty {
+      display: none;
+    }
+    .contact-form [data-fs-success] {
+      display: none;
+      color: #06C755;
+      text-align: center;
+      padding: 16px;
+      font-weight: 700;
+      background: rgba(6,199,85,0.1);
+      border-radius: 14px;
+      border: 1px solid rgba(6,199,85,0.3);
+      margin-top: 10px;
+    }
+    .contact-form [data-fs-success].fs-visible {
+      display: block;
+      animation: fadeInScale 0.3s ease forwards;
+    }
+    .contact-form [data-fs-error] {
+      display: none;
+      color: #ff6b6b;
+      text-align: center;
+      padding: 16px;
+      font-weight: 700;
+      background: rgba(255,107,107,0.1);
+      border-radius: 14px;
+      border: 1px solid rgba(255,107,107,0.3);
+      margin-top: 10px;
+    }
+    .contact-form [data-fs-error].fs-visible {
+      display: block;
+      animation: fadeInScale 0.3s ease forwards;
+    }
+
+    .contact-form .submit-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 6px;
+    }
+    .contact-form .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139,92,246,0.4);
+    }
+    .contact-form .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .contact-form .submit-btn.fs-submitting {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    /* ==========================================================
+       YouTube動画一覧
+    ========================================================== */
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+    .youtube-item {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      transition: all 0.3s ease;
+    }
+    .youtube-item:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-color);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .youtube-item img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+    }
+    .youtube-item .info {
+      padding: 16px 18px;
+    }
+    .youtube-item .info h4 {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .youtube-item .info .meta {
+      color: var(--text-sub);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .youtube-item .info a {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--accent-color);
+      font-weight: 700;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+    .youtube-item .info a:hover {
+      color: #fff;
+    }
 
     /* ==========================================================
        ボタン
@@ -873,6 +1089,15 @@
       footer {
         padding-bottom: 80px;
       }
+      .search-box {
+        flex-direction: column;
+      }
+      .search-box input {
+        min-width: 100%;
+      }
+      .youtube-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (min-width: 769px) {
@@ -895,7 +1120,7 @@
 <div class="particles" id="particles"></div>
 
 <!-- トップへ戻るボタン -->
-<button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+<button class="back-to-top" id="back-to-top">↑</button>
 
 <!-- =========================
      ヘッダー
@@ -912,6 +1137,8 @@
       <a href="#q=home" data-page="home">HOME</a>
       <a href="#q=member" data-page="member">MEMBER</a>
       <a href="#q=notices" data-page="notices">NEWS</a>
+      <a href="#q=video" data-page="video">VIDEO</a>
+      <a href="#q=contact" data-page="contact">CONTACT</a>
       <a href="#q=about" data-page="about">ABOUT</a>
       <a href="#q=credit" data-page="credit">CREDIT</a>
     </nav>
@@ -939,11 +1166,19 @@
       </div>
     </section>
 
-    <!-- お知らせ -->
+    <!-- お知らせ（検索対応） -->
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">NEWS</span></h2>
         <p class="section-subtitle">神木チャンネルからのお知らせ</p>
+
+        <!-- 検索バー -->
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="お知らせを検索..." autocomplete="off">
+          <button class="search-clear" id="search-clear">✕ クリア</button>
+        </div>
+        <div class="search-result-info" id="search-result-info"></div>
+
         <div id="notice-list" class="notice-box">
           <div class="notice" id="skeleton-loader">
             <div class="skeleton skeleton-date"></div>
@@ -964,6 +1199,13 @@
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">MEMBER</span></h2>
         <p class="section-subtitle">神木チャンネルのメンバー</p>
+
+        <!-- 検索バー -->
+        <div class="search-box">
+          <input type="text" id="member-search-input" placeholder="メンバーを検索..." autocomplete="off">
+          <button class="search-clear" id="member-search-clear">✕ クリア</button>
+        </div>
+
         <div class="cards" id="member-list"></div>
       </div>
     </section>
@@ -976,7 +1218,7 @@
     </section>
   </div>
 
-  <!-- お知らせ全件 -->
+  <!-- NEWS（全件） -->
   <div id="page-notices" class="page">
     <section class="section">
       <div class="container">
@@ -990,6 +1232,58 @@
         </div>
         <div style="margin-top:24px; text-align:center;">
           <a class="button secondary" href="#q=home">ホームに戻る</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- VIDEO -->
+  <div id="page-video" class="page">
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="gradient-text">VIDEO</span></h2>
+        <p class="section-subtitle">神木チャンネルの最新動画</p>
+
+        <div class="card" style="text-align:center; margin-bottom:30px;">
+          <p style="color:var(--text-sub);">チャンネルの最新動画をチェック！</p>
+          <div style="margin-top:16px;">
+            <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTubeチャンネルへ</a>
+          </div>
+        </div>
+
+        <div id="youtube-list" class="youtube-grid">
+          <div style="text-align:center; color:var(--text-sub); padding:40px;">動画を読み込み中...</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CONTACT（Formspree AJAX 版） -->
+  <div id="page-contact" class="page">
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title"><span class="gradient-text">CONTACT</span></h2>
+        <p class="section-subtitle">神木チャンネルへのお問い合わせ</p>
+
+        <div class="contact-form" id="contact-form">
+          <form id="my-form" data-fs-form>
+            <label for="contact-name">お名前</label>
+            <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
+            <span class="field-error" data-fs-error="name"></span>
+
+            <label for="contact-email">メールアドレス（任意）</label>
+            <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
+            <span class="field-error" data-fs-error="_replyto"></span>
+
+            <label for="contact-message">メッセージ</label>
+            <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
+            <span class="field-error" data-fs-error="message"></span>
+
+            <button type="submit" class="submit-btn" data-fs-submit-btn>送信する</button>
+
+            <div data-fs-success>✅ メッセージを送信しました！</div>
+            <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
+          </form>
         </div>
       </div>
     </section>
@@ -1041,22 +1335,22 @@
           <div class="credit-item">
             <span class="emoji">🌐</span>
             <h4>GitHub API</h4>
-            <p>お知らせデータの取得に使用<br><a href="https://github.com/" target="_blank" rel="noopener">github.com</a></p>
+            <p>お知らせデータの取得<br><a href="https://github.com/" target="_blank" rel="noopener">github.com</a></p>
+          </div>
+          <div class="credit-item">
+            <span class="emoji">📺</span>
+            <h4>YouTube Data API</h4>
+            <p>最新動画の取得<br><a href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener">developers.google.com/youtube/v3</a></p>
+          </div>
+          <div class="credit-item">
+            <span class="emoji">📧</span>
+            <h4>Formspree</h4>
+            <p>お問い合わせフォーム<br><a href="https://formspree.io/" target="_blank" rel="noopener">formspree.io</a></p>
           </div>
           <div class="credit-item">
             <span class="emoji">🎨</span>
             <h4>パーティクルエフェクト</h4>
-            <p>CSSアニメーションによる装飾<br>（オリジナル実装）</p>
-          </div>
-          <div class="credit-item">
-            <span class="emoji">💻</span>
-            <h4>開発環境</h4>
-            <p>Visual Studio Code / HTML / CSS / JavaScript</p>
-          </div>
-          <div class="credit-item">
-            <span class="emoji">📱</span>
-            <h4>アイコン（絵文字）</h4>
-            <p>ユニコード絵文字を使用<br><a href="https://unicode.org/emoji/" target="_blank" rel="noopener">unicode.org/emoji</a></p>
+            <p>CSSアニメーション（オリジナル）</p>
           </div>
           <div class="credit-item">
             <span class="emoji">🚀</span>
@@ -1086,6 +1380,11 @@
      フッター
 ========================= -->
 <footer>&copy; 2026 神木チャンネル</footer>
+
+<!-- =========================
+     Formspree AJAX ライブラリ（CDN）
+========================= -->
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
      JavaScript
@@ -1183,7 +1482,7 @@
     /* ==================================================
        ページルーティング
     ================================================== */
-    const validPages = ['home', 'member', 'about', 'notices', 'credit'];
+    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact'];
     const memberIds = MEMBER_IDS || [];
 
     function getPageFromHash() {
@@ -1225,6 +1524,8 @@
         about: 'ABOUT - 神木チャンネル',
         notices: 'NEWS - 神木チャンネル',
         credit: 'CREDIT - 神木チャンネル',
+        video: 'VIDEO - 神木チャンネル',
+        contact: 'CONTACT - 神木チャンネル',
         'member-detail': 'MEMBER - 神木チャンネル'
       };
       document.title = titles[page] || '神木チャンネル';
@@ -1260,6 +1561,9 @@
         if (page === 'notices') {
           renderAllNotices();
         }
+        if (page === 'video') {
+          fetchYouTubeVideos();
+        }
       }
       document.querySelectorAll('nav a[data-page]').forEach(link => {
         link.classList.toggle('active', link.dataset.page === page);
@@ -1270,9 +1574,9 @@
     window.addEventListener('hashchange', showPage);
 
     /* ==================================================
-       メンバー一覧
+       メンバー一覧（検索対応）
     ================================================== */
-    function renderMemberList() {
+    function renderMemberList(filter = '') {
       const container = document.getElementById('member-list');
       if (!container) return;
       const ids = Object.keys(MEMBERS);
@@ -1280,7 +1584,17 @@
         container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>';
         return;
       }
-      container.innerHTML = ids.map(id => {
+
+      const filtered = filter
+        ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter))
+        : ids;
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(id => {
         const m = MEMBERS[id];
         return `
           <a href="#q=member/${id}" class="card member-card scroll-animate">
@@ -1308,6 +1622,22 @@
         });
       }, 100);
     }
+
+    // メンバー検索
+    (function() {
+      const input = document.getElementById('member-search-input');
+      const clear = document.getElementById('member-search-clear');
+      if (input) {
+        input.addEventListener('input', () => {
+          renderMemberList(input.value);
+        });
+        clear.addEventListener('click', () => {
+          input.value = '';
+          renderMemberList('');
+          input.focus();
+        });
+      }
+    })();
 
     /* ==================================================
        メンバー詳細
@@ -1346,12 +1676,13 @@
     }
 
     /* ==================================================
-       GitHub API お知らせ
+       お知らせ（検索対応）
     ================================================== */
     const noticeList = document.getElementById('notice-list');
     const allNoticesList = document.getElementById('all-notices-list');
     const loadMoreWrap = document.getElementById('load-more-wrap');
     let allIssues = [];
+    let currentNoticeFilter = '';
 
     function escapeHTML(v) {
       return String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
@@ -1364,13 +1695,19 @@
       } catch { return dateStr; }
     }
 
-    function renderNotices(issues, container, limit) {
-      const items = limit ? issues.slice(0, limit) : issues;
+    function renderNotices(issues, container, limit, filter = '') {
+      let items = limit ? issues.slice(0, limit) : issues;
+      if (filter) {
+        items = items.filter(item =>
+          (item.title || '').includes(filter) ||
+          (item.body || '').includes(filter)
+        );
+      }
       if (!items || items.length === 0) {
         container.innerHTML = `
           <div class="notice">
             <div class="notice-title">お知らせ</div>
-            <div class="notice-description">現在、お知らせはありません。</div>
+            <div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div>
           </div>
         `;
         return;
@@ -1392,6 +1729,38 @@
         `;
       }).join('');
     }
+
+    function updateNoticeSearch(filter) {
+      currentNoticeFilter = filter;
+      const info = document.getElementById('search-result-info');
+      if (filter) {
+        const count = allIssues.filter(item =>
+          (item.title || '').includes(filter) ||
+          (item.body || '').includes(filter)
+        ).length;
+        info.textContent = `「${filter}」の検索結果: ${count}件`;
+      } else {
+        info.textContent = '';
+      }
+      renderNotices(allIssues, noticeList, 5, filter);
+      loadMoreWrap.style.display = allIssues.length > 5 && !filter ? 'block' : 'none';
+    }
+
+    // お知らせ検索
+    (function() {
+      const input = document.getElementById('search-input');
+      const clear = document.getElementById('search-clear');
+      if (input) {
+        input.addEventListener('input', () => {
+          updateNoticeSearch(input.value);
+        });
+        clear.addEventListener('click', () => {
+          input.value = '';
+          updateNoticeSearch('');
+          input.focus();
+        });
+      }
+    })();
 
     async function fetchNotices() {
       const owner = CONFIG.GITHUB_OWNER;
@@ -1430,16 +1799,13 @@
         }
         const issues = await res.json();
         allIssues = issues;
-        renderNotices(issues, noticeList, 5);
-        loadMoreWrap.style.display = issues.length > 5 ? 'block' : 'none';
+        updateNoticeSearch('');
       } catch (err) {
         console.error('お知らせ取得エラー:', err);
         noticeList.innerHTML = `
           <div class="notice">
             <div class="notice-title">お知らせの読み込みに失敗しました</div>
-            <div class="notice-description">
-              エラー: ${escapeHTML(err.message)}
-            </div>
+            <div class="notice-description">エラー: ${escapeHTML(err.message)}</div>
           </div>
         `;
       }
@@ -1477,9 +1843,92 @@
     }
 
     /* ==================================================
+       YouTube 最新動画取得
+    ================================================== */
+    async function fetchYouTubeVideos() {
+      const container = document.getElementById('youtube-list');
+      if (!container) return;
+      const apiKey = CONFIG.YOUTUBE_API_KEY;
+      const channelId = CONFIG.YOUTUBE_CHANNEL_ID;
+
+      if (!apiKey || apiKey === 'YOUR_YOUTUBE_API_KEY') {
+        container.innerHTML = `
+          <div style="text-align:center; color:var(--text-sub); padding:40px;">
+            ⚠️ YouTube APIキーが設定されていません。<br>
+            <span style="font-size:13px;">CONFIG.YOUTUBE_API_KEY を設定してください。</span>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=6&order=date&type=video&key=${apiKey}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`YouTube API Error: ${res.status}`);
+        const data = await res.json();
+
+        if (!data.items || data.items.length === 0) {
+          container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">動画が見つかりませんでした。</div>`;
+          return;
+        }
+
+        container.innerHTML = data.items.map(item => {
+          const videoId = item.id.videoId;
+          const title = item.snippet.title;
+          const thumb = item.snippet.thumbnails.medium.url;
+          const date = new Date(item.snippet.publishedAt).toLocaleDateString('ja-JP');
+          return `
+            <div class="youtube-item">
+              <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">
+                <img src="${thumb}" alt="${escapeHTML(title)}" loading="lazy">
+              </a>
+              <div class="info">
+                <h4>${escapeHTML(title)}</h4>
+                <div class="meta">📅 ${date}</div>
+                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">▶ 視聴する</a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('YouTube取得エラー:', err);
+        container.innerHTML = `
+          <div style="text-align:center; color:var(--text-sub); padding:40px;">
+            ⚠️ 動画の読み込みに失敗しました。<br>
+            <span style="font-size:13px;">${escapeHTML(err.message)}</span>
+          </div>
+        `;
+      }
+    }
+
+    /* ==================================================
+       Formspree AJAX 初期化
+    ================================================== */
+    window.addEventListener('load', function() {
+      if (window.formspree) {
+        window.formspree('initForm', {
+          formElement: '#my-form',
+          formId: CONFIG.FORMSPREE_ID || 'xljrvlvd'
+        });
+      } else {
+        setTimeout(function() {
+          if (window.formspree) {
+            window.formspree('initForm', {
+              formElement: '#my-form',
+              formId: CONFIG.FORMSPREE_ID || 'xljrvlvd'
+            });
+          } else {
+            console.warn('Formspree library not loaded.');
+          }
+        }, 1000);
+      }
+    });
+
+    /* ==================================================
        初期化
     ================================================== */
-    renderMemberList();
+    renderMemberList('');
     fetchNotices();
     showPage();
 
