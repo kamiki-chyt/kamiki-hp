@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-theme="dark">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,110 +42,24 @@
     };
 
     const MEMBER_IDS = Object.keys(MEMBERS);
-
-    // ★★★ 言語データ ★★★
-    const LANGUAGES = {
-      en: {
-        lang: 'en',
-        label: 'EN',
-        siteTitle: 'Kamiki Channel',
-        nav: { home: 'HOME', member: 'MEMBER', news: 'NEWS', about: 'ABOUT', credit: 'CREDIT' },
-        hero: { title: 'Kamiki Channel', subtitle: 'Two people, doing something interesting.' },
-        buttons: { youtube: 'YouTube', line: 'LINE' },
-        scroll: 'SCROLL',
-        news: { title: 'NEWS', subtitle: 'Latest updates from Kamiki Channel', more: 'See More', empty: 'No news at the moment.', loading: 'Loading news...', back: 'Back to Home' },
-        member: { title: 'MEMBER', subtitle: 'Meet the team', clickHint: 'Tap for details', back: 'Back to Members', notFound: 'Member not found' },
-        about: { title: 'ABOUT', subtitle: 'About Kamiki Channel', desc: 'Kamiki Channel is a channel where two people try all kinds of things.<br><br>We share videos and news from this website. Thank you for your support!', challenge: 'Challenge', challengeDesc: 'Trying new things', together: 'Together', togetherDesc: 'Two creators, one vision', entertainment: 'Entertainment', entertainmentDesc: 'Fun content for everyone' },
-        credit: { title: 'CREDIT', subtitle: 'Resources & tools used on this site', operated: 'This site is operated by Kamiki Channel.' },
-        promo: { title: 'PROMO CODE', subtitle: 'Enter your promo code from the latest video', inputPlaceholder: 'e.g. KAMIKI2025', submit: 'Apply', note1: '* Valid codes are announced in videos.', note2: 'Cannot be used multiple times (saved in browser).', success: 'Success!', error: 'Invalid code', used: 'Already used', enterCode: 'Please enter a code' },
-        theme: { light: 'Light', dark: 'Dark' }
-      },
-      ja: {
-        lang: 'ja',
-        label: 'JA',
-        siteTitle: '神木チャンネル',
-        nav: { home: 'HOME', member: 'MEMBER', news: 'お知らせ', about: 'ABOUT', credit: 'クレジット' },
-        hero: { title: '神木チャンネル', subtitle: '2人で、なんか面白いこと。' },
-        buttons: { youtube: 'YouTube', line: 'LINE' },
-        scroll: 'SCROLL',
-        news: { title: 'お知らせ', subtitle: '神木チャンネルからのお知らせ', more: 'もっと見る', empty: '現在、お知らせはありません。', loading: '読み込み中...', back: 'ホームに戻る' },
-        member: { title: 'MEMBER', subtitle: '神木チャンネルのメンバー', clickHint: 'タップして詳細を見る', back: 'メンバー一覧に戻る', notFound: 'メンバーが見つかりません' },
-        about: { title: 'ABOUT', subtitle: '神木チャンネルについて', desc: '神木チャンネルは、2人でいろいろなことに挑戦していくチャンネルです。<br><br>動画やお知らせなどを、このホームページから発信していきます。応援よろしくお願いします！', challenge: '挑戦', challengeDesc: 'いろんなことに挑戦中', together: '2人で', togetherDesc: '仲良く活動中', entertainment: 'エンタメ', entertainmentDesc: '面白い動画をお届け' },
-        credit: { title: 'クレジット', subtitle: 'このサイトで使用している素材・サービス', operated: 'このサイトは神木チャンネルによって運営されています。' },
-        promo: { title: 'プロモコード', subtitle: '動画で発表されたコードを入力して特典を受け取ろう！', inputPlaceholder: '例: KAMIKI2025', submit: '適用する', note1: '※ 有効なコードは動画内で発表されます。', note2: '複数回の使用はできません（ブラウザに保存されます）。', success: '成功！', error: '無効なコードです', used: 'すでに使用済みです', enterCode: 'コードを入力してください' },
-        theme: { light: 'ライト', dark: 'ダーク' }
-      },
-      ko: {
-        lang: 'ko',
-        label: 'KO',
-        siteTitle: '카미키 채널',
-        nav: { home: '홈', member: '멤버', news: '소식', about: '소개', credit: '크레딧' },
-        hero: { title: '카미키 채널', subtitle: '두 사람이, 뭔가 재미있는 것을.' },
-        buttons: { youtube: 'YouTube', line: 'LINE' },
-        scroll: '스크롤',
-        news: { title: '소식', subtitle: '카미키 채널의 소식', more: '더 보기', empty: '현재 소식이 없습니다.', loading: '불러오는 중...', back: '홈으로 돌아가기' },
-        member: { title: '멤버', subtitle: '카미키 채널의 멤버', clickHint: '탭하여 자세히 보기', back: '멤버 목록으로 돌아가기', notFound: '멤버를 찾을 수 없습니다' },
-        about: { title: '소개', subtitle: '카미키 채널 소개', desc: '카미키 채널은 두 사람이 다양한 것에 도전하는 채널입니다.<br><br>이 웹사이트에서 동영상과 소식을 전합니다. 응원 부탁드립니다!', challenge: '도전', challengeDesc: '다양한 것에 도전 중', together: '함께', togetherDesc: '사이좋게 활동 중', entertainment: '엔터테인먼트', entertainmentDesc: '재미있는 콘텐츠를 제공' },
-        credit: { title: '크레딧', subtitle: '이 사이트에서 사용된 자료 및 서비스', operated: '이 사이트는 카미키 채널이 운영합니다.' },
-        promo: { title: '프로모 코드', subtitle: '최신 동영상에서 발표된 코드를 입력하세요', inputPlaceholder: '예: KAMIKI2025', submit: '적용', note1: '* 유효한 코드는 동영상에서 공개됩니다.', note2: '여러 번 사용할 수 없습니다 (브라우저에 저장됨).', success: '성공!', error: '유효하지 않은 코드', used: '이미 사용됨', enterCode: '코드를 입력하세요' },
-        theme: { light: '라이트', dark: '다크' }
-      },
-      zh: {
-        lang: 'zh',
-        label: '中文',
-        siteTitle: '神木频道',
-        nav: { home: '首页', member: '成员', news: '新闻', about: '关于', credit: '致谢' },
-        hero: { title: '神木频道', subtitle: '两个人，做些有趣的事。' },
-        buttons: { youtube: 'YouTube', line: 'LINE' },
-        scroll: '滚动',
-        news: { title: '新闻', subtitle: '来自神木频道的最新消息', more: '查看更多', empty: '目前没有新闻。', loading: '加载中...', back: '返回首页' },
-        member: { title: '成员', subtitle: '神木频道的成员', clickHint: '点击查看详情', back: '返回成员列表', notFound: '未找到成员' },
-        about: { title: '关于', subtitle: '关于神木频道', desc: '神木频道是一个两人挑战各种事物的频道。<br><br>我们通过这个网站发布视频和新闻。感谢您的支持！', challenge: '挑战', challengeDesc: '正在挑战各种事物', together: '一起', togetherDesc: '友好合作中', entertainment: '娱乐', entertainmentDesc: '提供有趣的内容' },
-        credit: { title: '致谢', subtitle: '本网站使用的资源和工具', operated: '本网站由神木频道运营。' },
-        promo: { title: '促销代码', subtitle: '输入最新视频中公布的代码', inputPlaceholder: '例如: KAMIKI2025', submit: '应用', note1: '* 有效代码在视频中公布。', note2: '不能多次使用（保存在浏览器中）。', success: '成功！', error: '无效代码', used: '已使用', enterCode: '请输入代码' },
-        theme: { light: '亮色', dark: '暗色' }
-      }
-    };
   </script>
   <!-- ========================================================== -->
 
   <style>
     /* ==========================================================
-       テーマ変数
+       リセット & ベース
     ========================================================== */
-    [data-theme="dark"] {
+    :root {
       --bg-color: #050505;
       --text-main: #ffffff;
       --text-sub: #999999;
+      --accent-color: #8b5cf6;
+      --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
       --card-bg: rgba(255,255,255,0.03);
       --card-border: rgba(255,255,255,0.08);
       --card-hover: rgba(255,255,255,0.2);
-      --header-bg: rgba(5,5,5,0.75);
-      --header-scrolled: rgba(5,5,5,0.95);
-      --modal-overlay: rgba(0,0,0,0.85);
-      --input-bg: rgba(255,255,255,0.05);
-      --input-border: var(--card-border);
-      --footer-border: var(--card-border);
     }
 
-    [data-theme="light"] {
-      --bg-color: #f5f5f7;
-      --text-main: #1a1a1a;
-      --text-sub: #666666;
-      --card-bg: rgba(255,255,255,0.7);
-      --card-border: rgba(0,0,0,0.1);
-      --card-hover: rgba(0,0,0,0.15);
-      --header-bg: rgba(255,255,255,0.85);
-      --header-scrolled: rgba(255,255,255,0.95);
-      --modal-overlay: rgba(255,255,255,0.85);
-      --input-bg: rgba(0,0,0,0.05);
-      --input-border: rgba(0,0,0,0.1);
-      --footer-border: rgba(0,0,0,0.1);
-    }
-
-    /* ==========================================================
-       リセット & ベース
-    ========================================================== */
     * {
       -webkit-tap-highlight-color: transparent;
       -webkit-touch-callout: none;
@@ -172,7 +86,6 @@
       line-height: 1.7;
       overflow-x: hidden;
       min-height: 100vh;
-      transition: background 0.3s ease, color 0.3s ease;
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; cursor: pointer; }
@@ -252,15 +165,6 @@
       display: inline-block;
     }
 
-    /* ライトテーマ用グラデーション調整 */
-    [data-theme="light"] .gradient-text {
-      background: linear-gradient(270deg, #1a1a1a, #8b5cf6, #3b82f6, #1a1a1a);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientMove 6s ease infinite;
-    }
-
     /* ==========================================================
        トップへ戻るボタン
     ========================================================== */
@@ -313,14 +217,14 @@
       top: 0; left: 0;
       width: 100%;
       z-index: 1000;
-      background: var(--header-bg);
+      background: rgba(5,5,5,0.75);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--card-border);
       transition: background 0.3s ease;
     }
     header.scrolled {
-      background: var(--header-scrolled);
+      background: rgba(5,5,5,0.95);
     }
     .nav {
       max-width: 1100px;
@@ -344,69 +248,6 @@
     }
     .logo:hover { opacity: 0.8; }
     .logo img { display: none; }
-
-    .nav-controls {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    /* テーマ切替ボタン */
-    .theme-toggle {
-      background: none;
-      border: 1px solid var(--card-border);
-      border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 16px;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--card-bg);
-    }
-    .theme-toggle:hover {
-      border-color: var(--accent-color);
-      transform: scale(1.05);
-    }
-    .theme-toggle .icon { font-size: 16px; }
-    .theme-toggle .label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    /* 言語切替ボタン群 */
-    .lang-group {
-      display: flex;
-      gap: 4px;
-      border: 1px solid var(--card-border);
-      border-radius: 999px;
-      padding: 2px;
-      background: var(--card-bg);
-    }
-    .lang-btn {
-      background: none;
-      border: none;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-sub);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      letter-spacing: 0.03em;
-    }
-    .lang-btn:hover {
-      color: var(--text-main);
-    }
-    .lang-btn.active {
-      background: var(--accent-gradient);
-      color: #fff;
-      box-shadow: 0 2px 10px rgba(139,92,246,0.3);
-    }
-
     nav {
       display: flex;
       align-items: center;
@@ -449,26 +290,6 @@
       background: var(--text-main);
       transition: 0.3s ease;
       transform-origin: left;
-    }
-
-    /* モバイルメニュー内のコントロール */
-    .mobile-controls {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      margin-top: 20px;
-    }
-    .mobile-controls .theme-toggle {
-      padding: 8px 20px;
-      font-size: 18px;
-    }
-    .mobile-controls .lang-group {
-      padding: 4px;
-    }
-    .mobile-controls .lang-btn {
-      padding: 6px 16px;
-      font-size: 14px;
     }
 
     /* ==========================================================
@@ -609,7 +430,7 @@
       padding: 40px 30px;
       border-radius: 24px;
       border: 1px solid var(--card-border);
-      background: var(--card-bg);
+      background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
       backdrop-filter: blur(10px);
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       transform-style: preserve-3d;
@@ -677,7 +498,7 @@
       padding: 50px 45px;
       border-radius: 32px;
       border: 1px solid var(--card-border);
-      background: var(--card-bg);
+      background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
       backdrop-filter: blur(10px);
       animation: fadeInScale 0.5s ease forwards;
     }
@@ -692,7 +513,7 @@
       display: flex;
       justify-content: space-between;
       padding: 14px 0;
-      border-bottom: 1px solid var(--card-border);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       animation: slideInLeft 0.5s ease forwards;
       opacity: 0;
     }
@@ -708,7 +529,7 @@
       letter-spacing: 0.05em;
     }
     .member-detail-item .value {
-      color: var(--text-main);
+      color: #fff;
       font-weight: 700;
       font-size: 17px;
       text-align: right;
@@ -730,7 +551,7 @@
     }
 
     /* ==========================================================
-       お知らせ
+       お知らせ（英語表記）
     ========================================================== */
     .notice-box {
       overflow: hidden;
@@ -791,6 +612,11 @@
       margin-top: 8px;
       letter-spacing: 0.05em;
     }
+    .notice-empty {
+      padding: 30px;
+      text-align: center;
+      color: var(--text-sub);
+    }
 
     .load-more-wrap {
       text-align: center;
@@ -801,7 +627,7 @@
       padding: 14px 40px;
       border-radius: 999px;
       border: 1px solid var(--card-border);
-      background: var(--card-bg);
+      background: rgba(255,255,255,0.05);
       color: var(--text-main);
       font-size: 15px;
       font-weight: 700;
@@ -892,7 +718,7 @@
       box-shadow: 0 12px 30px rgba(6, 199, 85, 0.5);
     }
     .button.secondary {
-      background: var(--card-bg);
+      background: rgba(255,255,255,0.05);
       color: var(--text-main);
       border: 1px solid var(--card-border);
     }
@@ -934,9 +760,8 @@
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.1em;
-      border-top: 1px solid var(--footer-border);
+      border-top: 1px solid var(--card-border);
       animation: fadeInUp 1s ease;
-      transition: border-color 0.3s ease;
     }
 
     /* ==========================================================
@@ -975,7 +800,6 @@
     .credit-item h4 {
       font-weight: 700;
       margin-bottom: 4px;
-      color: var(--text-main);
     }
     .credit-item p {
       color: var(--text-sub);
@@ -988,7 +812,7 @@
       text-underline-offset: 2px;
     }
     .credit-item a:hover {
-      color: var(--text-main);
+      color: #fff;
     }
 
     /* ==========================================================
@@ -999,21 +823,6 @@
       .page { padding-top: 65px; }
       #page-404 { padding-top: 65px; }
       .menu-toggle { display: flex; }
-      .nav-controls {
-        gap: 8px;
-      }
-      .theme-toggle .label {
-        display: none;
-      }
-      .lang-btn {
-        padding: 2px 6px;
-        font-size: 10px;
-      }
-      .lang-group {
-        gap: 2px;
-        padding: 2px;
-      }
-
       nav {
         position: fixed;
         top: 65px; left: 0;
@@ -1022,10 +831,9 @@
         background: var(--bg-color);
         flex-direction: column;
         justify-content: center;
-        gap: 30px;
+        gap: 40px;
         transform: translateX(100%);
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        padding: 20px;
       }
       nav.active { transform: translateX(0); }
       nav a { font-size: 20px; }
@@ -1033,11 +841,6 @@
       .menu-toggle.active span:nth-child(2) { opacity: 0; }
       .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
       .logo span { display: none; }
-
-      .mobile-controls {
-        display: flex;
-      }
-
       .hero { min-height: calc(100vh - 65px); }
       .buttons { flex-direction: column; }
       .button { width: 100%; }
@@ -1100,44 +903,17 @@
 <header id="header">
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home">
-      <span data-i18n="siteTitle">神木チャンネル</span>
+      <span>神木チャンネル</span>
     </a>
-    <div class="nav-controls">
-      <!-- テーマ切替 -->
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-        <span class="icon" id="theme-icon">🌙</span>
-        <span class="label" id="theme-label">ダーク</span>
-      </button>
-      <!-- 言語切替 -->
-      <div class="lang-group" id="lang-group">
-        <button class="lang-btn active" data-lang="ja">JA</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="ko">KO</button>
-        <button class="lang-btn" data-lang="zh">中文</button>
-      </div>
-      <div class="menu-toggle" id="menu-toggle">
-        <span></span><span></span><span></span>
-      </div>
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span><span></span><span></span>
     </div>
     <nav id="nav-menu">
-      <a href="#q=home" data-page="home" data-i18n="nav.home">HOME</a>
-      <a href="#q=member" data-page="member" data-i18n="nav.member">MEMBER</a>
-      <a href="#q=notices" data-page="notices" data-i18n="nav.news">NEWS</a>
-      <a href="#q=about" data-page="about" data-i18n="nav.about">ABOUT</a>
-      <a href="#q=credit" data-page="credit" data-i18n="nav.credit">CREDIT</a>
-      <!-- モバイル用コントロール -->
-      <div class="mobile-controls">
-        <button class="theme-toggle" id="mobile-theme-toggle">
-          <span class="icon" id="mobile-theme-icon">🌙</span>
-          <span class="label" id="mobile-theme-label">ダーク</span>
-        </button>
-        <div class="lang-group" id="mobile-lang-group">
-          <button class="lang-btn active" data-lang="ja">JA</button>
-          <button class="lang-btn" data-lang="en">EN</button>
-          <button class="lang-btn" data-lang="ko">KO</button>
-          <button class="lang-btn" data-lang="zh">中文</button>
-        </div>
-      </div>
+      <a href="#q=home" data-page="home">HOME</a>
+      <a href="#q=member" data-page="member">MEMBER</a>
+      <a href="#q=notices" data-page="notices">NEWS</a>
+      <a href="#q=about" data-page="about">ABOUT</a>
+      <a href="#q=credit" data-page="credit">CREDIT</a>
     </nav>
   </div>
 </header>
@@ -1151,23 +927,23 @@
   <div id="page-home" class="page">
     <section class="hero">
       <div class="hero-inner">
-        <h1><span class="gradient-text" data-i18n="hero.title">神木チャンネル</span></h1>
+        <h1><span class="gradient-text">神木チャンネル</span></h1>
         <p class="hero-subtitle">
-          <span class="typewriter-wrap" data-i18n="hero.subtitle">2人で、なんか面白いこと。</span>
+          <span class="typewriter-wrap">2人で、なんか面白いこと。</span>
         </p>
         <div class="buttons">
-          <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener" data-i18n="buttons.youtube">YouTube</a>
-          <a class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener" data-i18n="buttons.line">LINE</a>
+          <a class="button primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTube</a>
+          <a class="button line" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">LINE</a>
         </div>
-        <div class="scroll" data-i18n="scroll">SCROLL</div>
+        <div class="scroll">SCROLL</div>
       </div>
     </section>
 
     <!-- お知らせ -->
     <section class="section">
       <div class="container">
-        <h2 class="section-title"><span class="gradient-text" data-i18n="news.title">NEWS</span></h2>
-        <p class="section-subtitle" data-i18n="news.subtitle">Latest updates from Kamiki Channel</p>
+        <h2 class="section-title"><span class="gradient-text">NEWS</span></h2>
+        <p class="section-subtitle">神木チャンネルからのお知らせ</p>
         <div id="notice-list" class="notice-box">
           <div class="notice" id="skeleton-loader">
             <div class="skeleton skeleton-date"></div>
@@ -1176,7 +952,7 @@
           </div>
         </div>
         <div class="load-more-wrap" id="load-more-wrap" style="display:none;">
-          <a class="load-more-btn" href="#q=notices" data-i18n="news.more">See More</a>
+          <a class="load-more-btn" href="#q=notices">もっと見る</a>
         </div>
       </div>
     </section>
@@ -1186,8 +962,8 @@
   <div id="page-member" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title"><span class="gradient-text" data-i18n="member.title">MEMBER</span></h2>
-        <p class="section-subtitle" data-i18n="member.subtitle">Meet the team</p>
+        <h2 class="section-title"><span class="gradient-text">MEMBER</span></h2>
+        <p class="section-subtitle">神木チャンネルのメンバー</p>
         <div class="cards" id="member-list"></div>
       </div>
     </section>
@@ -1204,16 +980,16 @@
   <div id="page-notices" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title"><span class="gradient-text" data-i18n="news.title">All News</span></h2>
-        <p class="section-subtitle" data-i18n="news.subtitle">Complete list of updates</p>
+        <h2 class="section-title"><span class="gradient-text">すべてのお知らせ</span></h2>
+        <p class="section-subtitle">神木チャンネルからのお知らせ一覧</p>
         <div id="all-notices-list" class="notice-box">
           <div class="notice">
             <div class="notice-date">Loading...</div>
-            <div class="notice-title" data-i18n="news.loading">Loading news...</div>
+            <div class="notice-title">読み込み中...</div>
           </div>
         </div>
         <div style="margin-top:24px; text-align:center;">
-          <a class="button secondary" href="#q=home" data-i18n="news.back">Back to Home</a>
+          <a class="button secondary" href="#q=home">ホームに戻る</a>
         </div>
       </div>
     </section>
@@ -1223,27 +999,27 @@
   <div id="page-about" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title"><span class="gradient-text" data-i18n="about.title">ABOUT</span></h2>
-        <p class="section-subtitle" data-i18n="about.subtitle">About Kamiki Channel</p>
+        <h2 class="section-title"><span class="gradient-text">ABOUT</span></h2>
+        <p class="section-subtitle">神木チャンネルについて</p>
         <div class="card scroll-animate">
           <h3>神木チャンネル</h3>
-          <p data-i18n="about.desc">神木チャンネルは、2人でいろいろなことに挑戦していくチャンネルです。<br><br>動画やお知らせなどを、このホームページから発信していきます。応援よろしくお願いします！</p>
+          <p>神木チャンネルは、2人でいろいろなことに挑戦していくチャンネルです。<br><br>動画やお知らせなどを、このホームページから発信していきます。応援よろしくお願いします！</p>
         </div>
         <div style="margin-top:30px; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
           <div class="card scroll-animate" style="text-align:center; padding:30px 20px;">
             <div style="font-size:36px; margin-bottom:8px;">🎯</div>
-            <h4 data-i18n="about.challenge">Challenge</h4>
-            <p style="font-size:13px;" data-i18n="about.challengeDesc">Trying new things</p>
+            <h4>挑戦</h4>
+            <p style="font-size:13px;">いろんなことに挑戦中</p>
           </div>
           <div class="card scroll-animate" style="text-align:center; padding:30px 20px;">
             <div style="font-size:36px; margin-bottom:8px;">👥</div>
-            <h4 data-i18n="about.together">Together</h4>
-            <p style="font-size:13px;" data-i18n="about.togetherDesc">Two creators, one vision</p>
+            <h4>2人で</h4>
+            <p style="font-size:13px;">仲良く活動中</p>
           </div>
           <div class="card scroll-animate" style="text-align:center; padding:30px 20px;">
             <div style="font-size:36px; margin-bottom:8px;">🎬</div>
-            <h4 data-i18n="about.entertainment">Entertainment</h4>
-            <p style="font-size:13px;" data-i18n="about.entertainmentDesc">Fun content for everyone</p>
+            <h4>エンタメ</h4>
+            <p style="font-size:13px;">面白い動画をお届け</p>
           </div>
         </div>
       </div>
@@ -1254,8 +1030,8 @@
   <div id="page-credit" class="page">
     <section class="section">
       <div class="container">
-        <h2 class="section-title"><span class="gradient-text" data-i18n="credit.title">CREDIT</span></h2>
-        <p class="section-subtitle" data-i18n="credit.subtitle">Resources &amp; tools used on this site</p>
+        <h2 class="section-title"><span class="gradient-text">CREDIT</span></h2>
+        <p class="section-subtitle">このサイトで使用している素材・サービス</p>
         <div class="credit-grid">
           <div class="credit-item">
             <span class="emoji">🔤</span>
@@ -1265,31 +1041,31 @@
           <div class="credit-item">
             <span class="emoji">🌐</span>
             <h4>GitHub API</h4>
-            <p>Fetching news from Issues<br><a href="https://github.com/" target="_blank" rel="noopener">github.com</a></p>
+            <p>お知らせデータの取得に使用<br><a href="https://github.com/" target="_blank" rel="noopener">github.com</a></p>
           </div>
           <div class="credit-item">
             <span class="emoji">🎨</span>
-            <h4>Particle Effect</h4>
-            <p>CSS animations (original)</p>
+            <h4>パーティクルエフェクト</h4>
+            <p>CSSアニメーションによる装飾<br>（オリジナル実装）</p>
           </div>
           <div class="credit-item">
             <span class="emoji">💻</span>
-            <h4>Development</h4>
-            <p>HTML / CSS / JavaScript</p>
+            <h4>開発環境</h4>
+            <p>Visual Studio Code / HTML / CSS / JavaScript</p>
           </div>
           <div class="credit-item">
             <span class="emoji">📱</span>
-            <h4>Icons</h4>
-            <p>Unicode Emoji<br><a href="https://unicode.org/emoji/" target="_blank" rel="noopener">unicode.org/emoji</a></p>
+            <h4>アイコン（絵文字）</h4>
+            <p>ユニコード絵文字を使用<br><a href="https://unicode.org/emoji/" target="_blank" rel="noopener">unicode.org/emoji</a></p>
           </div>
           <div class="credit-item">
             <span class="emoji">🚀</span>
-            <h4>Hosting</h4>
+            <h4>ホスティング</h4>
             <p>GitHub Pages<br><a href="https://pages.github.com/" target="_blank" rel="noopener">pages.github.com</a></p>
           </div>
         </div>
-        <div style="margin-top:40px; text-align:center; color:var(--text-sub); font-size:14px; border-top:1px solid var(--footer-border); padding-top:30px;">
-          <p data-i18n="credit.operated">This site is operated by Kamiki Channel.</p>
+        <div style="margin-top:40px; text-align:center; color:var(--text-sub); font-size:14px; border-top:1px solid var(--card-border); padding-top:30px;">
+          <p>このサイトは神木チャンネルによって運営されています。</p>
           <p style="margin-top:4px;">&copy; 2026 神木チャンネル</p>
         </div>
       </div>
@@ -1405,171 +1181,6 @@
     });
 
     /* ==================================================
-       テーマ切替
-    ================================================== */
-    (function() {
-      const html = document.documentElement;
-      const themeToggle = document.getElementById('theme-toggle');
-      const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
-      const themeIcon = document.getElementById('theme-icon');
-      const mobileThemeIcon = document.getElementById('mobile-theme-icon');
-      const themeLabel = document.getElementById('theme-label');
-      const mobileThemeLabel = document.getElementById('mobile-theme-label');
-
-      function setTheme(theme) {
-        html.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        if (theme === 'light') {
-          themeIcon.textContent = '☀️';
-          mobileThemeIcon.textContent = '☀️';
-          themeLabel.textContent = 'ライト';
-          mobileThemeLabel.textContent = 'ライト';
-        } else {
-          themeIcon.textContent = '🌙';
-          mobileThemeIcon.textContent = '🌙';
-          themeLabel.textContent = 'ダーク';
-          mobileThemeLabel.textContent = 'ダーク';
-        }
-      }
-
-      // 保存されたテーマを読み込み
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      setTheme(savedTheme);
-
-      themeToggle.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        setTheme(current === 'dark' ? 'light' : 'dark');
-      });
-      mobileThemeToggle.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        setTheme(current === 'dark' ? 'light' : 'dark');
-      });
-    })();
-
-    /* ==================================================
-       言語切替
-    ================================================== */
-    (function() {
-      const langBtns = document.querySelectorAll('#lang-group .lang-btn');
-      const mobileLangBtns = document.querySelectorAll('#mobile-lang-group .lang-btn');
-      const i18nElements = document.querySelectorAll('[data-i18n]');
-
-      let currentLang = localStorage.getItem('lang') || 'ja';
-
-      function setLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('lang', lang);
-
-        // ボタンのアクティブ状態
-        langBtns.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.lang === lang);
-        });
-        mobileLangBtns.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.lang === lang);
-        });
-
-        // テキスト更新
-        const dict = LANGUAGES[lang];
-        if (!dict) return;
-
-        i18nElements.forEach(el => {
-          const key = el.dataset.i18n;
-          const value = getNestedValue(dict, key);
-          if (value !== undefined) {
-            el.innerHTML = value;
-          }
-        });
-
-        // メンバーカードの再レンダリング（言語依存テキストがあるので）
-        renderMemberList();
-
-        // メンバー詳細が表示されていれば再レンダリング
-        const detailPage = document.getElementById('page-member-detail');
-        if (detailPage && detailPage.classList.contains('active')) {
-          const memberId = getMemberIdFromHash();
-          if (memberId) renderMemberDetail(memberId);
-        }
-      }
-
-      function getNestedValue(obj, path) {
-        return path.split('.').reduce((o, p) => (o && o[p] !== undefined) ? o[p] : undefined, obj);
-      }
-
-      // 言語ボタンのイベント
-      langBtns.forEach(btn => {
-        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
-      });
-      mobileLangBtns.forEach(btn => {
-        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
-      });
-
-      // 初期言語適用
-      setLanguage(currentLang);
-
-      // ページ切り替え時に言語再適用（新しく追加された要素にも対応）
-      window.addEventListener('hashchange', () => {
-        // 少し遅延してから再適用（DOM更新後）
-        setTimeout(() => {
-          const dict = LANGUAGES[currentLang];
-          if (!dict) return;
-          document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.dataset.i18n;
-            const value = getNestedValue(dict, key);
-            if (value !== undefined) {
-              el.innerHTML = value;
-            }
-          });
-          // メンバー詳細が表示されていれば再レンダリング
-          const detailPage = document.getElementById('page-member-detail');
-          if (detailPage && detailPage.classList.contains('active')) {
-            const memberId = getMemberIdFromHash();
-            if (memberId) renderMemberDetail(memberId);
-          }
-        }, 50);
-      });
-
-      // メンバー一覧レンダリング（言語対応）
-      window.renderMemberList = function() {
-        const container = document.getElementById('member-list');
-        if (!container) return;
-        const ids = Object.keys(MEMBERS);
-        if (ids.length === 0) {
-          container.innerHTML = '<p style="color:var(--text-sub);">No members found.</p>';
-          return;
-        }
-        const dict = LANGUAGES[currentLang] || LANGUAGES.ja;
-        container.innerHTML = ids.map(id => {
-          const m = MEMBERS[id];
-          return `
-            <a href="#q=member/${id}" class="card member-card scroll-animate">
-              <h3>${m.name}</h3>
-              <div class="member-role">${m.role || ''}</div>
-              <p>神木チャンネルのメンバー。</p>
-              <div class="click-hint">${dict.member.clickHint || 'Tap for details'}</div>
-            </a>
-          `;
-        }).join('');
-        // スクロールアニメーション再適用
-        setTimeout(() => {
-          document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
-            if ('IntersectionObserver' in window) {
-              const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                  }
-                });
-              }, { threshold: 0.15 });
-              observer.observe(el);
-            } else {
-              el.classList.add('visible');
-            }
-          });
-        }, 100);
-      };
-    })();
-
-    /* ==================================================
        ページルーティング
     ================================================== */
     const validPages = ['home', 'member', 'about', 'notices', 'credit'];
@@ -1603,7 +1214,6 @@
       }
       return null;
     }
-    window.getMemberIdFromHash = getMemberIdFromHash;
 
     function showPage() {
       const page = getPageFromHash();
@@ -1660,18 +1270,57 @@
     window.addEventListener('hashchange', showPage);
 
     /* ==================================================
-       メンバー詳細レンダリング（言語対応）
+       メンバー一覧
+    ================================================== */
+    function renderMemberList() {
+      const container = document.getElementById('member-list');
+      if (!container) return;
+      const ids = Object.keys(MEMBERS);
+      if (ids.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>';
+        return;
+      }
+      container.innerHTML = ids.map(id => {
+        const m = MEMBERS[id];
+        return `
+          <a href="#q=member/${id}" class="card member-card scroll-animate">
+            <h3>${m.name}</h3>
+            <div class="member-role">${m.role || ''}</div>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </a>
+        `;
+      }).join('');
+      setTimeout(() => {
+        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('visible');
+                }
+              });
+            }, { threshold: 0.15 });
+            observer.observe(el);
+          } else {
+            el.classList.add('visible');
+          }
+        });
+      }, 100);
+    }
+
+    /* ==================================================
+       メンバー詳細
     ================================================== */
     function renderMemberDetail(id) {
       const container = document.getElementById('member-detail-content');
       if (!container) return;
       const m = MEMBERS[id];
-      const dict = LANGUAGES[currentLang] || LANGUAGES.ja;
       if (!m) {
         container.innerHTML = `
-          <h1 style="text-align:center;color:var(--text-sub);">${dict.member.notFound || 'Member not found'}</h1>
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
           <div style="text-align:center;margin-top:20px;">
-            <a class="button secondary" href="#q=member">${dict.member.back || 'Back'}</a>
+            <a class="button secondary" href="#q=member">戻る</a>
           </div>
         `;
         return;
@@ -1679,26 +1328,25 @@
       container.innerHTML = `
         <h1>${m.name}</h1>
         <div class="member-detail-item">
-          <span class="label">Hobby</span>
+          <span class="label">趣味</span>
           <span class="value">${m.hobby || '-'}</span>
         </div>
         <div class="member-detail-item">
-          <span class="label">Skill</span>
+          <span class="label">得意なこと</span>
           <span class="value">${m.skill || '-'}</span>
         </div>
         <div class="member-detail-item">
-          <span class="label">Role</span>
+          <span class="label">役割</span>
           <span class="value">${m.role || '-'}</span>
         </div>
         <div style="text-align:center;margin-top:24px;">
-          <a class="back-link" href="#q=member">${dict.member.back || 'Back to Members'}</a>
+          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
         </div>
       `;
     }
-    window.renderMemberDetail = renderMemberDetail;
 
     /* ==================================================
-       お知らせ（GitHub API）
+       GitHub API お知らせ
     ================================================== */
     const noticeList = document.getElementById('notice-list');
     const allNoticesList = document.getElementById('all-notices-list');
@@ -1719,18 +1367,17 @@
     function renderNotices(issues, container, limit) {
       const items = limit ? issues.slice(0, limit) : issues;
       if (!items || items.length === 0) {
-        const dict = LANGUAGES[currentLang] || LANGUAGES.ja;
         container.innerHTML = `
           <div class="notice">
-            <div class="notice-title">${dict.news.title || 'News'}</div>
-            <div class="notice-description">${dict.news.empty || 'No news at the moment.'}</div>
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">現在、お知らせはありません。</div>
           </div>
         `;
         return;
       }
       container.innerHTML = items.map((issue, index) => {
         const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
-        const title = issue.title || 'News';
+        const title = issue.title || 'お知らせ';
         const body = issue.body ? issue.body.slice(0, 150) + (issue.body.length > 150 ? '...' : '') : '';
         const labels = issue.labels.map(l => l.name).join(' ');
         return `
@@ -1751,12 +1398,11 @@
       const repo = CONFIG.GITHUB_REPO;
       const token = CONFIG.GITHUB_TOKEN || '';
       const label = CONFIG.GITHUB_LABEL || '';
-      const dict = LANGUAGES[currentLang] || LANGUAGES.ja;
       if (!owner || !repo) {
         noticeList.innerHTML = `
           <div class="notice">
-            <div class="notice-title">${dict.news.title || 'News'}</div>
-            <div class="notice-description">GitHub repository not configured.</div>
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">GitHubリポジトリが設定されていません。</div>
           </div>
         `;
         return;
@@ -1770,8 +1416,11 @@
         if (res.status === 404) {
           noticeList.innerHTML = `
             <div class="notice">
-              <div class="notice-title">${dict.news.title || 'News'}</div>
-              <div class="notice-description">Repository not found.<br><span style="font-size:12px; color:#666;">Check "${owner}/${repo}"</span></div>
+              <div class="notice-title">お知らせ</div>
+              <div class="notice-description">
+                リポジトリが見つかりません。<br>
+                <span style="font-size:12px; color:#666;">「${owner}/${repo}」を確認してください。</span>
+              </div>
             </div>
           `;
           return;
@@ -1784,11 +1433,13 @@
         renderNotices(issues, noticeList, 5);
         loadMoreWrap.style.display = issues.length > 5 ? 'block' : 'none';
       } catch (err) {
-        console.error('News fetch error:', err);
+        console.error('お知らせ取得エラー:', err);
         noticeList.innerHTML = `
           <div class="notice">
-            <div class="notice-title">${dict.news.title || 'Failed to load news'}</div>
-            <div class="notice-description">Error: ${escapeHTML(err.message)}</div>
+            <div class="notice-title">お知らせの読み込みに失敗しました</div>
+            <div class="notice-description">
+              エラー: ${escapeHTML(err.message)}
+            </div>
           </div>
         `;
       }
@@ -1796,7 +1447,6 @@
 
     async function renderAllNotices() {
       if (!allNoticesList) return;
-      const dict = LANGUAGES[currentLang] || LANGUAGES.ja;
       if (allIssues.length > 0) {
         renderNotices(allIssues, allNoticesList, null);
         return;
@@ -1816,10 +1466,10 @@
         allIssues = issues;
         renderNotices(issues, allNoticesList, null);
       } catch (err) {
-        console.error('All news error:', err);
+        console.error('全件取得エラー:', err);
         allNoticesList.innerHTML = `
           <div class="notice">
-            <div class="notice-title">${dict.news.title || 'Failed to load news'}</div>
+            <div class="notice-title">読み込みに失敗しました</div>
             <div class="notice-description">${escapeHTML(err.message)}</div>
           </div>
         `;
@@ -1829,13 +1479,9 @@
     /* ==================================================
        初期化
     ================================================== */
-    // メンバーリストの初期レンダリング（renderMemberListは言語切替で上書きされる）
     renderMemberList();
     fetchNotices();
     showPage();
-
-    // 言語切替後に再レンダリングされるように、renderMemberListをグローバルに公開
-    window.renderMemberList = renderMemberList;
 
   })();
 </script>
