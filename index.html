@@ -28,7 +28,9 @@
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
       CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json",
-      // ★ Google OAuth 2.0 Client ID（config.json に書けば上書きされます）
+      // ★ Google Client ID 専用ファイル（新しく作る）
+      GOOGLE_CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/google-config.json",
+      // ★ デフォルト値（ファイルがない場合）
       GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
     };
 
@@ -1284,18 +1286,18 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + config.json から Google Client ID も読み込み）
+     JavaScript（全機能 + google-config.json から Client ID 読み込み）
 ========================= -->
 <script>
   (function() {
     'use strict';
 
     // ==========================================================
-    // Google Login 管理（config.json から Client ID を読み込む）
+    // Google Login 管理（google-config.json から Client ID を読み込む）
     // ==========================================================
     let isLoggedIn = false;
     let userProfile = null;
-    let googleClientId = CONFIG.GOOGLE_CLIENT_ID; // デフォルト値（config.json で上書きされる）
+    let googleClientId = CONFIG.GOOGLE_CLIENT_ID; // デフォルト値
 
     // DOM 要素
     const loginPrompt = document.getElementById('login-prompt');
@@ -1353,15 +1355,14 @@
       }
     };
 
-    // Google ボタンをレンダリング（Client ID が設定されている場合のみ）
+    // Google ボタンをレンダリング
     function initGoogleLogin() {
-      // googleClientId は config.json から読み込まれた値を使用
       const clientId = googleClientId;
       if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
         document.getElementById('g_id_onload').innerHTML = `
           <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
             ⚠️ Google Client ID が設定されていません。<br>
-            <span style="font-size:12px; color:var(--text-sub);">config.json に google_client_id を追加してください。</span>
+            <span style="font-size:12px; color:var(--text-sub);">google-config.json に google_client_id を追加してください。</span>
           </div>
         `;
         return;
@@ -1385,7 +1386,6 @@
           }
         );
       } else {
-        // ライブラリがまだロードされていない場合のリトライ
         setTimeout(initGoogleLogin, 500);
       }
     }
@@ -1409,6 +1409,28 @@
 
     if (logoutBtn) {
       logoutBtn.addEventListener('click', logout);
+    }
+
+    // ==========================================================
+    // ★ google-config.json から Google Client ID を読み込む ★
+    // ==========================================================
+    async function loadGoogleConfig() {
+      try {
+        const url = CONFIG.GOOGLE_CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/google-config.json';
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Google config fetch failed');
+        const data = await res.json();
+        if (data.google_client_id) {
+          googleClientId = data.google_client_id;
+          console.log('[CONFIG] Google Client ID を google-config.json から読み込みました');
+        } else {
+          console.log('[CONFIG] google-config.json に google_client_id がありません（デフォルト値を使用）');
+        }
+        return true;
+      } catch (err) {
+        console.warn('[CONFIG] google-config.json 読み込み失敗（デフォルト値を使用）:', err.message);
+        return false;
+      }
     }
 
     // ==========================================================
@@ -1496,36 +1518,24 @@
     let maintenanceMode = false;
     let configLoaded = false;
 
-    // 設定ファイル読み込み（サーバーから）★ Google Client ID もここで取得 ★
+    // 設定ファイル読み込み（メンテナンスモード用）
     async function loadServerConfig() {
       try {
         const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
         const res = await fetch(url, { cache: 'no-cache' });
         if (!res.ok) throw new Error('Config fetch failed');
         const data = await res.json();
-        // maintenance
         const value = data.maintenance;
         maintenanceMode = (value === 'on' || value === true);
-        // ★ Google Client ID（config.json にあれば上書き）
-        if (data.google_client_id) {
-          googleClientId = data.google_client_id;
-          console.log('[CONFIG] Google Client ID を読み込みました');
-        } else {
-          console.log('[CONFIG] Google Client ID は config.json にありません（デフォルト値を使用）');
-        }
         configLoaded = true;
         console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode ? 'ON' : 'OFF' });
         updateMaintenanceUI();
-        // Googleログインを再初期化（Client ID が変わった場合に対応）
-        initGoogleLogin();
         return true;
       } catch (err) {
         console.warn('[CONFIG] サーバー設定読み込み失敗（デフォルトOFF）:', err.message);
         maintenanceMode = false;
         configLoaded = true;
         updateMaintenanceUI();
-        // デフォルトの Client ID で Google ログインを試みる
-        initGoogleLogin();
         return false;
       }
     }
@@ -2024,11 +2034,16 @@
     });
 
     /* ==================================================
-       初期化（サーバー設定読み込み→表示）
+       初期化（サーバー設定読み込み → Google Config 読み込み → 表示）
     ================================================== */
     async function init() {
-      // サーバー設定読み込み（Google Client ID も取得）
+      // 1. メンテナンス設定読み込み
       await loadServerConfig();
+      // 2. Google Client ID 専用ファイル読み込み
+      await loadGoogleConfig();
+      // 3. Google ログインボタン初期化
+      initGoogleLogin();
+      // 4. 各種表示
       renderMemberList('');
       fetchNotices();
       showPage();
