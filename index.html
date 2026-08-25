@@ -6,23 +6,28 @@
   <title>神木チャンネル</title>
   <meta name="description" content="神木チャンネル公式ホームページ">
 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
   <!-- ★★★ 設定はこの1箇所だけ！ ★★★ -->
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
   <script>
     const CONFIG = {
       // ----- GitHub API（お知らせ取得用） -----
-      GITHUB_OWNER: "kamiki-chyt",                 // ← あなたのGitHubユーザー名
-      GITHUB_REPO: "kamiki-ch-notices",            // ← お知らせ用リポジトリ名
-      GITHUB_TOKEN: "",                           // 空でOK（Publicリポジトリ）
-      GITHUB_LABEL: "",                           // 空でOK（全てのIssueを取得）
+      GITHUB_OWNER: "kamiki-chyt",
+      GITHUB_REPO: "kamiki-ch-notices",
+      GITHUB_TOKEN: "",
+      GITHUB_LABEL: "",
 
       // ----- YouTube Data API（最新動画表示用） -----
-      YOUTUBE_API_KEY: "AlzaSyAkay-dmpZbQiwmggo_XDQwFVrpKqGOXLc",     // ← Google Cloud Console で発行したAPIー
-      YOUTUBE_CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw", // ← チャンネルID（設定済み）
+      YOUTUBE_API_KEY: "YOUR_YOUTUBE_API_KEY",     // ← 要設定
+      YOUTUBE_CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw",
 
       // ----- Formspree（お問い合わせフォーム） -----
-      FORMSPREE_ID: "xljrvlvd",                    // ← Formspree のフォームID（設定済み）
+      FORMSPREE_ID: "xljrvlvd",
 
       // ----- 各種リンク -----
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
@@ -1387,7 +1392,7 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript
+     JavaScript（全機能 + 裏コマンド）
 ========================= -->
 <script>
   (function() {
@@ -1514,10 +1519,28 @@
       return null;
     }
 
+    // ==========================================================
+    // ★ 裏コマンド（URLパラメータ）の読み取り
+    // ==========================================================
+    function getUrlParams() {
+      return new URLSearchParams(window.location.search);
+    }
+
+    // コマンド一覧（機能説明）
+    // ?osi    : きぃの趣味を「推し活（莉犬くん、Coe.くん、如月ゆうくん）」に変更
+    // ?kamito : カミトの趣味を「BEYBLADE 超特訓中」に変更
+    // ?hide-news : ホームの「お知らせ」セクションを非表示
+    // ?debug  : コンソールにデバッグ情報を出力 + ページに簡易表示
+
+    /* ==================================================
+       メイン表示関数（拡張）
+    ================================================== */
     function showPage() {
       const page = getPageFromHash();
       const memberId = getMemberIdFromHash();
+      const params = getUrlParams();
 
+      // タイトル設定
       const titles = {
         home: '神木チャンネル',
         member: 'MEMBER - 神木チャンネル',
@@ -1530,14 +1553,51 @@
       };
       document.title = titles[page] || '神木チャンネル';
 
+      // 全ページ非表示
       document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
       document.getElementById('page-404').classList.remove('active');
 
+      // 裏コマンド: hide-news
+      if (params.has('hide-news')) {
+        const noticeSection = document.querySelector('#page-home .section:last-child');
+        if (noticeSection) noticeSection.style.display = 'none';
+      } else {
+        const noticeSection = document.querySelector('#page-home .section:last-child');
+        if (noticeSection) noticeSection.style.display = '';
+      }
+
+      // 裏コマンド: debug（コンソール表示 + ページにインジケーター）
+      if (params.has('debug')) {
+        console.log('[DEBUG MODE] 裏コマンドが有効です');
+        console.log('  - osi:', params.has('osi'));
+        console.log('  - kamito:', params.has('kamito'));
+        console.log('  - hide-news:', params.has('hide-news'));
+        console.log('  - debug:', params.has('debug'));
+        // デバッグ表示用のバッジを追加
+        let badge = document.getElementById('debug-badge');
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.id = 'debug-badge';
+          badge.style.cssText = `
+            position: fixed; bottom: 80px; left: 20px;
+            background: rgba(139,92,246,0.8); color: #fff;
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+            z-index: 9998; backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+          `;
+          badge.textContent = '🐞 DEBUG MODE';
+          document.body.appendChild(badge);
+        }
+      } else {
+        const badge = document.getElementById('debug-badge');
+        if (badge) badge.remove();
+      }
+
+      // 404 または通常ページ
       if (page === '404') {
         document.getElementById('page-404').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.remove('active');
-        });
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
@@ -1546,7 +1606,7 @@
         const target = document.getElementById('page-member-detail');
         if (target) {
           target.classList.add('active');
-          renderMemberDetail(memberId);
+          renderMemberDetail(memberId, params);
         }
         document.querySelectorAll('nav a[data-page]').forEach(link => {
           link.classList.toggle('active', link.dataset.page === 'member');
@@ -1571,7 +1631,56 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    window.addEventListener('hashchange', showPage);
+    /* ==================================================
+       メンバー詳細表示（裏コマンド対応）
+    ================================================== */
+    function renderMemberDetail(id, params) {
+      const container = document.getElementById('member-detail-content');
+      if (!container) return;
+
+      // 元データをコピー
+      const m = MEMBERS[id];
+      if (!m) {
+        container.innerHTML = `
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
+          <div style="text-align:center;margin-top:20px;">
+            <a class="button secondary" href="#q=member">戻る</a>
+          </div>
+        `;
+        return;
+      }
+
+      // コピーして編集可能に
+      const member = { ...m };
+
+      // ★ 裏コマンド適用 ★
+      if (id === 'kii' && params.has('osi')) {
+        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
+      }
+      if (id === 'kamito' && params.has('kamito')) {
+        member.hobby = 'BEYBLADE 超特訓中';
+      }
+
+      // 表示
+      container.innerHTML = `
+        <h1>${member.name}</h1>
+        <div class="member-detail-item">
+          <span class="label">趣味</span>
+          <span class="value">${member.hobby || '-'}</span>
+        </div>
+        <div class="member-detail-item">
+          <span class="label">得意なこと</span>
+          <span class="value">${member.skill || '-'}</span>
+        </div>
+        <div class="member-detail-item">
+          <span class="label">役割</span>
+          <span class="value">${member.role || '-'}</span>
+        </div>
+        <div style="text-align:center;margin-top:24px;">
+          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
+        </div>
+      `;
+    }
 
     /* ==================================================
        メンバー一覧（検索対応）
@@ -1623,7 +1732,7 @@
       }, 100);
     }
 
-    // メンバー検索
+    // メンバー検索イベント
     (function() {
       const input = document.getElementById('member-search-input');
       const clear = document.getElementById('member-search-clear');
@@ -1638,42 +1747,6 @@
         });
       }
     })();
-
-    /* ==================================================
-       メンバー詳細
-    ================================================== */
-    function renderMemberDetail(id) {
-      const container = document.getElementById('member-detail-content');
-      if (!container) return;
-      const m = MEMBERS[id];
-      if (!m) {
-        container.innerHTML = `
-          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
-          <div style="text-align:center;margin-top:20px;">
-            <a class="button secondary" href="#q=member">戻る</a>
-          </div>
-        `;
-        return;
-      }
-      container.innerHTML = `
-        <h1>${m.name}</h1>
-        <div class="member-detail-item">
-          <span class="label">趣味</span>
-          <span class="value">${m.hobby || '-'}</span>
-        </div>
-        <div class="member-detail-item">
-          <span class="label">得意なこと</span>
-          <span class="value">${m.skill || '-'}</span>
-        </div>
-        <div class="member-detail-item">
-          <span class="label">役割</span>
-          <span class="value">${m.role || '-'}</span>
-        </div>
-        <div style="text-align:center;margin-top:24px;">
-          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
-        </div>
-      `;
-    }
 
     /* ==================================================
        お知らせ（検索対応）
@@ -1746,7 +1819,7 @@
       loadMoreWrap.style.display = allIssues.length > 5 && !filter ? 'block' : 'none';
     }
 
-    // お知らせ検索
+    // お知らせ検索イベント
     (function() {
       const input = document.getElementById('search-input');
       const clear = document.getElementById('search-clear');
@@ -1926,11 +1999,20 @@
     });
 
     /* ==================================================
-       初期化
+       初期表示 + ハッシュ変更監視
     ================================================== */
     renderMemberList('');
     fetchNotices();
     showPage();
+
+    // ハッシュ変更時も裏コマンドを再適用するため showPage を再実行
+    window.addEventListener('hashchange', showPage);
+
+    // 必要に応じてURLパラメータ変更時も再描画（ページリロードなしでパラメータ変更は稀なので無視）
+    // ただし、ユーザーが手動でパラメータを変えた場合に対応するため、popstateイベントも監視
+    window.addEventListener('popstate', () => {
+      showPage();
+    });
 
   })();
 </script>
