@@ -28,10 +28,10 @@
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
       CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json",
-      // ★ Google Client ID 専用ファイル（新しく作る）
       GOOGLE_CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/google-config.json",
-      // ★ デフォルト値（ファイルがない場合）
-      GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+      GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+      // Netlify Functions のベースURL（デプロイ後に変更）
+      API_BASE_URL: "https://your-site.netlify.app/.netlify/functions"
     };
 
     const MEMBERS = {
@@ -211,6 +211,7 @@
     .logo img { display:none; }
     nav {
       display:flex; align-items:center; gap:30px;
+      flex-wrap:nowrap;
     }
     nav a {
       color:var(--text-sub);
@@ -219,6 +220,7 @@
       transition:color 0.3s ease;
       -webkit-tap-highlight-color:transparent;
       outline:none;
+      white-space:nowrap;
     }
     nav a::after {
       content:'';
@@ -229,6 +231,16 @@
     }
     nav a:hover, nav a.active { color:var(--text-main); }
     nav a.active::after { width:100%; }
+
+    /* ログインリンク */
+    nav a.login-link {
+      color:var(--accent-color);
+      font-weight:900;
+    }
+    nav a.login-link::after {
+      background:var(--accent-gradient);
+    }
+    nav a.login-link:hover { color:#fff; }
 
     .menu-toggle {
       display:none;
@@ -241,6 +253,30 @@
       background:var(--text-main);
       transition:0.3s ease;
       transform-origin:left;
+    }
+
+    /* モバイルメニュー（スクロール可能） */
+    @media(max-width:768px){
+      .menu-toggle { display:flex; }
+      nav {
+        position:fixed; top:65px; left:0;
+        width:100%; height:calc(100vh - 65px);
+        background:var(--bg-color);
+        flex-direction:column;
+        justify-content:flex-start;
+        padding:30px 20px;
+        gap:24px;
+        transform:translateX(100%);
+        transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+        overflow-y:auto; /* ★ スクロール可能に */
+        -webkit-overflow-scrolling:touch;
+      }
+      nav.active { transform:translateX(0); }
+      nav a { font-size:20px; }
+      .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
+      .menu-toggle.active span:nth-child(2){ opacity:0; }
+      .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
+      .logo span { display:none; }
     }
 
     /* ===== ページ共通 ===== */
@@ -565,32 +601,8 @@
       color:var(--text-sub); font-size:14px; margin-bottom:20px;
     }
 
-    /* ===== コンタクトフォーム (Google Login 対応) ===== */
-    .contact-wrapper {
-      max-width:600px; margin:0 auto;
-    }
-    .contact-form {
-      background:var(--card-bg);
-      border-radius:24px;
-      border:1px solid var(--card-border);
-      padding:40px 35px;
-      backdrop-filter:blur(10px);
-      transition:all 0.3s ease;
-    }
-    .contact-form.locked {
-      opacity:0.5;
-      pointer-events:none;
-      filter:blur(2px);
-      position:relative;
-    }
-    .contact-form.locked::after {
-      content:'';
-      position:absolute;
-      top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.4);
-      border-radius:24px;
-      z-index:1;
-    }
+    /* ===== コンタクトフォーム ===== */
+    .contact-form { max-width:600px; margin:0 auto; }
     .contact-form label {
       display:block;
       color:var(--text-sub); font-size:13px; font-weight:700;
@@ -656,65 +668,6 @@
     }
     .contact-form .submit-btn.fs-submitting {
       opacity:0.7; cursor:wait;
-    }
-
-    /* Google Login UI */
-    .login-section {
-      text-align:center;
-      margin-bottom:30px;
-      padding:24px;
-      border-radius:20px;
-      border:1px solid var(--card-border);
-      background:var(--card-bg);
-    }
-    .login-section .user-info {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    .login-section .user-info img {
-      width:48px;
-      height:48px;
-      border-radius:50%;
-      border:2px solid var(--accent-color);
-    }
-    .login-section .user-info .name {
-      font-weight:700;
-      font-size:18px;
-    }
-    .login-section .user-info .email {
-      color:var(--text-sub);
-      font-size:14px;
-    }
-    .login-section .logout-btn {
-      background:rgba(255,107,107,0.15);
-      color:#ff6b6b;
-      border:1px solid rgba(255,107,107,0.3);
-      padding:6px 18px;
-      border-radius:999px;
-      font-weight:700;
-      font-size:13px;
-      cursor:pointer;
-      transition:all 0.3s ease;
-    }
-    .login-section .logout-btn:hover {
-      background:rgba(255,107,107,0.25);
-    }
-    .login-section .login-prompt {
-      color:var(--text-sub);
-      font-size:15px;
-    }
-    .login-section .login-prompt .icon {
-      font-size:32px;
-      display:block;
-      margin-bottom:8px;
-    }
-    #g_id_onload {
-      display:flex;
-      justify-content:center;
-      margin-top:12px;
     }
 
     /* ===== YouTube ===== */
@@ -911,28 +864,133 @@
       color:#ff6b6b;
     }
 
+    /* ===== ログインモーダル ===== */
+    .login-modal {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.85);
+      backdrop-filter:blur(8px);
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .login-modal.active {
+      display:flex;
+      animation:fadeInScale 0.3s ease forwards;
+    }
+    .login-modal-content {
+      background:var(--bg-color);
+      border:1px solid var(--card-border);
+      border-radius:28px;
+      padding:40px 35px;
+      max-width:420px;
+      width:100%;
+      box-shadow:0 25px 60px rgba(0,0,0,0.8);
+      text-align:center;
+      position:relative;
+    }
+    .login-modal-content .close-btn {
+      position:absolute;
+      top:14px;
+      right:20px;
+      font-size:28px;
+      color:var(--text-sub);
+      cursor:pointer;
+      transition:color 0.3s ease;
+      background:none;
+      border:none;
+    }
+    .login-modal-content .close-btn:hover { color:#fff; }
+    .login-modal-content h2 {
+      font-size:28px;
+      font-weight:900;
+      margin-bottom:8px;
+      background:var(--accent-gradient);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .login-modal-content p {
+      color:var(--text-sub);
+      font-size:14px;
+      margin-bottom:24px;
+    }
+    .login-modal-content .divider {
+      color:var(--text-sub);
+      font-size:13px;
+      padding:0 20px;
+      position:relative;
+      margin:16px 0;
+    }
+    .login-modal-content .divider::before,
+    .login-modal-content .divider::after {
+      content:'';
+      position:absolute;
+      top:50%;
+      width:40px;
+      height:1px;
+      background:var(--card-border);
+    }
+    .login-modal-content .divider::before { left:0; }
+    .login-modal-content .divider::after { right:0; }
+    .login-modal-content .login-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      width:100%;
+      padding:14px 20px;
+      border-radius:999px;
+      border:1px solid var(--card-border);
+      background:rgba(255,255,255,0.03);
+      color:var(--text-main);
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      margin-bottom:12px;
+      text-decoration:none;
+    }
+    .login-modal-content .login-btn:hover {
+      background:rgba(255,255,255,0.08);
+      border-color:var(--accent-color);
+      transform:translateY(-2px);
+    }
+    .login-modal-content .login-btn .icon {
+      font-size:24px;
+    }
+    .login-modal-content .login-btn.google {
+      border-color:rgba(255,255,255,0.15);
+    }
+    .login-modal-content .login-btn.google:hover {
+      border-color:#4285F4;
+      background:rgba(66,133,244,0.1);
+    }
+    .login-modal-content .login-btn.scratch {
+      border-color:rgba(255,255,255,0.15);
+    }
+    .login-modal-content .login-btn.scratch:hover {
+      border-color:#ff8a00;
+      background:rgba(255,138,0,0.1);
+    }
+    .login-modal-content .already-logged {
+      color:#06C755;
+      font-weight:700;
+      padding:12px;
+      border-radius:12px;
+      background:rgba(6,199,85,0.1);
+      border:1px solid rgba(6,199,85,0.2);
+      margin-bottom:12px;
+    }
+
     /* ===== レスポンシブ ===== */
     @media(max-width:768px){
       .nav { height:65px; }
       .page { padding-top:65px; }
       #page-404 { padding-top:65px; }
       #page-maintenance { padding-top:65px; }
-      .menu-toggle { display:flex; }
-      nav {
-        position:fixed; top:65px; left:0;
-        width:100%; height:calc(100vh - 65px);
-        background:var(--bg-color);
-        flex-direction:column; justify-content:center;
-        gap:40px;
-        transform:translateX(100%);
-        transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
-      }
-      nav.active { transform:translateX(0); }
-      nav a { font-size:20px; }
-      .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
-      .menu-toggle.active span:nth-child(2){ opacity:0; }
-      .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
-      .logo span { display:none; }
       .hero { min-height:calc(100vh - 65px); }
       .buttons { flex-direction:column; }
       .button { width:100%; }
@@ -952,8 +1010,14 @@
       .search-box { flex-direction:column; }
       .search-box input { min-width:100%; }
       .youtube-grid { grid-template-columns:1fr; }
-      .contact-form { padding:24px 18px; }
-      .login-section .user-info { flex-direction:column; }
+
+      .login-modal-content {
+        padding:30px 20px;
+        margin:10px;
+      }
+      .login-modal-content h2 { font-size:24px; }
+      .login-modal-content .divider::before,
+      .login-modal-content .divider::after { width:20px; }
     }
 
     @media(min-width:769px){
@@ -994,9 +1058,41 @@
       <a href="#q=settings" data-page="settings">SETTINGS</a>
       <a href="#q=about" data-page="about">ABOUT</a>
       <a href="#q=credit" data-page="credit">CREDIT</a>
+      <!-- ★ LOGINリンク（クリックでモーダル表示） -->
+      <a href="javascript:void(0)" class="login-link" id="login-menu-btn">LOGIN</a>
     </nav>
   </div>
 </header>
+
+<!-- =========================
+     ログインモーダル
+========================= -->
+<div class="login-modal" id="login-modal">
+  <div class="login-modal-content">
+    <button class="close-btn" id="login-modal-close">✕</button>
+    <h2>ログイン</h2>
+    <p>アカウントでログインして、限定機能を使おう！</p>
+
+    <!-- ログイン済み表示 -->
+    <div class="already-logged" id="already-logged" style="display:none;">
+      ✅ ログイン中: <span id="logged-username">ユーザー</span>
+    </div>
+
+    <!-- Googleログインボタン（Google Identity Services でレンダリング） -->
+    <div id="google-login-wrapper" style="margin-top:8px;"></div>
+
+    <div class="divider">または</div>
+
+    <!-- Scratchログインボタン -->
+    <a class="login-btn scratch" id="scratch-login-btn" href="#">
+      <span class="icon">🧩</span> Scratchでログイン
+    </a>
+
+    <div style="margin-top:16px; font-size:12px; color:var(--text-sub); opacity:0.6;">
+      GoogleまたはScratchアカウントでログインできます
+    </div>
+  </div>
+</div>
 
 <!-- =========================
      メインコンテンツ
@@ -1099,56 +1195,30 @@
     </section>
   </div>
 
-  <!-- CONTACT（Google Login 必須） -->
+  <!-- CONTACT -->
   <div id="page-contact" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">CONTACT</span></h2>
         <p class="section-subtitle">神木チャンネルへのお問い合わせ</p>
+        <div class="contact-form" style="max-width:600px; margin:0 auto;">
+          <form id="my-form" data-fs-form>
+            <label for="contact-name">お名前</label>
+            <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
+            <span class="field-error" data-fs-error="name"></span>
 
-        <div class="contact-wrapper">
+            <label for="contact-email">メールアドレス（任意）</label>
+            <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
+            <span class="field-error" data-fs-error="_replyto"></span>
 
-          <!-- ログインセクション -->
-          <div class="login-section" id="login-section">
-            <!-- 未ログイン時 -->
-            <div id="login-prompt">
-              <span class="icon">🔐</span>
-              <p class="login-prompt">お問い合わせには Google ログインが必要です</p>
-              <div id="g_id_onload"></div>
-            </div>
-            <!-- ログイン済み時（JSで表示切り替え） -->
-            <div id="user-info" style="display:none;">
-              <div class="user-info">
-                <img id="user-avatar" src="" alt="avatar">
-                <div>
-                  <div class="name" id="user-name">ユーザー名</div>
-                  <div class="email" id="user-email">email@example.com</div>
-                </div>
-                <button class="logout-btn" id="logout-btn">ログアウト</button>
-              </div>
-            </div>
-          </div>
+            <label for="contact-message">メッセージ</label>
+            <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
+            <span class="field-error" data-fs-error="message"></span>
 
-          <!-- フォーム（ログインしないと送信できない） -->
-          <div class="contact-form locked" id="contact-form-wrapper">
-            <form id="my-form" data-fs-form>
-              <label for="contact-name">お名前</label>
-              <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
-              <span class="field-error" data-fs-error="name"></span>
-
-              <label for="contact-email">メールアドレス（任意）</label>
-              <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
-              <span class="field-error" data-fs-error="_replyto"></span>
-
-              <label for="contact-message">メッセージ</label>
-              <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
-              <span class="field-error" data-fs-error="message"></span>
-
-              <button type="submit" class="submit-btn" data-fs-submit-btn disabled>送信する (ログインが必要)</button>
-              <div data-fs-success>✅ メッセージを送信しました！</div>
-              <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
-            </form>
-          </div>
+            <button type="submit" class="submit-btn" data-fs-submit-btn>送信する</button>
+            <div data-fs-success>✅ メッセージを送信しました！</div>
+            <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
+          </form>
         </div>
       </div>
     </section>
@@ -1247,8 +1317,9 @@
           <div class="credit-item"><span class="emoji">📺</span><h4>YouTube Data API</h4><p>最新動画の取得<br><a href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener">developers.google.com/youtube/v3</a></p></div>
           <div class="credit-item"><span class="emoji">📧</span><h4>Formspree</h4><p>お問い合わせフォーム<br><a href="https://formspree.io/" target="_blank" rel="noopener">formspree.io</a></p></div>
           <div class="credit-item"><span class="emoji">🔑</span><h4>Google Identity Services</h4><p>Googleログイン認証<br><a href="https://developers.google.com/identity" target="_blank" rel="noopener">developers.google.com/identity</a></p></div>
+          <div class="credit-item"><span class="emoji">🧩</span><h4>Scratch Auth</h4><p>Scratchログイン認証<br><a href="https://auth.itinerary.eu.org/" target="_blank" rel="noopener">auth.itinerary.eu.org</a></p></div>
           <div class="credit-item"><span class="emoji">🎨</span><h4>パーティクルエフェクト</h4><p>CSSアニメーション（オリジナル）</p></div>
-          <div class="credit-item"><span class="emoji">🚀</span><h4>ホスティング</h4><p>GitHub Pages<br><a href="https://pages.github.com/" target="_blank" rel="noopener">pages.github.com</a></p></div>
+          <div class="credit-item"><span class="emoji">🚀</span><h4>ホスティング</h4><p>Netlify + GitHub Pages<br><a href="https://www.netlify.com/" target="_blank" rel="noopener">netlify.com</a></p></div>
         </div>
         <div style="margin-top:40px; text-align:center; color:var(--text-sub); font-size:14px; border-top:1px solid var(--card-border); padding-top:30px;">
           <p>このサイトは神木チャンネルによって運営されています。</p>
@@ -1286,56 +1357,104 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + google-config.json から Client ID 読み込み）
+     JavaScript（全機能 + Google + Scratchログイン）
 ========================= -->
 <script>
   (function() {
     'use strict';
 
     // ==========================================================
-    // Google Login 管理（google-config.json から Client ID を読み込む）
+    // 認証状態管理
     // ==========================================================
     let isLoggedIn = false;
     let userProfile = null;
-    let googleClientId = CONFIG.GOOGLE_CLIENT_ID; // デフォルト値
+    let authProvider = null; // 'google' or 'scratch'
+
+    let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
+    const API_BASE = CONFIG.API_BASE_URL || 'https://your-site.netlify.app/.netlify/functions';
 
     // DOM 要素
-    const loginPrompt = document.getElementById('login-prompt');
-    const userInfoDiv = document.getElementById('user-info');
-    const userName = document.getElementById('user-name');
-    const userEmail = document.getElementById('user-email');
-    const userAvatar = document.getElementById('user-avatar');
-    const logoutBtn = document.getElementById('logout-btn');
-    const formWrapper = document.getElementById('contact-form-wrapper');
-    const submitBtn = document.querySelector('[data-fs-submit-btn]');
+    const loginModal = document.getElementById('login-modal');
+    const loginModalClose = document.getElementById('login-modal-close');
+    const loginMenuBtn = document.getElementById('login-menu-btn');
+    const scratchLoginBtn = document.getElementById('scratch-login-btn');
+    const alreadyLogged = document.getElementById('already-logged');
+    const loggedUsername = document.getElementById('logged-username');
 
-    function updateUI() {
+    // ==========================================================
+    // ログインモーダル制御
+    // ==========================================================
+    function openLoginModal() {
+      loginModal.classList.add('active');
+      // ログイン状態を更新
+      updateLoginUI();
+    }
+
+    function closeLoginModal() {
+      loginModal.classList.remove('active');
+    }
+
+    loginModalClose.addEventListener('click', closeLoginModal);
+    loginModal.addEventListener('click', function(e) {
+      if (e.target === this) closeLoginModal();
+    });
+    loginMenuBtn.addEventListener('click', openLoginModal);
+
+    // ESCキーで閉じる
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLoginModal();
+    });
+
+    // ==========================================================
+    // ログイン状態UI更新
+    // ==========================================================
+    function updateLoginUI() {
       if (isLoggedIn && userProfile) {
-        loginPrompt.style.display = 'none';
-        userInfoDiv.style.display = 'block';
-        userName.textContent = userProfile.name || 'ユーザー';
-        userEmail.textContent = userProfile.email || '';
-        userAvatar.src = userProfile.picture || '';
-        formWrapper.classList.remove('locked');
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = '送信する';
-        }
+        loginMenuBtn.textContent = '👤 ' + (userProfile.name || 'ユーザー');
+        loginMenuBtn.classList.add('active');
+        // モーダル内
+        alreadyLogged.style.display = 'block';
+        loggedUsername.textContent = userProfile.name || 'ユーザー';
+        // Googleログインボタンは表示しない（すでにログイン済み）
+        const wrapper = document.getElementById('google-login-wrapper');
+        if (wrapper) wrapper.style.display = 'none';
+        if (scratchLoginBtn) scratchLoginBtn.style.display = 'none';
       } else {
-        loginPrompt.style.display = 'block';
-        userInfoDiv.style.display = 'none';
-        formWrapper.classList.add('locked');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.textContent = '送信する (ログインが必要)';
-        }
+        loginMenuBtn.textContent = 'LOGIN';
+        loginMenuBtn.classList.remove('active');
+        alreadyLogged.style.display = 'none';
+        const wrapper = document.getElementById('google-login-wrapper');
+        if (wrapper) wrapper.style.display = 'block';
+        if (scratchLoginBtn) scratchLoginBtn.style.display = 'block';
       }
     }
 
-    // Google コールバック
+    // ==========================================================
+    // ログアウト
+    // ==========================================================
+    function logout() {
+      if (authProvider === 'google' && typeof google !== 'undefined' && google.accounts) {
+        google.accounts.id.disableAutoSelect();
+        google.accounts.id.revoke(userProfile?.email || '', () => {});
+      }
+      // Scratchはサーバーセッションがないのでローカルクリアのみ
+      isLoggedIn = false;
+      userProfile = null;
+      authProvider = null;
+      localStorage.removeItem('scratch_user');
+      updateLoginUI();
+      console.log('[Auth] ログアウトしました');
+    }
+
+    // ログアウト機能をグローバルに（設定ページなどから呼べるように）
+    window.logout = logout;
+
+    // ==========================================================
+    // Google ログイン
+    // ==========================================================
     window.onSignIn = function(response) {
-      const payload = response.credential;
       try {
+        const payload = response.credential;
         const base64Url = payload.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -1347,27 +1466,34 @@
           email: data.email,
           picture: data.picture
         };
+        authProvider = 'google';
         isLoggedIn = true;
-        updateUI();
+        updateLoginUI();
+        closeLoginModal();
         console.log('[Google] ログイン成功:', userProfile.name);
       } catch (e) {
         console.error('[Google] ログイン解析エラー:', e);
       }
     };
 
-    // Google ボタンをレンダリング
+    // ==========================================================
+    // Google ログインボタン初期化
+    // ==========================================================
     function initGoogleLogin() {
       const clientId = googleClientId;
       if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
-        document.getElementById('g_id_onload').innerHTML = `
-          <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
-            ⚠️ Google Client ID が設定されていません。<br>
-            <span style="font-size:12px; color:var(--text-sub);">google-config.json に google_client_id を追加してください。</span>
-          </div>
-        `;
+        console.warn('[Google] Client ID が設定されていません');
+        const wrapper = document.getElementById('google-login-wrapper');
+        if (wrapper) {
+          wrapper.innerHTML = `
+            <div style="color:#ff6b6b; font-size:13px; padding:10px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
+              ⚠️ Google Client ID 未設定<br>
+              <span style="font-size:11px; color:var(--text-sub);">google-config.json を確認</span>
+            </div>
+          `;
+        }
         return;
       }
-
       if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
         google.accounts.id.initialize({
           client_id: clientId,
@@ -1375,44 +1501,51 @@
           cancel_on_tap_outside: false,
           auto_select: false
         });
-        google.accounts.id.renderButton(
-          document.getElementById('g_id_onload'),
-          { 
-            theme: 'filled_black', 
-            size: 'large', 
+        const wrapper = document.getElementById('google-login-wrapper');
+        if (wrapper) {
+          google.accounts.id.renderButton(wrapper, {
+            theme: 'filled_black',
+            size: 'large',
             width: 300,
             text: 'signin_with',
             shape: 'pill'
-          }
-        );
+          });
+        }
       } else {
         setTimeout(initGoogleLogin, 500);
       }
     }
 
-    // ログアウト
-    function logout() {
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        google.accounts.id.disableAutoSelect();
-        google.accounts.id.revoke(userProfile?.email || '', () => {
-          isLoggedIn = false;
-          userProfile = null;
-          updateUI();
-          console.log('[Google] ログアウトしました');
-        });
-      } else {
-        isLoggedIn = false;
-        userProfile = null;
-        updateUI();
+    // ==========================================================
+    // Scratch ログイン
+    // ==========================================================
+    // 保存されたユーザー情報があれば復元
+    (function restoreScratchUser() {
+      const saved = localStorage.getItem('scratch_user');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          if (data.username) {
+            userProfile = { name: data.username, email: data.username + '@scratch', picture: '' };
+            authProvider = 'scratch';
+            isLoggedIn = true;
+            updateLoginUI();
+            console.log('[Scratch] セッション復元:', data.username);
+          }
+        } catch (e) {}
       }
-    }
+    })();
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', logout);
-    }
+    // Scratchログインボタン
+    scratchLoginBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Netlify Functions のリダイレクトエンドポイントを呼び出す
+      const redirectUrl = `${API_BASE}/auth-redirect`;
+      window.location.href = redirectUrl;
+    });
 
     // ==========================================================
-    // ★ google-config.json から Google Client ID を読み込む ★
+    // Google Client ID 読み込み（google-config.json）
     // ==========================================================
     async function loadGoogleConfig() {
       try {
@@ -1422,372 +1555,18 @@
         const data = await res.json();
         if (data.google_client_id) {
           googleClientId = data.google_client_id;
-          console.log('[CONFIG] Google Client ID を google-config.json から読み込みました');
-        } else {
-          console.log('[CONFIG] google-config.json に google_client_id がありません（デフォルト値を使用）');
+          console.log('[CONFIG] Google Client ID を読み込みました');
         }
         return true;
       } catch (err) {
-        console.warn('[CONFIG] google-config.json 読み込み失敗（デフォルト値を使用）:', err.message);
+        console.warn('[CONFIG] google-config.json 読み込み失敗:', err.message);
         return false;
       }
     }
 
     // ==========================================================
-    // パーティクル
+    // お知らせ取得（GitHub API）
     // ==========================================================
-    (function() {
-      const container = document.getElementById('particles');
-      if (!container) return;
-      for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        const size = 2 + Math.random() * 4;
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.animationDelay = (Math.random() * 20) + 's';
-        p.style.animationDuration = (12 + Math.random() * 15) + 's';
-        p.style.opacity = 0.1 + Math.random() * 0.3;
-        container.appendChild(p);
-      }
-    })();
-
-    /* ==================================================
-       トップへ戻るボタン
-    ================================================== */
-    (function() {
-      const btn = document.getElementById('back-to-top');
-      let visible = false;
-      window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (scrollY > 400 && !visible) { btn.classList.add('visible'); visible = true; }
-        else if (scrollY <= 400 && visible) { btn.classList.remove('visible'); visible = false; }
-      });
-      btn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    })();
-
-    /* ==================================================
-       スクロールアニメーション
-    ================================================== */
-    (function() {
-      const elements = document.querySelectorAll('.scroll-animate');
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-        elements.forEach(el => observer.observe(el));
-      } else {
-        elements.forEach(el => el.classList.add('visible'));
-      }
-    })();
-
-    /* ==================================================
-       ヘッダー スクロール
-    ================================================== */
-    (function() {
-      const header = document.getElementById('header');
-      window.addEventListener('scroll', () => {
-        header.classList.toggle('scrolled', window.scrollY > 50);
-      });
-    })();
-
-    /* ==================================================
-       ハンバーガー
-    ================================================== */
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    document.querySelectorAll('#nav-menu a[data-page]').forEach(link => {
-      link.addEventListener('click', () => {
-        menuToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-      });
-    });
-    menuToggle.addEventListener('click', () => {
-      menuToggle.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
-
-    /* ==================================================
-       ページルーティング（裏コマンド対応版）
-    ================================================== */
-    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
-    const memberIds = MEMBER_IDS || [];
-    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
-
-    let maintenanceMode = false;
-    let configLoaded = false;
-
-    // 設定ファイル読み込み（メンテナンスモード用）
-    async function loadServerConfig() {
-      try {
-        const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
-        const res = await fetch(url, { cache: 'no-cache' });
-        if (!res.ok) throw new Error('Config fetch failed');
-        const data = await res.json();
-        const value = data.maintenance;
-        maintenanceMode = (value === 'on' || value === true);
-        configLoaded = true;
-        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode ? 'ON' : 'OFF' });
-        updateMaintenanceUI();
-        return true;
-      } catch (err) {
-        console.warn('[CONFIG] サーバー設定読み込み失敗（デフォルトOFF）:', err.message);
-        maintenanceMode = false;
-        configLoaded = true;
-        updateMaintenanceUI();
-        return false;
-      }
-    }
-
-    function updateMaintenanceUI() {
-      const status = document.getElementById('maintenance-status');
-      const source = document.getElementById('maintenance-source');
-      if (status) {
-        status.textContent = maintenanceMode ? 'ON' : 'OFF';
-        status.className = 'status-badge' + (maintenanceMode ? '' : ' off');
-      }
-      if (source) {
-        source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
-      }
-    }
-
-    function parseHash() {
-      const hash = window.location.hash;
-      if (!hash || hash === '#') return { page: 'home', commands: [] };
-      if (hash.startsWith('#q=')) {
-        let raw = decodeURIComponent(hash.substring(3));
-        let parts = raw.split('=');
-        let path = parts[0];
-        let commands = parts.slice(1);
-        if (commandWords.includes(path)) {
-          return { page: 'home', commands: [path, ...commands] };
-        }
-        let page = '404';
-        let memberId = null;
-        if (path.startsWith('member/')) {
-          const id = path.split('/')[1];
-          if (memberIds.includes(id)) {
-            page = 'member-detail';
-            memberId = id;
-          } else {
-            page = '404';
-          }
-        } else if (validPages.includes(path)) {
-          page = path;
-        } else {
-          page = '404';
-        }
-        return { page, memberId, commands };
-      }
-      return { page: 'home', commands: [] };
-    }
-
-    function getPageFromHash() { return parseHash().page; }
-    function getMemberIdFromHash() { return parseHash().memberId; }
-    function getCommandsFromHash() { return parseHash().commands; }
-
-    /* ==================================================
-       メイン表示関数
-    ================================================== */
-    function showPage() {
-      const parsed = parseHash();
-      let page = parsed.page;
-      const memberId = parsed.memberId;
-      const commands = parsed.commands;
-
-      const titles = {
-        home: '神木チャンネル',
-        member: 'MEMBER - 神木チャンネル',
-        about: 'ABOUT - 神木チャンネル',
-        notices: 'NEWS - 神木チャンネル',
-        credit: 'CREDIT - 神木チャンネル',
-        video: 'VIDEO - 神木チャンネル',
-        contact: 'CONTACT - 神木チャンネル',
-        settings: 'SETTINGS - 神木チャンネル',
-        'member-detail': 'MEMBER - 神木チャンネル'
-      };
-      document.title = titles[page] || '神木チャンネル';
-
-      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-      document.getElementById('page-404').classList.remove('active');
-      document.getElementById('page-maintenance').classList.remove('active');
-
-      // メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
-      const isContact = (page === 'contact');
-      if (maintenanceMode && !isContact) {
-        document.getElementById('page-maintenance').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          if (link.dataset.page === 'contact') link.classList.add('active');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      // 裏コマンド: hide-news
-      const hideNews = commands.includes('hide-news');
-      const noticeSection = document.querySelector('#page-home .section:last-child');
-      if (noticeSection) {
-        noticeSection.style.display = hideNews ? 'none' : '';
-      }
-
-      // デバッグモード
-      const debugMode = commands.includes('debug');
-      let badge = document.getElementById('debug-badge');
-      if (debugMode) {
-        console.log('[DEBUG MODE] 裏コマンドが有効です');
-        console.log('  - commands:', commands);
-        console.log('  - maintenance:', maintenanceMode);
-        if (!badge) {
-          badge = document.createElement('div');
-          badge.id = 'debug-badge';
-          badge.style.cssText = `
-            position: fixed; bottom: 80px; left: 20px;
-            background: rgba(139,92,246,0.8); color: #fff;
-            padding: 8px 16px; border-radius: 20px;
-            font-size: 12px; font-weight: 700;
-            z-index: 9998; backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
-          `;
-          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
-          document.body.appendChild(badge);
-        } else {
-          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
-        }
-        const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) {
-          debugStatus.textContent = 'ON';
-          debugStatus.className = 'status-badge';
-        }
-      } else {
-        if (badge) badge.remove();
-        const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) {
-          debugStatus.textContent = 'OFF';
-          debugStatus.className = 'status-badge off';
-        }
-      }
-
-      if (page === '404') {
-        document.getElementById('page-404').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      if (page === 'member-detail' && memberId) {
-        const target = document.getElementById('page-member-detail');
-        if (target) {
-          target.classList.add('active');
-          renderMemberDetail(memberId, commands);
-        }
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.toggle('active', link.dataset.page === 'member');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const target = document.getElementById('page-' + page);
-      if (target) {
-        target.classList.add('active');
-        if (page === 'notices') renderAllNotices();
-        if (page === 'video') fetchYouTubeVideos();
-        if (page === 'settings') {
-          updateSettingsUI(commands);
-          updateMaintenanceUI();
-        }
-        if (page === 'contact') {
-          updateUI();
-        }
-      }
-      document.querySelectorAll('nav a[data-page]').forEach(link => {
-        link.classList.toggle('active', link.dataset.page === page);
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    /* ==================================================
-       メンバー詳細
-    ================================================== */
-    function renderMemberDetail(id, commands) {
-      const container = document.getElementById('member-detail-content');
-      if (!container) return;
-      const m = MEMBERS[id];
-      if (!m) {
-        container.innerHTML = `
-          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
-          <div style="text-align:center;margin-top:20px;">
-            <a class="button secondary" href="#q=member">戻る</a>
-          </div>
-        `;
-        return;
-      }
-      const member = { ...m };
-      if (id === 'kii' && commands.includes('osi')) {
-        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
-      }
-      if (id === 'kamito' && commands.includes('kamito')) {
-        member.hobby = 'BEYBLADE 超特訓中';
-      }
-      container.innerHTML = `
-        <h1>${member.name}</h1>
-        <div class="member-detail-item"><span class="label">趣味</span><span class="value">${member.hobby || '-'}</span></div>
-        <div class="member-detail-item"><span class="label">得意なこと</span><span class="value">${member.skill || '-'}</span></div>
-        <div class="member-detail-item"><span class="label">役割</span><span class="value">${member.role || '-'}</span></div>
-        <div style="text-align:center;margin-top:24px;">
-          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
-        </div>
-      `;
-    }
-
-    /* ==================================================
-       メンバー一覧
-    ================================================== */
-    function renderMemberList(filter = '') {
-      const container = document.getElementById('member-list');
-      if (!container) return;
-      const ids = Object.keys(MEMBERS);
-      if (ids.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>'; return; }
-      const filtered = filter ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter)) : ids;
-      if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
-      container.innerHTML = filtered.map(id => {
-        const m = MEMBERS[id];
-        return `
-          <a href="#q=member/${id}" class="card member-card scroll-animate">
-            <h3>${m.name}</h3>
-            <div class="member-role">${m.role || ''}</div>
-            <p>神木チャンネルのメンバー。</p>
-            <div class="click-hint">タップして詳細を見る</div>
-          </a>
-        `;
-      }).join('');
-      setTimeout(() => {
-        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
-          if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-            }, { threshold: 0.15 });
-            observer.observe(el);
-          } else { el.classList.add('visible'); }
-        });
-      }, 100);
-    }
-
-    // メンバー検索
-    (function() {
-      const input = document.getElementById('member-search-input');
-      const clear = document.getElementById('member-search-clear');
-      if (input) {
-        input.addEventListener('input', () => { renderMemberList(input.value); });
-        clear.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
-      }
-    })();
-
-    /* ==================================================
-       お知らせ（GitHub API）
-    ================================================== */
     const noticeList = document.getElementById('notice-list');
     const allNoticesList = document.getElementById('all-notices-list');
     const loadMoreWrap = document.getElementById('load-more-wrap');
@@ -1798,9 +1577,19 @@
 
     function renderNotices(issues, container, limit, filter = '') {
       let items = limit ? issues.slice(0, limit) : issues;
-      if (filter) { items = items.filter(item => (item.title || '').includes(filter) || (item.body || '').includes(filter)); }
+      if (filter) {
+        items = items.filter(item =>
+          (item.title || '').includes(filter) ||
+          (item.body || '').includes(filter)
+        );
+      }
       if (!items || items.length === 0) {
-        container.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div></div>`;
+        container.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div>
+          </div>
+        `;
         return;
       }
       container.innerHTML = items.map((issue, index) => {
@@ -1884,9 +1673,9 @@
       }
     }
 
-    /* ==================================================
-       YouTube 最新動画取得
-    ================================================== */
+    // ==========================================================
+    // YouTube 最新動画取得
+    // ==========================================================
     async function fetchYouTubeVideos() {
       const container = document.getElementById('youtube-list');
       if (!container) return;
@@ -1925,9 +1714,9 @@
       }
     }
 
-    /* ==================================================
-       Formspree AJAX 初期化
-    ================================================== */
+    // ==========================================================
+    // Formspree AJAX 初期化
+    // ==========================================================
     window.addEventListener('load', function() {
       if (window.formspree) {
         window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
@@ -1940,19 +1729,277 @@
       }
     });
 
-    // Formspree 送信前にログインチェック
-    document.addEventListener('click', function(e) {
-      const target = e.target.closest('[data-fs-submit-btn]');
-      if (target && !isLoggedIn) {
-        e.preventDefault();
-        alert('お問い合わせには Google ログインが必要です。');
+    // ==========================================================
+    // メンバー一覧
+    // ==========================================================
+    function renderMemberList(filter = '') {
+      const container = document.getElementById('member-list');
+      if (!container) return;
+      const ids = Object.keys(MEMBERS);
+      if (ids.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>'; return; }
+      const filtered = filter ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter)) : ids;
+      if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
+      container.innerHTML = filtered.map(id => {
+        const m = MEMBERS[id];
+        return `
+          <a href="#q=member/${id}" class="card member-card scroll-animate">
+            <h3>${m.name}</h3>
+            <div class="member-role">${m.role || ''}</div>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </a>
+        `;
+      }).join('');
+      setTimeout(() => {
+        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.15 });
+            observer.observe(el);
+          } else { el.classList.add('visible'); }
+        });
+      }, 100);
+    }
+
+    // メンバー検索
+    (function() {
+      const input = document.getElementById('member-search-input');
+      const clear = document.getElementById('member-search-clear');
+      if (input) {
+        input.addEventListener('input', () => { renderMemberList(input.value); });
+        clear.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
+      }
+    })();
+
+    // ==========================================================
+    // メンバー詳細
+    // ==========================================================
+    function renderMemberDetail(id, commands) {
+      const container = document.getElementById('member-detail-content');
+      if (!container) return;
+      const m = MEMBERS[id];
+      if (!m) {
+        container.innerHTML = `
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
+          <div style="text-align:center;margin-top:20px;">
+            <a class="button secondary" href="#q=member">戻る</a>
+          </div>
+        `;
+        return;
+      }
+      const member = { ...m };
+      if (id === 'kii' && commands.includes('osi')) {
+        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
+      }
+      if (id === 'kamito' && commands.includes('kamito')) {
+        member.hobby = 'BEYBLADE 超特訓中';
+      }
+      container.innerHTML = `
+        <h1>${member.name}</h1>
+        <div class="member-detail-item"><span class="label">趣味</span><span class="value">${member.hobby || '-'}</span></div>
+        <div class="member-detail-item"><span class="label">得意なこと</span><span class="value">${member.skill || '-'}</span></div>
+        <div class="member-detail-item"><span class="label">役割</span><span class="value">${member.role || '-'}</span></div>
+        <div style="text-align:center;margin-top:24px;">
+          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
+        </div>
+      `;
+    }
+
+    // ==========================================================
+    // ページルーティング
+    // ==========================================================
+    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
+    const memberIds = MEMBER_IDS || [];
+    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
+
+    let maintenanceMode = false;
+    let configLoaded = false;
+
+    // 設定ファイル読み込み（メンテナンスモード用）
+    async function loadServerConfig() {
+      try {
+        const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Config fetch failed');
+        const data = await res.json();
+        const value = data.maintenance;
+        maintenanceMode = (value === 'on' || value === true);
+        configLoaded = true;
+        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode ? 'ON' : 'OFF' });
+        updateMaintenanceUI();
+        return true;
+      } catch (err) {
+        console.warn('[CONFIG] サーバー設定読み込み失敗:', err.message);
+        maintenanceMode = false;
+        configLoaded = true;
+        updateMaintenanceUI();
         return false;
       }
-    }, true);
+    }
 
-    /* ==================================================
-       SETTINGS ページの機能
-    ================================================== */
+    function updateMaintenanceUI() {
+      const status = document.getElementById('maintenance-status');
+      const source = document.getElementById('maintenance-source');
+      if (status) {
+        status.textContent = maintenanceMode ? 'ON' : 'OFF';
+        status.className = 'status-badge' + (maintenanceMode ? '' : ' off');
+      }
+      if (source) {
+        source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
+      }
+    }
+
+    function parseHash() {
+      const hash = window.location.hash;
+      if (!hash || hash === '#') return { page: 'home', commands: [] };
+      if (hash.startsWith('#q=')) {
+        let raw = decodeURIComponent(hash.substring(3));
+        let parts = raw.split('=');
+        let path = parts[0];
+        let commands = parts.slice(1);
+        if (commandWords.includes(path)) {
+          return { page: 'home', commands: [path, ...commands] };
+        }
+        let page = '404';
+        let memberId = null;
+        if (path.startsWith('member/')) {
+          const id = path.split('/')[1];
+          if (memberIds.includes(id)) {
+            page = 'member-detail';
+            memberId = id;
+          } else {
+            page = '404';
+          }
+        } else if (validPages.includes(path)) {
+          page = path;
+        } else {
+          page = '404';
+        }
+        return { page, memberId, commands };
+      }
+      return { page: 'home', commands: [] };
+    }
+
+    function getPageFromHash() { return parseHash().page; }
+    function getMemberIdFromHash() { return parseHash().memberId; }
+    function getCommandsFromHash() { return parseHash().commands; }
+
+    function showPage() {
+      const parsed = parseHash();
+      let page = parsed.page;
+      const memberId = parsed.memberId;
+      const commands = parsed.commands;
+
+      const titles = {
+        home: '神木チャンネル',
+        member: 'MEMBER - 神木チャンネル',
+        about: 'ABOUT - 神木チャンネル',
+        notices: 'NEWS - 神木チャンネル',
+        credit: 'CREDIT - 神木チャンネル',
+        video: 'VIDEO - 神木チャンネル',
+        contact: 'CONTACT - 神木チャンネル',
+        settings: 'SETTINGS - 神木チャンネル',
+        'member-detail': 'MEMBER - 神木チャンネル'
+      };
+      document.title = titles[page] || '神木チャンネル';
+
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.getElementById('page-404').classList.remove('active');
+      document.getElementById('page-maintenance').classList.remove('active');
+
+      const isContact = (page === 'contact');
+      if (maintenanceMode && !isContact) {
+        document.getElementById('page-maintenance').classList.add('active');
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          if (link.dataset.page === 'contact') link.classList.add('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const hideNews = commands.includes('hide-news');
+      const noticeSection = document.querySelector('#page-home .section:last-child');
+      if (noticeSection) {
+        noticeSection.style.display = hideNews ? 'none' : '';
+      }
+
+      const debugMode = commands.includes('debug');
+      let badge = document.getElementById('debug-badge');
+      if (debugMode) {
+        console.log('[DEBUG MODE] 裏コマンドが有効です');
+        console.log('  - commands:', commands);
+        console.log('  - maintenance:', maintenanceMode);
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.id = 'debug-badge';
+          badge.style.cssText = `
+            position: fixed; bottom: 80px; left: 20px;
+            background: rgba(139,92,246,0.8); color: #fff;
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+            z-index: 9998; backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+          `;
+          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
+          document.body.appendChild(badge);
+        } else {
+          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
+        }
+        const debugStatus = document.getElementById('debug-status');
+        if (debugStatus) {
+          debugStatus.textContent = 'ON';
+          debugStatus.className = 'status-badge';
+        }
+      } else {
+        if (badge) badge.remove();
+        const debugStatus = document.getElementById('debug-status');
+        if (debugStatus) {
+          debugStatus.textContent = 'OFF';
+          debugStatus.className = 'status-badge off';
+        }
+      }
+
+      if (page === '404') {
+        document.getElementById('page-404').classList.add('active');
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      if (page === 'member-detail' && memberId) {
+        const target = document.getElementById('page-member-detail');
+        if (target) {
+          target.classList.add('active');
+          renderMemberDetail(memberId, commands);
+        }
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          link.classList.toggle('active', link.dataset.page === 'member');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const target = document.getElementById('page-' + page);
+      if (target) {
+        target.classList.add('active');
+        if (page === 'notices') renderAllNotices();
+        if (page === 'video') fetchYouTubeVideos();
+        if (page === 'settings') {
+          updateSettingsUI(commands);
+          updateMaintenanceUI();
+        }
+      }
+      document.querySelectorAll('nav a[data-page]').forEach(link => {
+        link.classList.toggle('active', link.dataset.page === page);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================================
+    // SETTINGS ページの機能
+    // ==========================================================
     function updateSettingsUI(commands) {
       const debugStatus = document.getElementById('debug-status');
       if (debugStatus) {
@@ -2033,21 +2080,22 @@
       location.reload();
     });
 
-    /* ==================================================
-       初期化（サーバー設定読み込み → Google Config 読み込み → 表示）
-    ================================================== */
+    // ==========================================================
+    // 初期化
+    // ==========================================================
     async function init() {
-      // 1. メンテナンス設定読み込み
-      await loadServerConfig();
-      // 2. Google Client ID 専用ファイル読み込み
       await loadGoogleConfig();
-      // 3. Google ログインボタン初期化
-      initGoogleLogin();
-      // 4. 各種表示
+      await loadServerConfig();
       renderMemberList('');
       fetchNotices();
+      initGoogleLogin();
       showPage();
-      updateUI();
+      updateLoginUI();
+
+      // カスタムイベント: ログイン状態変更時にUI更新
+      window.addEventListener('loginStateChanged', function() {
+        updateLoginUI();
+      });
     }
 
     init();
