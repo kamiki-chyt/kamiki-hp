@@ -14,7 +14,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
-  <!-- ★★★ 設定はこの1箇所だけ！（デフォルト値） ★★★ -->
+  <!-- ★★★ 設定はこの1箇所だけ！ ★★★ -->
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
   <script>
     const CONFIG = {
@@ -29,9 +29,7 @@
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
       CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json",
       GOOGLE_CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/google-config.json",
-      GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-      // Netlify Functions のベースURL（デプロイ後に変更）
-      API_BASE_URL: "https://your-site.netlify.app/.netlify/functions"
+      GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
     };
 
     const MEMBERS = {
@@ -864,7 +862,7 @@
       color:#ff6b6b;
     }
 
-    /* ===== ログインモーダル ===== */
+    /* ===== ログインモーダル（Googleのみ） ===== */
     .login-modal {
       display:none;
       position:fixed;
@@ -886,7 +884,7 @@
       border:1px solid var(--card-border);
       border-radius:28px;
       padding:40px 35px;
-      max-width:420px;
+      max-width:400px;
       width:100%;
       box-shadow:0 25px 60px rgba(0,0,0,0.8);
       text-align:center;
@@ -917,63 +915,10 @@
       font-size:14px;
       margin-bottom:24px;
     }
-    .login-modal-content .divider {
-      color:var(--text-sub);
-      font-size:13px;
-      padding:0 20px;
-      position:relative;
-      margin:16px 0;
-    }
-    .login-modal-content .divider::before,
-    .login-modal-content .divider::after {
-      content:'';
-      position:absolute;
-      top:50%;
-      width:40px;
-      height:1px;
-      background:var(--card-border);
-    }
-    .login-modal-content .divider::before { left:0; }
-    .login-modal-content .divider::after { right:0; }
-    .login-modal-content .login-btn {
-      display:inline-flex;
-      align-items:center;
+    #google-login-wrapper {
+      display:flex;
       justify-content:center;
-      gap:12px;
-      width:100%;
-      padding:14px 20px;
-      border-radius:999px;
-      border:1px solid var(--card-border);
-      background:rgba(255,255,255,0.03);
-      color:var(--text-main);
-      font-weight:700;
-      font-size:16px;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      margin-bottom:12px;
-      text-decoration:none;
-    }
-    .login-modal-content .login-btn:hover {
-      background:rgba(255,255,255,0.08);
-      border-color:var(--accent-color);
-      transform:translateY(-2px);
-    }
-    .login-modal-content .login-btn .icon {
-      font-size:24px;
-    }
-    .login-modal-content .login-btn.google {
-      border-color:rgba(255,255,255,0.15);
-    }
-    .login-modal-content .login-btn.google:hover {
-      border-color:#4285F4;
-      background:rgba(66,133,244,0.1);
-    }
-    .login-modal-content .login-btn.scratch {
-      border-color:rgba(255,255,255,0.15);
-    }
-    .login-modal-content .login-btn.scratch:hover {
-      border-color:#ff8a00;
-      background:rgba(255,138,0,0.1);
+      margin-top:8px;
     }
     .login-modal-content .already-logged {
       color:#06C755;
@@ -983,6 +928,7 @@
       background:rgba(6,199,85,0.1);
       border:1px solid rgba(6,199,85,0.2);
       margin-bottom:12px;
+      display:none;
     }
 
     /* ===== レスポンシブ ===== */
@@ -1016,8 +962,6 @@
         margin:10px;
       }
       .login-modal-content h2 { font-size:24px; }
-      .login-modal-content .divider::before,
-      .login-modal-content .divider::after { width:20px; }
     }
 
     @media(min-width:769px){
@@ -1058,38 +1002,29 @@
       <a href="#q=settings" data-page="settings">SETTINGS</a>
       <a href="#q=about" data-page="about">ABOUT</a>
       <a href="#q=credit" data-page="credit">CREDIT</a>
-      <!-- ★ LOGINリンク（クリックでモーダル表示） -->
+      <!-- ★ LOGINリンク -->
       <a href="javascript:void(0)" class="login-link" id="login-menu-btn">LOGIN</a>
     </nav>
   </div>
 </header>
 
 <!-- =========================
-     ログインモーダル
+     ログインモーダル（Googleのみ）
 ========================= -->
 <div class="login-modal" id="login-modal">
   <div class="login-modal-content">
     <button class="close-btn" id="login-modal-close">✕</button>
     <h2>ログイン</h2>
-    <p>アカウントでログインして、限定機能を使おう！</p>
+    <p>Googleアカウントでログインして、限定機能を使おう！</p>
 
-    <!-- ログイン済み表示 -->
-    <div class="already-logged" id="already-logged" style="display:none;">
+    <div class="already-logged" id="already-logged">
       ✅ ログイン中: <span id="logged-username">ユーザー</span>
     </div>
 
-    <!-- Googleログインボタン（Google Identity Services でレンダリング） -->
-    <div id="google-login-wrapper" style="margin-top:8px;"></div>
-
-    <div class="divider">または</div>
-
-    <!-- Scratchログインボタン -->
-    <a class="login-btn scratch" id="scratch-login-btn" href="#">
-      <span class="icon">🧩</span> Scratchでログイン
-    </a>
+    <div id="google-login-wrapper"></div>
 
     <div style="margin-top:16px; font-size:12px; color:var(--text-sub); opacity:0.6;">
-      GoogleまたはScratchアカウントでログインできます
+      Googleアカウントでログインできます
     </div>
   </div>
 </div>
@@ -1317,7 +1252,6 @@
           <div class="credit-item"><span class="emoji">📺</span><h4>YouTube Data API</h4><p>最新動画の取得<br><a href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener">developers.google.com/youtube/v3</a></p></div>
           <div class="credit-item"><span class="emoji">📧</span><h4>Formspree</h4><p>お問い合わせフォーム<br><a href="https://formspree.io/" target="_blank" rel="noopener">formspree.io</a></p></div>
           <div class="credit-item"><span class="emoji">🔑</span><h4>Google Identity Services</h4><p>Googleログイン認証<br><a href="https://developers.google.com/identity" target="_blank" rel="noopener">developers.google.com/identity</a></p></div>
-          <div class="credit-item"><span class="emoji">🧩</span><h4>Scratch Auth</h4><p>Scratchログイン認証<br><a href="https://auth.itinerary.eu.org/" target="_blank" rel="noopener">auth.itinerary.eu.org</a></p></div>
           <div class="credit-item"><span class="emoji">🎨</span><h4>パーティクルエフェクト</h4><p>CSSアニメーション（オリジナル）</p></div>
           <div class="credit-item"><span class="emoji">🚀</span><h4>ホスティング</h4><p>Netlify + GitHub Pages<br><a href="https://www.netlify.com/" target="_blank" rel="noopener">netlify.com</a></p></div>
         </div>
@@ -1357,27 +1291,23 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + Google + Scratchログイン）
+     JavaScript
 ========================= -->
 <script>
   (function() {
     'use strict';
 
     // ==========================================================
-    // 認証状態管理
+    // 認証状態管理（Googleのみ）
     // ==========================================================
     let isLoggedIn = false;
     let userProfile = null;
-    let authProvider = null; // 'google' or 'scratch'
-
     let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
-    const API_BASE = CONFIG.API_BASE_URL || 'https://your-site.netlify.app/.netlify/functions';
 
     // DOM 要素
     const loginModal = document.getElementById('login-modal');
     const loginModalClose = document.getElementById('login-modal-close');
     const loginMenuBtn = document.getElementById('login-menu-btn');
-    const scratchLoginBtn = document.getElementById('scratch-login-btn');
     const alreadyLogged = document.getElementById('already-logged');
     const loggedUsername = document.getElementById('logged-username');
 
@@ -1386,7 +1316,6 @@
     // ==========================================================
     function openLoginModal() {
       loginModal.classList.add('active');
-      // ログイン状態を更新
       updateLoginUI();
     }
 
@@ -1400,7 +1329,6 @@
     });
     loginMenuBtn.addEventListener('click', openLoginModal);
 
-    // ESCキーで閉じる
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeLoginModal();
     });
@@ -1412,20 +1340,17 @@
       if (isLoggedIn && userProfile) {
         loginMenuBtn.textContent = '👤 ' + (userProfile.name || 'ユーザー');
         loginMenuBtn.classList.add('active');
-        // モーダル内
         alreadyLogged.style.display = 'block';
         loggedUsername.textContent = userProfile.name || 'ユーザー';
-        // Googleログインボタンは表示しない（すでにログイン済み）
+        // Googleログインボタンは非表示
         const wrapper = document.getElementById('google-login-wrapper');
         if (wrapper) wrapper.style.display = 'none';
-        if (scratchLoginBtn) scratchLoginBtn.style.display = 'none';
       } else {
         loginMenuBtn.textContent = 'LOGIN';
         loginMenuBtn.classList.remove('active');
         alreadyLogged.style.display = 'none';
         const wrapper = document.getElementById('google-login-wrapper');
         if (wrapper) wrapper.style.display = 'block';
-        if (scratchLoginBtn) scratchLoginBtn.style.display = 'block';
       }
     }
 
@@ -1433,20 +1358,17 @@
     // ログアウト
     // ==========================================================
     function logout() {
-      if (authProvider === 'google' && typeof google !== 'undefined' && google.accounts) {
+      if (typeof google !== 'undefined' && google.accounts) {
         google.accounts.id.disableAutoSelect();
         google.accounts.id.revoke(userProfile?.email || '', () => {});
       }
-      // Scratchはサーバーセッションがないのでローカルクリアのみ
       isLoggedIn = false;
       userProfile = null;
-      authProvider = null;
-      localStorage.removeItem('scratch_user');
       updateLoginUI();
       console.log('[Auth] ログアウトしました');
     }
 
-    // ログアウト機能をグローバルに（設定ページなどから呼べるように）
+    // ログアウトをグローバルに
     window.logout = logout;
 
     // ==========================================================
@@ -1466,7 +1388,6 @@
           email: data.email,
           picture: data.picture
         };
-        authProvider = 'google';
         isLoggedIn = true;
         updateLoginUI();
         closeLoginModal();
@@ -1517,35 +1438,7 @@
     }
 
     // ==========================================================
-    // Scratch ログイン
-    // ==========================================================
-    // 保存されたユーザー情報があれば復元
-    (function restoreScratchUser() {
-      const saved = localStorage.getItem('scratch_user');
-      if (saved) {
-        try {
-          const data = JSON.parse(saved);
-          if (data.username) {
-            userProfile = { name: data.username, email: data.username + '@scratch', picture: '' };
-            authProvider = 'scratch';
-            isLoggedIn = true;
-            updateLoginUI();
-            console.log('[Scratch] セッション復元:', data.username);
-          }
-        } catch (e) {}
-      }
-    })();
-
-    // Scratchログインボタン
-    scratchLoginBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      // Netlify Functions のリダイレクトエンドポイントを呼び出す
-      const redirectUrl = `${API_BASE}/auth-redirect`;
-      window.location.href = redirectUrl;
-    });
-
-    // ==========================================================
-    // Google Client ID 読み込み（google-config.json）
+    // Google Client ID 読み込み
     // ==========================================================
     async function loadGoogleConfig() {
       try {
@@ -1816,7 +1709,6 @@
     let maintenanceMode = false;
     let configLoaded = false;
 
-    // 設定ファイル読み込み（メンテナンスモード用）
     async function loadServerConfig() {
       try {
         const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
@@ -2091,11 +1983,6 @@
       initGoogleLogin();
       showPage();
       updateLoginUI();
-
-      // カスタムイベント: ログイン状態変更時にUI更新
-      window.addEventListener('loginStateChanged', function() {
-        updateLoginUI();
-      });
     }
 
     init();
