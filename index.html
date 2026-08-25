@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 
+  <!-- Google Identity Services (Google Login) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
   <!-- ★★★ 設定はこの1箇所だけ！ ★★★ -->
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
@@ -24,8 +27,9 @@
       FORMSPREE_ID: "xljrvlvd",
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
-      // ★ サーバー設定ファイル（GitHub上のJSON）
-      CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json"
+      CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json",
+      // ★ Google OAuth 2.0 Client ID (要設定)
+      GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
     };
 
     const MEMBERS = {
@@ -559,8 +563,32 @@
       color:var(--text-sub); font-size:14px; margin-bottom:20px;
     }
 
-    /* ===== コンタクトフォーム ===== */
-    .contact-form { max-width:600px; margin:0 auto; }
+    /* ===== コンタクトフォーム (Google Login 対応) ===== */
+    .contact-wrapper {
+      max-width:600px; margin:0 auto;
+    }
+    .contact-form {
+      background:var(--card-bg);
+      border-radius:24px;
+      border:1px solid var(--card-border);
+      padding:40px 35px;
+      backdrop-filter:blur(10px);
+      transition:all 0.3s ease;
+    }
+    .contact-form.locked {
+      opacity:0.5;
+      pointer-events:none;
+      filter:blur(2px);
+      position:relative;
+    }
+    .contact-form.locked::after {
+      content:'';
+      position:absolute;
+      top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.4);
+      border-radius:24px;
+      z-index:1;
+    }
     .contact-form label {
       display:block;
       color:var(--text-sub); font-size:13px; font-weight:700;
@@ -626,6 +654,65 @@
     }
     .contact-form .submit-btn.fs-submitting {
       opacity:0.7; cursor:wait;
+    }
+
+    /* Google Login UI */
+    .login-section {
+      text-align:center;
+      margin-bottom:30px;
+      padding:24px;
+      border-radius:20px;
+      border:1px solid var(--card-border);
+      background:var(--card-bg);
+    }
+    .login-section .user-info {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .login-section .user-info img {
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      border:2px solid var(--accent-color);
+    }
+    .login-section .user-info .name {
+      font-weight:700;
+      font-size:18px;
+    }
+    .login-section .user-info .email {
+      color:var(--text-sub);
+      font-size:14px;
+    }
+    .login-section .logout-btn {
+      background:rgba(255,107,107,0.15);
+      color:#ff6b6b;
+      border:1px solid rgba(255,107,107,0.3);
+      padding:6px 18px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .login-section .logout-btn:hover {
+      background:rgba(255,107,107,0.25);
+    }
+    .login-section .login-prompt {
+      color:var(--text-sub);
+      font-size:15px;
+    }
+    .login-section .login-prompt .icon {
+      font-size:32px;
+      display:block;
+      margin-bottom:8px;
+    }
+    #g_id_onload {
+      display:flex;
+      justify-content:center;
+      margin-top:12px;
     }
 
     /* ===== YouTube ===== */
@@ -863,6 +950,8 @@
       .search-box { flex-direction:column; }
       .search-box input { min-width:100%; }
       .youtube-grid { grid-template-columns:1fr; }
+      .contact-form { padding:24px 18px; }
+      .login-section .user-info { flex-direction:column; }
     }
 
     @media(min-width:769px){
@@ -1008,30 +1097,56 @@
     </section>
   </div>
 
-  <!-- CONTACT -->
+  <!-- CONTACT（Google Login 必須） -->
   <div id="page-contact" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">CONTACT</span></h2>
         <p class="section-subtitle">神木チャンネルへのお問い合わせ</p>
-        <div class="contact-form">
-          <form id="my-form" data-fs-form>
-            <label for="contact-name">お名前</label>
-            <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
-            <span class="field-error" data-fs-error="name"></span>
 
-            <label for="contact-email">メールアドレス（任意）</label>
-            <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
-            <span class="field-error" data-fs-error="_replyto"></span>
+        <div class="contact-wrapper">
 
-            <label for="contact-message">メッセージ</label>
-            <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
-            <span class="field-error" data-fs-error="message"></span>
+          <!-- ログインセクション -->
+          <div class="login-section" id="login-section">
+            <!-- 未ログイン時 -->
+            <div id="login-prompt">
+              <span class="icon">🔐</span>
+              <p class="login-prompt">お問い合わせには Google ログインが必要です</p>
+              <div id="g_id_onload"></div>
+            </div>
+            <!-- ログイン済み時（JSで表示切り替え） -->
+            <div id="user-info" style="display:none;">
+              <div class="user-info">
+                <img id="user-avatar" src="" alt="avatar">
+                <div>
+                  <div class="name" id="user-name">ユーザー名</div>
+                  <div class="email" id="user-email">email@example.com</div>
+                </div>
+                <button class="logout-btn" id="logout-btn">ログアウト</button>
+              </div>
+            </div>
+          </div>
 
-            <button type="submit" class="submit-btn" data-fs-submit-btn>送信する</button>
-            <div data-fs-success>✅ メッセージを送信しました！</div>
-            <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
-          </form>
+          <!-- フォーム（ログインしないと送信できない） -->
+          <div class="contact-form locked" id="contact-form-wrapper">
+            <form id="my-form" data-fs-form>
+              <label for="contact-name">お名前</label>
+              <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
+              <span class="field-error" data-fs-error="name"></span>
+
+              <label for="contact-email">メールアドレス（任意）</label>
+              <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
+              <span class="field-error" data-fs-error="_replyto"></span>
+
+              <label for="contact-message">メッセージ</label>
+              <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
+              <span class="field-error" data-fs-error="message"></span>
+
+              <button type="submit" class="submit-btn" data-fs-submit-btn disabled>送信する (ログインが必要)</button>
+              <div data-fs-success>✅ メッセージを送信しました！</div>
+              <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
+            </form>
+          </div>
         </div>
       </div>
     </section>
@@ -1045,7 +1160,6 @@
         <p class="section-subtitle">各種設定・管理</p>
 
         <div class="settings-grid">
-          <!-- キャッシュ削除 -->
           <div class="settings-card">
             <h4>🗑️ キャッシュクリア</h4>
             <p>ブラウザに保存されたデータ（ローカルストレージ・セッションストレージ）を削除します。</p>
@@ -1053,7 +1167,6 @@
             <div id="cache-status" style="margin-top:10px; font-size:13px; color:var(--text-sub);"></div>
           </div>
 
-          <!-- デバッグモード -->
           <div class="settings-card">
             <h4>🐞 デバッグモード</h4>
             <p>デバッグモードを有効にすると、コンソールに詳細な情報が表示され、画面にバッジが表示されます。</p>
@@ -1061,7 +1174,6 @@
             <div id="debug-status" class="status-badge off">OFF</div>
           </div>
 
-          <!-- お知らせ表示切替 -->
           <div class="settings-card">
             <h4>📢 お知らせ表示</h4>
             <p>ホームページのお知らせセクションの表示/非表示を切り替えます。</p>
@@ -1069,7 +1181,6 @@
             <div id="news-status" class="status-badge">表示中</div>
           </div>
 
-          <!-- ★ サイトアップデートモード -->
           <div class="settings-card">
             <h4>🔧 サイトアップデートモード</h4>
             <p>有効にすると、CONTACTページ以外はすべてメンテナンス画面が表示されます（サーバー設定ファイルで管理）。</p>
@@ -1080,7 +1191,6 @@
             </div>
           </div>
 
-          <!-- ページリロード -->
           <div class="settings-card">
             <h4>🔄 ページ再読み込み</h4>
             <p>ページをリロードして最新の状態に更新します。</p>
@@ -1134,6 +1244,7 @@
           <div class="credit-item"><span class="emoji">🌐</span><h4>GitHub API</h4><p>お知らせデータの取得<br><a href="https://github.com/" target="_blank" rel="noopener">github.com</a></p></div>
           <div class="credit-item"><span class="emoji">📺</span><h4>YouTube Data API</h4><p>最新動画の取得<br><a href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener">developers.google.com/youtube/v3</a></p></div>
           <div class="credit-item"><span class="emoji">📧</span><h4>Formspree</h4><p>お問い合わせフォーム<br><a href="https://formspree.io/" target="_blank" rel="noopener">formspree.io</a></p></div>
+          <div class="credit-item"><span class="emoji">🔑</span><h4>Google Identity Services</h4><p>Googleログイン認証<br><a href="https://developers.google.com/identity" target="_blank" rel="noopener">developers.google.com/identity</a></p></div>
           <div class="credit-item"><span class="emoji">🎨</span><h4>パーティクルエフェクト</h4><p>CSSアニメーション（オリジナル）</p></div>
           <div class="credit-item"><span class="emoji">🚀</span><h4>ホスティング</h4><p>GitHub Pages<br><a href="https://pages.github.com/" target="_blank" rel="noopener">pages.github.com</a></p></div>
         </div>
@@ -1173,15 +1284,147 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + 裏コマンド + SETTINGS + アップデートモード）
+     JavaScript（全機能 + 裏コマンド + SETTINGS + Google Login）
 ========================= -->
 <script>
   (function() {
     'use strict';
 
-    /* ==================================================
-       パーティクル
-    ================================================== */
+    // ==========================================================
+    // Google Login 管理
+    // ==========================================================
+    let isLoggedIn = false;
+    let userProfile = null;
+    const clientId = CONFIG.GOOGLE_CLIENT_ID;
+
+    // DOM 要素
+    const loginPrompt = document.getElementById('login-prompt');
+    const userInfoDiv = document.getElementById('user-info');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+    const userAvatar = document.getElementById('user-avatar');
+    const logoutBtn = document.getElementById('logout-btn');
+    const formWrapper = document.getElementById('contact-form-wrapper');
+    const submitBtn = document.querySelector('[data-fs-submit-btn]');
+
+    function updateUI() {
+      if (isLoggedIn && userProfile) {
+        loginPrompt.style.display = 'none';
+        userInfoDiv.style.display = 'block';
+        userName.textContent = userProfile.name || 'ユーザー';
+        userEmail.textContent = userProfile.email || '';
+        userAvatar.src = userProfile.picture || '';
+        formWrapper.classList.remove('locked');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '送信する';
+        }
+      } else {
+        loginPrompt.style.display = 'block';
+        userInfoDiv.style.display = 'none';
+        formWrapper.classList.add('locked');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = '送信する (ログインが必要)';
+        }
+      }
+    }
+
+    // Google コールバック
+    window.onSignIn = function(response) {
+      const payload = response.credential;
+      // JWT をデコードしてユーザー情報を取得
+      try {
+        const base64Url = payload.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const data = JSON.parse(jsonPayload);
+        userProfile = {
+          name: data.name,
+          email: data.email,
+          picture: data.picture
+        };
+        isLoggedIn = true;
+        updateUI();
+        console.log('[Google] ログイン成功:', userProfile.name);
+      } catch (e) {
+        console.error('[Google] ログイン解析エラー:', e);
+      }
+    };
+
+    // Google ボタンをレンダリング（Client ID が設定されている場合のみ）
+    function initGoogleLogin() {
+      if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
+        document.getElementById('g_id_onload').innerHTML = `
+          <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
+            ⚠️ Google Client ID が設定されていません。<br>
+            <span style="font-size:12px; color:var(--text-sub);">CONFIG.GOOGLE_CLIENT_ID を設定してください。</span>
+          </div>
+        `;
+        return;
+      }
+
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: window.onSignIn,
+          cancel_on_tap_outside: false,
+          auto_select: false
+        });
+        google.accounts.id.renderButton(
+          document.getElementById('g_id_onload'),
+          { 
+            theme: 'filled_black', 
+            size: 'large', 
+            width: 300,
+            text: 'signin_with',
+            shape: 'pill'
+          }
+        );
+        // すでにログイン済みかどうか確認（ポップアップを表示せずにチェック）
+        // 今回はユーザーアクションでログインさせる
+      } else {
+        // ライブラリがまだロードされていない場合のリトライ
+        setTimeout(initGoogleLogin, 500);
+      }
+    }
+
+    // ログアウト
+    function logout() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.disableAutoSelect();
+        google.accounts.id.revoke(userProfile?.email || '', () => {
+          // ログアウト後
+          isLoggedIn = false;
+          userProfile = null;
+          updateUI();
+          console.log('[Google] ログアウトしました');
+        });
+      } else {
+        // 強制ログアウト（ライブラリがない場合）
+        isLoggedIn = false;
+        userProfile = null;
+        updateUI();
+      }
+    }
+
+    // ログアウトボタンイベント
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', logout);
+    }
+
+    // 初期化
+    initGoogleLogin();
+
+    // ログイン状態を保持しない（毎回ログインが必要）ため、ページリロード時はリセット
+    // ただし、ユーザーがログインした状態でページをリロードしても、Google側でセッションがあれば
+    // 再度コールバックが呼ばれるわけではないので、ここでは手動でのログインを促す。
+
+    // ==========================================================
+    // パーティクル
+    // ==========================================================
     (function() {
       const container = document.getElementById('particles');
       if (!container) return;
@@ -1261,17 +1504,16 @@
     const memberIds = MEMBER_IDS || [];
     const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
 
-    let maintenanceMode = false; // デフォルトはOFF
+    let maintenanceMode = false;
     let configLoaded = false;
 
-    // 設定ファイル読み込み（サーバーから）★ on/off 対応
+    // 設定ファイル読み込み（サーバーから）
     async function loadServerConfig() {
       try {
         const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
         const res = await fetch(url, { cache: 'no-cache' });
         if (!res.ok) throw new Error('Config fetch failed');
         const data = await res.json();
-        // ★ on/off 判定（文字列で "on" なら true、それ以外は false）
         const value = data.maintenance;
         maintenanceMode = (value === 'on' || value === true);
         configLoaded = true;
@@ -1287,7 +1529,6 @@
       }
     }
 
-    // 設定ページのメンテナンスUI更新
     function updateMaintenanceUI() {
       const status = document.getElementById('maintenance-status');
       const source = document.getElementById('maintenance-source');
@@ -1297,16 +1538,6 @@
       }
       if (source) {
         source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
-      }
-    }
-
-    // 裏コマンドで maintenance が指定された場合、ローカルで一時的に上書き（ただし設定ファイルが優先）
-    function applyMaintenanceCommand(commands) {
-      if (commands.includes('maintenance')) {
-        if (commands.includes('debug')) {
-          maintenanceMode = true;
-          updateMaintenanceUI();
-        }
       }
     }
 
@@ -1346,15 +1577,13 @@
     function getCommandsFromHash() { return parseHash().commands; }
 
     /* ==================================================
-       メイン表示関数（メンテナンスモード対応）
+       メイン表示関数
     ================================================== */
     function showPage() {
       const parsed = parseHash();
       let page = parsed.page;
       const memberId = parsed.memberId;
       const commands = parsed.commands;
-
-      applyMaintenanceCommand(commands);
 
       const titles = {
         home: '神木チャンネル',
@@ -1373,7 +1602,7 @@
       document.getElementById('page-404').classList.remove('active');
       document.getElementById('page-maintenance').classList.remove('active');
 
-      // ★ メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
+      // メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
       const isContact = (page === 'contact');
       if (maintenanceMode && !isContact) {
         document.getElementById('page-maintenance').classList.add('active');
@@ -1458,6 +1687,10 @@
           updateSettingsUI(commands);
           updateMaintenanceUI();
         }
+        if (page === 'contact') {
+          // CONTACTページが表示されたら、ログイン状態をチェック（既にログインしていればUI更新）
+          updateUI();
+        }
       }
       document.querySelectorAll('nav a[data-page]').forEach(link => {
         link.classList.toggle('active', link.dataset.page === page);
@@ -1466,7 +1699,7 @@
     }
 
     /* ==================================================
-       メンバー詳細（裏コマンド対応）
+       メンバー詳細
     ================================================== */
     function renderMemberDetail(id, commands) {
       const container = document.getElementById('member-detail-content');
@@ -1683,7 +1916,7 @@
     }
 
     /* ==================================================
-       Formspree AJAX 初期化
+       Formspree AJAX 初期化（ログイン必須だが、フォーム自体は常に存在）
     ================================================== */
     window.addEventListener('load', function() {
       if (window.formspree) {
@@ -1696,6 +1929,18 @@
         }, 1000);
       }
     });
+
+    // Formspree の送信前にログインチェックを追加（念のため）
+    // formspree のイベントを直接フックできないので、ボタンが押されたときにチェック。
+    // 実際は data-fs-submit-btn が無効になっているので送信されないが、万が一の対策
+    document.addEventListener('click', function(e) {
+      const target = e.target.closest('[data-fs-submit-btn]');
+      if (target && !isLoggedIn) {
+        e.preventDefault();
+        alert('お問い合わせには Google ログインが必要です。');
+        return false;
+      }
+    }, true);
 
     /* ==================================================
        SETTINGS ページの機能
@@ -1715,7 +1960,6 @@
       }
     }
 
-    // キャッシュ削除
     document.getElementById('clear-cache-btn').addEventListener('click', function() {
       try {
         localStorage.clear();
@@ -1727,7 +1971,6 @@
       }
     });
 
-    // デバッグモード切替
     document.getElementById('toggle-debug-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasDebug = currentCommands.includes('debug');
@@ -1743,7 +1986,6 @@
       window.location.hash = newHash;
     });
 
-    // お知らせ表示切替
     document.getElementById('toggle-news-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasHide = currentCommands.includes('hide-news');
@@ -1759,7 +2001,6 @@
       window.location.hash = newHash;
     });
 
-    // ★ アップデートモード切替（ローカルトグル + ハッシュ反映）
     document.getElementById('toggle-maintenance-btn').addEventListener('click', function() {
       maintenanceMode = !maintenanceMode;
       updateMaintenanceUI();
@@ -1780,7 +2021,6 @@
       showPage();
     });
 
-    // リロード
     document.getElementById('reload-btn').addEventListener('click', function() {
       location.reload();
     });
@@ -1793,6 +2033,8 @@
       renderMemberList('');
       fetchNotices();
       showPage();
+      // CONTACTページが初期表示ならログインUIを更新
+      updateUI();
     }
 
     init();
