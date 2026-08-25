@@ -14,7 +14,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
-  <!-- ★★★ 設定はこの1箇所だけ！ ★★★ -->
+  <!-- ★★★ 設定はこの1箇所だけ！（デフォルト値） ★★★ -->
   <!-- ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ -->
   <script>
     const CONFIG = {
@@ -208,8 +208,7 @@
     .logo:hover { opacity:0.8; }
     .logo img { display:none; }
     nav {
-      display:flex; align-items:center; gap:20px;
-      flex-wrap:nowrap;
+      display:flex; align-items:center; gap:30px;
     }
     nav a {
       color:var(--text-sub);
@@ -218,7 +217,6 @@
       transition:color 0.3s ease;
       -webkit-tap-highlight-color:transparent;
       outline:none;
-      white-space:nowrap;
     }
     nav a::after {
       content:'';
@@ -229,102 +227,6 @@
     }
     nav a:hover, nav a.active { color:var(--text-main); }
     nav a.active::after { width:100%; }
-
-    nav a.login-link {
-      color:var(--accent-color);
-      font-weight:900;
-    }
-    nav a.login-link::after {
-      background:var(--accent-gradient);
-    }
-    nav a.login-link:hover { color:#fff; }
-
-    /* ユーザープロフィール（ヘッダー内） */
-    .user-profile-header {
-      display:flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      padding:4px 12px 4px 8px;
-      border-radius:999px;
-      border:1px solid var(--card-border);
-      background:var(--card-bg);
-      transition:all 0.3s ease;
-      position:relative;
-      z-index:1001;
-    }
-    .user-profile-header:hover {
-      border-color:var(--accent-color);
-      background:rgba(139,92,246,0.1);
-    }
-    .user-profile-header img {
-      width:32px;
-      height:32px;
-      border-radius:50%;
-      border:2px solid var(--accent-color);
-    }
-    .user-profile-header .name {
-      font-size:13px;
-      font-weight:700;
-      color:var(--text-main);
-      max-width:100px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-
-    /* プロフィールドロップダウン */
-    .profile-dropdown {
-      display:none;
-      position:absolute;
-      top:calc(100% + 8px);
-      right:0;
-      background:var(--bg-color);
-      border:1px solid var(--card-border);
-      border-radius:16px;
-      padding:12px 0;
-      min-width:200px;
-      box-shadow:0 10px 40px rgba(0,0,0,0.5);
-      z-index:1002;
-      overflow:hidden;
-    }
-    .profile-dropdown.open {
-      display:block;
-      animation:fadeInScale 0.2s ease forwards;
-    }
-    .profile-dropdown .dropdown-item {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:10px 20px;
-      color:var(--text-sub);
-      font-size:14px;
-      font-weight:600;
-      cursor:pointer;
-      transition:all 0.2s ease;
-      border:none;
-      background:none;
-      width:100%;
-      text-align:left;
-    }
-    .profile-dropdown .dropdown-item:hover {
-      background:rgba(255,255,255,0.05);
-      color:var(--text-main);
-    }
-    .profile-dropdown .dropdown-item .icon {
-      font-size:18px;
-    }
-    .profile-dropdown .dropdown-divider {
-      height:1px;
-      background:var(--card-border);
-      margin:4px 16px;
-    }
-    .profile-dropdown .dropdown-item.logout {
-      color:#ff6b6b;
-    }
-    .profile-dropdown .dropdown-item.logout:hover {
-      background:rgba(255,107,107,0.1);
-    }
 
     .menu-toggle {
       display:none;
@@ -337,49 +239,6 @@
       background:var(--text-main);
       transition:0.3s ease;
       transform-origin:left;
-    }
-
-    /* モバイルメニュー */
-    @media(max-width:768px){
-      .menu-toggle { display:flex; }
-      .nav { height:65px; }
-      .logo span { display:none; }
-      nav {
-        position:fixed; top:65px; left:0;
-        width:100%; height:calc(100vh - 65px);
-        background:var(--bg-color);
-        flex-direction:column;
-        justify-content:flex-start;
-        padding:30px 20px;
-        gap:24px;
-        transform:translateX(100%);
-        transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
-        overflow-y:auto;
-        -webkit-overflow-scrolling:touch;
-        z-index:999;
-      }
-      nav.active { transform:translateX(0); }
-      nav a { font-size:20px; }
-      .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
-      .menu-toggle.active span:nth-child(2){ opacity:0; }
-      .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
-
-      .user-profile-header {
-        padding:4px 8px;
-      }
-      .user-profile-header .name { display:none; }
-      .user-profile-header img { width:28px; height:28px; }
-      .profile-dropdown {
-        position:fixed;
-        top:auto;
-        bottom:0;
-        left:0;
-        width:100%;
-        border-radius:16px 16px 0 0;
-        padding:16px 0;
-        max-height:60vh;
-        overflow-y:auto;
-      }
     }
 
     /* ===== ページ共通 ===== */
@@ -447,334 +306,52 @@
       font-weight:700; letter-spacing:0.1em;
     }
 
-    /* ===== ログインページ（専用） ===== */
-    #page-login {
-      display:none;
-      min-height:100vh;
-      padding-top:70px;
-      background:var(--bg-color);
-      align-items:center;
-      justify-content:center;
+    .container { width:min(1100px, calc(100% - 40px)); margin:auto; }
+
+    /* ===== ヒーロー ===== */
+    .hero {
+      min-height:calc(100vh - 70px);
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; padding:80px 20px;
+      position:relative; overflow:hidden;
     }
-    #page-login.active {
-      display:flex;
+    .hero::before {
+      content:'';
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      width:60vw; height:60vw;
+      background:radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
+      z-index:-1; pointer-events:none;
+      animation:pulseGlow 4s ease-in-out infinite;
     }
-    .login-container {
-      max-width:420px;
-      width:100%;
-      padding:40px 30px;
-      text-align:center;
+    .hero-inner { width:100%; max-width:850px; }
+    .hero h1 {
+      font-size:clamp(48px,8vw,90px);
+      line-height:1.1; font-weight:900; letter-spacing:0.05em;
+      margin-bottom:10px;
+      animation:glowPulse 3s ease-in-out infinite;
     }
-    .login-container h2 {
-      font-size:32px;
-      font-weight:900;
-      margin-bottom:8px;
-      background:var(--accent-gradient);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-    .login-container p {
+    .hero-subtitle {
       color:var(--text-sub);
-      font-size:14px;
-      margin-bottom:30px;
+      font-size:clamp(16px,3vw,22px);
+      letter-spacing:0.1em; font-weight:700;
+      animation:fadeInUp 1s ease 0.3s both;
     }
-    .login-container .already-logged {
-      color:#06C755;
-      font-weight:700;
-      padding:12px;
-      border-radius:12px;
-      background:rgba(6,199,85,0.1);
-      border:1px solid rgba(6,199,85,0.2);
-      margin-bottom:16px;
-      display:none;
+    .hero .buttons { animation:fadeInUp 1s ease 0.6s both; }
+    .scroll {
+      margin-top:80px;
+      color:#666; font-size:12px; letter-spacing:0.3em; font-weight:700;
+      animation:float 2s ease-in-out infinite;
     }
 
-    /* 通常のGoogleログインボタン（クリック式） */
-    .google-login-btn-wrapper {
-      display:flex;
-      justify-content:center;
-      margin:10px 0;
-    }
-    .google-login-btn-wrapper iframe {
-      width:100% !important;
-      max-width:300px;
+    .typewriter-wrap {
+      display:inline-block; overflow:hidden; white-space:nowrap;
+      border-right:3px solid var(--accent-color);
+      animation:typewriter 2s steps(30) 1s forwards, blinkCursor 0.8s step-end infinite;
+      width:0; max-width:fit-content; margin:0 auto;
     }
 
-    /* ===== ログアウトページ ===== */
-    #page-logout {
-      display:none;
-      min-height:100vh;
-      padding-top:70px;
-      background:var(--bg-color);
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
-    #page-logout.active {
-      display:flex;
-      animation:fadeInScale 0.5s ease forwards;
-    }
-    #page-logout .logout-icon {
-      font-size:64px;
-      display:block;
-      margin-bottom:16px;
-    }
-    #page-logout h1 {
-      font-size:clamp(32px,5vw,48px);
-      font-weight:900;
-      background:var(--accent-gradient);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      margin-bottom:8px;
-    }
-    #page-logout p {
-      color:var(--text-sub);
-      font-size:18px;
-    }
-    #page-logout .spinner {
-      display:inline-block;
-      width:40px;
-      height:40px;
-      border:3px solid rgba(255,255,255,0.1);
-      border-top-color:var(--accent-color);
-      border-radius:50%;
-      animation:spin 0.8s linear infinite;
-      margin-top:20px;
-    }
-    @keyframes spin {
-      to { transform:rotate(360deg); }
-    }
-
-    /* ===== ユーザーページ ===== */
-    #page-users {
-      display:none;
-      min-height:100vh;
-      padding-top:70px;
-      background:var(--bg-color);
-    }
-    #page-users.active {
-      display:block;
-      animation:fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
-    }
-    .user-profile-card {
-      max-width:500px;
-      margin:40px auto;
-      padding:40px 30px;
-      border-radius:24px;
-      border:1px solid var(--card-border);
-      background:var(--card-bg);
-      backdrop-filter:blur(10px);
-      text-align:center;
-    }
-    .user-profile-card .avatar {
-      width:100px;
-      height:100px;
-      border-radius:50%;
-      border:3px solid var(--accent-color);
-      margin-bottom:16px;
-      object-fit:cover;
-    }
-    .user-profile-card .name {
-      font-size:28px;
-      font-weight:900;
-      margin-bottom:4px;
-    }
-    .user-profile-card .email {
-      color:var(--text-sub);
-      font-size:16px;
-      margin-bottom:20px;
-    }
-    .user-profile-card .provider {
-      display:inline-block;
-      padding:4px 16px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:700;
-      background:rgba(139,92,246,0.15);
-      color:var(--accent-color);
-      margin-bottom:24px;
-    }
-    .user-profile-card .user-actions {
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .user-profile-card .user-actions .action-btn {
-      padding:12px 20px;
-      border-radius:999px;
-      border:1px solid var(--card-border);
-      background:rgba(255,255,255,0.03);
-      color:var(--text-main);
-      font-weight:700;
-      font-size:15px;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-    .user-profile-card .user-actions .action-btn:hover {
-      background:rgba(255,255,255,0.08);
-      border-color:var(--accent-color);
-    }
-    .user-profile-card .user-actions .action-btn.danger {
-      color:#ff6b6b;
-    }
-    .user-profile-card .user-actions .action-btn.danger:hover {
-      background:rgba(255,107,107,0.1);
-      border-color:#ff6b6b;
-    }
-    .user-profile-card .not-logged {
-      color:var(--text-sub);
-      padding:30px 0;
-    }
-    .user-profile-card .not-logged .icon {
-      font-size:48px;
-      display:block;
-      margin-bottom:12px;
-    }
-    .user-profile-card .not-logged .login-link-btn {
-      display:inline-block;
-      margin-top:12px;
-      padding:10px 30px;
-      border-radius:999px;
-      background:var(--accent-gradient);
-      color:#fff;
-      font-weight:700;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      border:none;
-    }
-    .user-profile-card .not-logged .login-link-btn:hover {
-      transform:translateY(-2px);
-      box-shadow:0 8px 25px rgba(139,92,246,0.4);
-    }
-
-    /* ===== 購読設定ページ ===== */
-    #page-ko {
-      display:none;
-      min-height:100vh;
-      padding-top:70px;
-      background:var(--bg-color);
-    }
-    #page-ko.active {
-      display:block;
-      animation:fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
-    }
-    .ko-container {
-      max-width:500px;
-      margin:40px auto;
-      padding:40px 30px;
-      border-radius:24px;
-      border:1px solid var(--card-border);
-      background:var(--card-bg);
-      backdrop-filter:blur(10px);
-    }
-    .ko-container h2 {
-      font-size:28px;
-      font-weight:900;
-      margin-bottom:8px;
-      background:var(--accent-gradient);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-    .ko-container p {
-      color:var(--text-sub);
-      font-size:14px;
-      margin-bottom:24px;
-    }
-    .ko-container .setting-item {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 0;
-      border-bottom:1px solid var(--card-border);
-    }
-    .ko-container .setting-item:last-child {
-      border-bottom:none;
-    }
-    .ko-container .setting-item .label {
-      font-weight:700;
-      font-size:15px;
-    }
-    .ko-container .setting-item .desc {
-      color:var(--text-sub);
-      font-size:13px;
-      margin-top:2px;
-    }
-    .ko-container .setting-item .toggle {
-      position:relative;
-      width:48px;
-      height:28px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.1);
-      cursor:pointer;
-      transition:background 0.3s ease;
-      flex-shrink:0;
-    }
-    .ko-container .setting-item .toggle.active {
-      background:var(--accent-gradient);
-    }
-    .ko-container .setting-item .toggle .thumb {
-      position:absolute;
-      top:2px;
-      left:2px;
-      width:24px;
-      height:24px;
-      border-radius:50%;
-      background:#fff;
-      transition:transform 0.3s ease;
-    }
-    .ko-container .setting-item .toggle.active .thumb {
-      transform:translateX(20px);
-    }
-    .ko-container .save-btn {
-      width:100%;
-      padding:14px;
-      border-radius:999px;
-      border:none;
-      background:var(--accent-gradient);
-      color:#fff;
-      font-weight:800;
-      font-size:16px;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      margin-top:20px;
-    }
-    .ko-container .save-btn:hover {
-      transform:translateY(-2px);
-      box-shadow:0 8px 25px rgba(139,92,246,0.4);
-    }
-    .ko-container .save-btn:disabled {
-      opacity:0.5;
-      cursor:not-allowed;
-      transform:none;
-    }
-    .ko-container .save-success {
-      display:none;
-      color:#06C755;
-      text-align:center;
-      padding:12px;
-      font-weight:700;
-      margin-top:12px;
-      background:rgba(6,199,85,0.1);
-      border-radius:12px;
-      border:1px solid rgba(6,199,85,0.3);
-    }
-    .ko-container .save-success.show { display:block; }
-    .ko-container .not-logged-msg {
-      text-align:center;
-      color:var(--text-sub);
-      padding:20px 0;
-    }
-    .ko-container .not-logged-msg .icon {
-      font-size:48px;
-      display:block;
-      margin-bottom:12px;
-    }
-
-    /* ===== セクション & カード（既存） ===== */
+    /* ===== セクション & カード ===== */
     .section { padding:100px 0; }
     .section-title {
       font-size:clamp(36px,5vw,54px);
@@ -986,8 +563,32 @@
       color:var(--text-sub); font-size:14px; margin-bottom:20px;
     }
 
-    /* ===== コンタクトフォーム ===== */
-    .contact-form { max-width:600px; margin:0 auto; }
+    /* ===== コンタクトフォーム (Google Login 対応) ===== */
+    .contact-wrapper {
+      max-width:600px; margin:0 auto;
+    }
+    .contact-form {
+      background:var(--card-bg);
+      border-radius:24px;
+      border:1px solid var(--card-border);
+      padding:40px 35px;
+      backdrop-filter:blur(10px);
+      transition:all 0.3s ease;
+    }
+    .contact-form.locked {
+      opacity:0.5;
+      pointer-events:none;
+      filter:blur(2px);
+      position:relative;
+    }
+    .contact-form.locked::after {
+      content:'';
+      position:absolute;
+      top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.4);
+      border-radius:24px;
+      z-index:1;
+    }
     .contact-form label {
       display:block;
       color:var(--text-sub); font-size:13px; font-weight:700;
@@ -1053,6 +654,65 @@
     }
     .contact-form .submit-btn.fs-submitting {
       opacity:0.7; cursor:wait;
+    }
+
+    /* Google Login UI */
+    .login-section {
+      text-align:center;
+      margin-bottom:30px;
+      padding:24px;
+      border-radius:20px;
+      border:1px solid var(--card-border);
+      background:var(--card-bg);
+    }
+    .login-section .user-info {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .login-section .user-info img {
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      border:2px solid var(--accent-color);
+    }
+    .login-section .user-info .name {
+      font-weight:700;
+      font-size:18px;
+    }
+    .login-section .user-info .email {
+      color:var(--text-sub);
+      font-size:14px;
+    }
+    .login-section .logout-btn {
+      background:rgba(255,107,107,0.15);
+      color:#ff6b6b;
+      border:1px solid rgba(255,107,107,0.3);
+      padding:6px 18px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .login-section .logout-btn:hover {
+      background:rgba(255,107,107,0.25);
+    }
+    .login-section .login-prompt {
+      color:var(--text-sub);
+      font-size:15px;
+    }
+    .login-section .login-prompt .icon {
+      font-size:32px;
+      display:block;
+      margin-bottom:8px;
+    }
+    #g_id_onload {
+      display:flex;
+      justify-content:center;
+      margin-top:12px;
     }
 
     /* ===== YouTube ===== */
@@ -1251,13 +911,26 @@
 
     /* ===== レスポンシブ ===== */
     @media(max-width:768px){
+      .nav { height:65px; }
       .page { padding-top:65px; }
-      #page-login { padding-top:65px; }
-      #page-logout { padding-top:65px; }
-      #page-users { padding-top:65px; }
-      #page-ko { padding-top:65px; }
-      #page-maintenance { padding-top:65px; }
       #page-404 { padding-top:65px; }
+      #page-maintenance { padding-top:65px; }
+      .menu-toggle { display:flex; }
+      nav {
+        position:fixed; top:65px; left:0;
+        width:100%; height:calc(100vh - 65px);
+        background:var(--bg-color);
+        flex-direction:column; justify-content:center;
+        gap:40px;
+        transform:translateX(100%);
+        transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+      }
+      nav.active { transform:translateX(0); }
+      nav a { font-size:20px; }
+      .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
+      .menu-toggle.active span:nth-child(2){ opacity:0; }
+      .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
+      .logo span { display:none; }
       .hero { min-height:calc(100vh - 65px); }
       .buttons { flex-direction:column; }
       .button { width:100%; }
@@ -1277,10 +950,8 @@
       .search-box { flex-direction:column; }
       .search-box input { min-width:100%; }
       .youtube-grid { grid-template-columns:1fr; }
-
-      .user-profile-card { padding:30px 20px; margin:20px; }
-      .login-container { padding:30px 20px; }
-      .ko-container { padding:30px 20px; margin:20px; }
+      .contact-form { padding:24px 18px; }
+      .login-section .user-info { flex-direction:column; }
     }
 
     @media(min-width:769px){
@@ -1321,27 +992,7 @@
       <a href="#q=settings" data-page="settings">SETTINGS</a>
       <a href="#q=about" data-page="about">ABOUT</a>
       <a href="#q=credit" data-page="credit">CREDIT</a>
-      <a href="#q=users" data-page="users" class="login-link" id="nav-users">👤</a>
     </nav>
-
-    <!-- ユーザープロフィール（ヘッダー内） -->
-    <div id="user-profile-header" class="user-profile-header" style="display:none;">
-      <img id="header-avatar" src="" alt="avatar">
-      <span class="name" id="header-name">ユーザー</span>
-      <!-- ドロップダウン -->
-      <div class="profile-dropdown" id="profile-dropdown">
-        <button class="dropdown-item" id="dropdown-profile">
-          <span class="icon">👤</span> プロフィール
-        </button>
-        <button class="dropdown-item" id="dropdown-settings">
-          <span class="icon">🔔</span> 通知設定
-        </button>
-        <div class="dropdown-divider"></div>
-        <button class="dropdown-item logout" id="dropdown-logout">
-          <span class="icon">🚪</span> ログアウト
-        </button>
-      </div>
-    </div>
   </div>
 </header>
 
@@ -1446,30 +1097,56 @@
     </section>
   </div>
 
-  <!-- CONTACT -->
+  <!-- CONTACT（Google Login 必須） -->
   <div id="page-contact" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">CONTACT</span></h2>
         <p class="section-subtitle">神木チャンネルへのお問い合わせ</p>
-        <div class="contact-form" style="max-width:600px; margin:0 auto;">
-          <form id="my-form" data-fs-form>
-            <label for="contact-name">お名前</label>
-            <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
-            <span class="field-error" data-fs-error="name"></span>
 
-            <label for="contact-email">メールアドレス（任意）</label>
-            <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
-            <span class="field-error" data-fs-error="_replyto"></span>
+        <div class="contact-wrapper">
 
-            <label for="contact-message">メッセージ</label>
-            <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
-            <span class="field-error" data-fs-error="message"></span>
+          <!-- ログインセクション -->
+          <div class="login-section" id="login-section">
+            <!-- 未ログイン時 -->
+            <div id="login-prompt">
+              <span class="icon">🔐</span>
+              <p class="login-prompt">お問い合わせには Google ログインが必要です</p>
+              <div id="g_id_onload"></div>
+            </div>
+            <!-- ログイン済み時（JSで表示切り替え） -->
+            <div id="user-info" style="display:none;">
+              <div class="user-info">
+                <img id="user-avatar" src="" alt="avatar">
+                <div>
+                  <div class="name" id="user-name">ユーザー名</div>
+                  <div class="email" id="user-email">email@example.com</div>
+                </div>
+                <button class="logout-btn" id="logout-btn">ログアウト</button>
+              </div>
+            </div>
+          </div>
 
-            <button type="submit" class="submit-btn" data-fs-submit-btn>送信する</button>
-            <div data-fs-success>✅ メッセージを送信しました！</div>
-            <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
-          </form>
+          <!-- フォーム（ログインしないと送信できない） -->
+          <div class="contact-form locked" id="contact-form-wrapper">
+            <form id="my-form" data-fs-form>
+              <label for="contact-name">お名前</label>
+              <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
+              <span class="field-error" data-fs-error="name"></span>
+
+              <label for="contact-email">メールアドレス（任意）</label>
+              <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
+              <span class="field-error" data-fs-error="_replyto"></span>
+
+              <label for="contact-message">メッセージ</label>
+              <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
+              <span class="field-error" data-fs-error="message"></span>
+
+              <button type="submit" class="submit-btn" data-fs-submit-btn disabled>送信する (ログインが必要)</button>
+              <div data-fs-success>✅ メッセージを送信しました！</div>
+              <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
+            </form>
+          </div>
         </div>
       </div>
     </section>
@@ -1569,7 +1246,7 @@
           <div class="credit-item"><span class="emoji">📧</span><h4>Formspree</h4><p>お問い合わせフォーム<br><a href="https://formspree.io/" target="_blank" rel="noopener">formspree.io</a></p></div>
           <div class="credit-item"><span class="emoji">🔑</span><h4>Google Identity Services</h4><p>Googleログイン認証<br><a href="https://developers.google.com/identity" target="_blank" rel="noopener">developers.google.com/identity</a></p></div>
           <div class="credit-item"><span class="emoji">🎨</span><h4>パーティクルエフェクト</h4><p>CSSアニメーション（オリジナル）</p></div>
-          <div class="credit-item"><span class="emoji">🚀</span><h4>ホスティング</h4><p>Netlify + GitHub Pages<br><a href="https://www.netlify.com/" target="_blank" rel="noopener">netlify.com</a></p></div>
+          <div class="credit-item"><span class="emoji">🚀</span><h4>ホスティング</h4><p>GitHub Pages<br><a href="https://pages.github.com/" target="_blank" rel="noopener">pages.github.com</a></p></div>
         </div>
         <div style="margin-top:40px; text-align:center; color:var(--text-sub); font-size:14px; border-top:1px solid var(--card-border); padding-top:30px;">
           <p>このサイトは神木チャンネルによって運営されています。</p>
@@ -1577,65 +1254,6 @@
         </div>
       </div>
     </section>
-  </div>
-
-  <!-- ==========================================================
-       新規ページ：ログイン（スワイプ削除・クリック式に戻す）
-  ========================================================== -->
-  <div id="page-login">
-    <div class="login-container">
-      <h2>ログイン</h2>
-      <p>Googleアカウントでログインして、限定機能を使おう！</p>
-
-      <div class="already-logged" id="login-already-logged">
-        ✅ ログイン中: <span id="login-logged-username">ユーザー</span>
-      </div>
-
-      <!-- Google公式ボタン（クリック式） -->
-      <div id="google-login-button-container" class="google-login-btn-wrapper"></div>
-
-      <div style="margin-top:20px; font-size:12px; color:var(--text-sub); opacity:0.6;">
-        Googleアカウントでログインできます
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================
-       新規ページ：ログアウト
-  ========================================================== -->
-  <div id="page-logout">
-    <div>
-      <span class="logout-icon">🚪</span>
-      <h1>ログアウトしています</h1>
-      <p>しばらくお待ちください...</p>
-      <div class="spinner"></div>
-    </div>
-  </div>
-
-  <!-- ==========================================================
-       新規ページ：ユーザープロフィール
-  ========================================================== -->
-  <div id="page-users">
-    <div class="container">
-      <div class="user-profile-card" id="user-profile-card">
-        <!-- JavaScriptで動的生成 -->
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================
-       新規ページ：購読設定（通知設定）
-  ========================================================== -->
-  <div id="page-ko">
-    <div class="container">
-      <div class="ko-container" id="ko-container">
-        <h2>🔔 通知設定</h2>
-        <p>メールで通知を受け取る設定を管理します。</p>
-        <div id="ko-content">
-          <!-- JavaScriptで動的生成 -->
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- メンテナンスページ -->
@@ -1666,47 +1284,27 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript
+     JavaScript（全機能 + google-config.json から Client ID 読み込み + セッション永続化）
 ========================= -->
 <script>
   (function() {
     'use strict';
 
     // ==========================================================
-    // ★ ハンバーガーメニュー制御
+    // ★ セッション管理（リロード対策：localStorageに保存） ★
     // ==========================================================
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-
-    if (menuToggle && navMenu) {
-      menuToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.classList.toggle('active');
-        navMenu.classList.toggle('active');
-      });
-      navMenu.querySelectorAll('a').forEach(function(link) {
-        link.addEventListener('click', function() {
-          menuToggle.classList.remove('active');
-          navMenu.classList.remove('active');
-        });
-      });
-      document.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-          const isClickInside = navMenu.contains(e.target) || menuToggle.contains(e.target);
-          if (!isClickInside && navMenu.classList.contains('active')) {
-            menuToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-          }
-        }
-      });
+    function saveSession() {
+      if (isLoggedIn && userProfile) {
+        try {
+          localStorage.setItem('kamiki_user', JSON.stringify(userProfile));
+          console.log('[Session] 保存しました');
+        } catch (e) {}
+      } else {
+        try {
+          localStorage.removeItem('kamiki_user');
+        } catch (e) {}
+      }
     }
-
-    // ==========================================================
-    // ★ 認証状態管理（永続化）
-    // ==========================================================
-    let isLoggedIn = false;
-    let userProfile = null;
-    let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
 
     function restoreSession() {
       try {
@@ -1720,103 +1318,59 @@
             return true;
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('[Session] 復元失敗:', e);
+      }
       return false;
     }
 
-    function saveSession() {
-      if (isLoggedIn && userProfile) {
-        try { localStorage.setItem('kamiki_user', JSON.stringify(userProfile)); } catch (e) {}
-      } else {
-        try { localStorage.removeItem('kamiki_user'); } catch (e) {}
-      }
-    }
+    // ==========================================================
+    // Google Login 管理
+    // ==========================================================
+    let isLoggedIn = false;
+    let userProfile = null;
+    let googleClientId = CONFIG.GOOGLE_CLIENT_ID; // デフォルト値
 
+    // 復元を即時実行
     restoreSession();
 
     // DOM 要素
-    const profileHeader = document.getElementById('user-profile-header');
-    const headerAvatar = document.getElementById('header-avatar');
-    const headerName = document.getElementById('header-name');
-    const profileDropdown = document.getElementById('profile-dropdown');
-    const dropdownProfile = document.getElementById('dropdown-profile');
-    const dropdownSettings = document.getElementById('dropdown-settings');
-    const dropdownLogout = document.getElementById('dropdown-logout');
-    const navUsers = document.getElementById('nav-users');
+    const loginPrompt = document.getElementById('login-prompt');
+    const userInfoDiv = document.getElementById('user-info');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+    const userAvatar = document.getElementById('user-avatar');
+    const logoutBtn = document.getElementById('logout-btn');
+    const formWrapper = document.getElementById('contact-form-wrapper');
+    const submitBtn = document.querySelector('[data-fs-submit-btn]');
 
-    const loginAlreadyLogged = document.getElementById('login-already-logged');
-    const loginLoggedUsername = document.getElementById('login-logged-username');
-
-    // ==========================================================
-    // ★ プロフィール表示更新
-    // ==========================================================
-    function updateProfileUI() {
+    function updateUI() {
       if (isLoggedIn && userProfile) {
-        profileHeader.style.display = 'flex';
-        headerAvatar.src = userProfile.picture || '';
-        headerName.textContent = userProfile.name || 'ユーザー';
-        navUsers.textContent = '👤';
-        navUsers.style.color = 'var(--accent-color)';
-
-        if (loginAlreadyLogged) {
-          loginAlreadyLogged.style.display = 'block';
-          loginLoggedUsername.textContent = userProfile.name || 'ユーザー';
+        loginPrompt.style.display = 'none';
+        userInfoDiv.style.display = 'block';
+        userName.textContent = userProfile.name || 'ユーザー';
+        userEmail.textContent = userProfile.email || '';
+        userAvatar.src = userProfile.picture || '';
+        formWrapper.classList.remove('locked');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '送信する';
         }
-        renderUserPage();
-        renderKoPage();
-        // ログインページのボタンを非表示に
-        const btnContainer = document.getElementById('google-login-button-container');
-        if (btnContainer) btnContainer.style.display = 'none';
       } else {
-        profileHeader.style.display = 'none';
-        navUsers.textContent = 'LOGIN';
-        navUsers.style.color = '';
-        if (loginAlreadyLogged) loginAlreadyLogged.style.display = 'none';
-        renderUserPage();
-        renderKoPage();
-        const btnContainer = document.getElementById('google-login-button-container');
-        if (btnContainer) btnContainer.style.display = 'flex';
+        loginPrompt.style.display = 'block';
+        userInfoDiv.style.display = 'none';
+        formWrapper.classList.add('locked');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = '送信する (ログインが必要)';
+        }
       }
     }
 
-    // ==========================================================
-    // ★ プロフィールドロップダウン
-    // ==========================================================
-    if (profileHeader) {
-      profileHeader.addEventListener('click', function(e) {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('open');
-      });
-      document.addEventListener('click', function() {
-        profileDropdown.classList.remove('open');
-      });
-    }
-
-    if (dropdownProfile) {
-      dropdownProfile.addEventListener('click', function() {
-        profileDropdown.classList.remove('open');
-        window.location.hash = '#q=users';
-      });
-    }
-    if (dropdownSettings) {
-      dropdownSettings.addEventListener('click', function() {
-        profileDropdown.classList.remove('open');
-        window.location.hash = '#q=ko';
-      });
-    }
-    if (dropdownLogout) {
-      dropdownLogout.addEventListener('click', function() {
-        profileDropdown.classList.remove('open');
-        window.location.hash = '#q=logout';
-      });
-    }
-
-    // ==========================================================
-    // ★ Google ログインコールバック
-    // ==========================================================
+    // Google コールバック
     window.onSignIn = function(response) {
+      const payload = response.credential;
       try {
-        const payload = response.credential;
         const base64Url = payload.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -1829,36 +1383,27 @@
           picture: data.picture
         };
         isLoggedIn = true;
-        saveSession();
-        updateProfileUI();
-        if (window.location.hash === '#q=login') {
-          window.location.hash = '#q=home';
-        }
+        saveSession(); // ★ 永続化 ★
+        updateUI();
         console.log('[Google] ログイン成功:', userProfile.name);
-        window.dispatchEvent(new Event('loginStateChanged'));
       } catch (e) {
         console.error('[Google] ログイン解析エラー:', e);
       }
     };
 
-    // ==========================================================
-    // ★ Google ログインボタン初期化（クリック式）
-    // ==========================================================
+    // Google ボタンをレンダリング
     function initGoogleLogin() {
       const clientId = googleClientId;
       if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
-        console.warn('[Google] Client ID が設定されていません');
-        const container = document.getElementById('google-login-button-container');
-        if (container) {
-          container.innerHTML = `
-            <div style="color:#ff6b6b; font-size:13px; padding:10px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
-              ⚠️ Google Client ID 未設定<br>
-              <span style="font-size:11px; color:var(--text-sub);">google-config.json を確認</span>
-            </div>
-          `;
-        }
+        document.getElementById('g_id_onload').innerHTML = `
+          <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
+            ⚠️ Google Client ID が設定されていません。<br>
+            <span style="font-size:12px; color:var(--text-sub);">google-config.json に google_client_id を追加してください。</span>
+          </div>
+        `;
         return;
       }
+
       if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
         google.accounts.id.initialize({
           client_id: clientId,
@@ -1866,155 +1411,46 @@
           cancel_on_tap_outside: false,
           auto_select: false
         });
-        const container = document.getElementById('google-login-button-container');
-        if (container) {
-          container.innerHTML = '';
-          google.accounts.id.renderButton(container, {
-            theme: 'filled_black',
-            size: 'large',
+        google.accounts.id.renderButton(
+          document.getElementById('g_id_onload'),
+          { 
+            theme: 'filled_black', 
+            size: 'large', 
             width: 300,
             text: 'signin_with',
             shape: 'pill'
-          });
-        }
+          }
+        );
       } else {
         setTimeout(initGoogleLogin, 500);
       }
     }
 
-    // ==========================================================
-    // ★ ログアウト処理
-    // ==========================================================
-    function performLogout() {
-      if (typeof google !== 'undefined' && google.accounts) {
+    // ログアウト
+    function logout() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
         google.accounts.id.disableAutoSelect();
-        if (userProfile?.email) {
-          google.accounts.id.revoke(userProfile.email, function() {});
-        }
-      }
-      isLoggedIn = false;
-      userProfile = null;
-      saveSession();
-      updateProfileUI();
-      setTimeout(function() {
-        if (window.location.hash === '#q=logout') {
-          window.location.hash = '#q=home';
-        }
-      }, 2000);
-      console.log('[Auth] ログアウトしました');
-      window.dispatchEvent(new Event('loginStateChanged'));
-    }
-
-    // ==========================================================
-    // ★ ユーザーページレンダリング
-    // ==========================================================
-    function renderUserPage() {
-      const container = document.getElementById('user-profile-card');
-      if (!container) return;
-      if (isLoggedIn && userProfile) {
-        container.innerHTML = `
-          <img class="avatar" src="${userProfile.picture || ''}" alt="avatar">
-          <div class="name">${userProfile.name || 'ユーザー'}</div>
-          <div class="email">${userProfile.email || ''}</div>
-          <div class="provider">🔑 Google アカウント</div>
-          <div class="user-actions">
-            <button class="action-btn" id="user-go-settings">🔔 通知設定</button>
-            <button class="action-btn danger" id="user-logout-btn">🚪 ログアウト</button>
-          </div>
-        `;
-        document.getElementById('user-go-settings')?.addEventListener('click', function() {
-          window.location.hash = '#q=ko';
-        });
-        document.getElementById('user-logout-btn')?.addEventListener('click', function() {
-          window.location.hash = '#q=logout';
+        google.accounts.id.revoke(userProfile?.email || '', () => {
+          isLoggedIn = false;
+          userProfile = null;
+          saveSession(); // ★ クリア ★
+          updateUI();
+          console.log('[Google] ログアウトしました');
         });
       } else {
-        container.innerHTML = `
-          <div class="not-logged">
-            <span class="icon">🔐</span>
-            <p>ログインしていません</p>
-            <button class="login-link-btn" id="user-go-login">ログインする</button>
-          </div>
-        `;
-        document.getElementById('user-go-login')?.addEventListener('click', function() {
-          window.location.hash = '#q=login';
-        });
+        isLoggedIn = false;
+        userProfile = null;
+        saveSession();
+        updateUI();
       }
     }
 
-    // ==========================================================
-    // ★ 購読設定ページレンダリング
-    // ==========================================================
-    function renderKoPage() {
-      const container = document.getElementById('ko-content');
-      if (!container) return;
-      if (isLoggedIn && userProfile) {
-        let settings = {};
-        try {
-          const saved = localStorage.getItem('kamiki_notify');
-          if (saved) settings = JSON.parse(saved);
-        } catch (e) {}
-        const emailChecked = settings.email !== false;
-        const pushChecked = settings.push || false;
-        container.innerHTML = `
-          <div class="setting-item">
-            <div>
-              <div class="label">📧 メール通知</div>
-              <div class="desc">新しいお知らせをメールで受け取る</div>
-            </div>
-            <div class="toggle ${emailChecked ? 'active' : ''}" id="toggle-email">
-              <div class="thumb"></div>
-            </div>
-          </div>
-          <div class="setting-item">
-            <div>
-              <div class="label">🔔 ブラウザ通知</div>
-              <div class="desc">デスクトップ通知を受け取る</div>
-            </div>
-            <div class="toggle ${pushChecked ? 'active' : ''}" id="toggle-push">
-              <div class="thumb"></div>
-            </div>
-          </div>
-          <button class="save-btn" id="ko-save-btn">設定を保存</button>
-          <div class="save-success" id="ko-save-success">✅ 設定を保存しました！</div>
-          <div style="margin-top:16px; font-size:13px; color:var(--text-sub); text-align:center;">
-            通知は登録されたメールアドレス（${userProfile.email}）に送信されます。
-          </div>
-        `;
-        document.getElementById('toggle-email')?.addEventListener('click', function() {
-          this.classList.toggle('active');
-        });
-        document.getElementById('toggle-push')?.addEventListener('click', function() {
-          this.classList.toggle('active');
-        });
-        document.getElementById('ko-save-btn')?.addEventListener('click', function() {
-          const email = document.getElementById('toggle-email')?.classList.contains('active') || false;
-          const push = document.getElementById('toggle-push')?.classList.contains('active') || false;
-          try {
-            localStorage.setItem('kamiki_notify', JSON.stringify({ email, push }));
-          } catch (e) {}
-          const success = document.getElementById('ko-save-success');
-          if (success) {
-            success.classList.add('show');
-            setTimeout(function() { success.classList.remove('show'); }, 3000);
-          }
-        });
-      } else {
-        container.innerHTML = `
-          <div class="not-logged-msg">
-            <span class="icon">🔐</span>
-            <p>ログインすると通知設定ができます</p>
-            <button class="login-link-btn" id="ko-go-login" style="margin-top:12px; padding:10px 30px; border-radius:999px; background:var(--accent-gradient); color:#fff; font-weight:700; border:none; cursor:pointer;">ログインする</button>
-          </div>
-        `;
-        document.getElementById('ko-go-login')?.addEventListener('click', function() {
-          window.location.hash = '#q=login';
-        });
-      }
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', logout);
     }
 
     // ==========================================================
-    // ★ Google Client ID 読み込み
+    // ★ google-config.json から Google Client ID を読み込む ★
     // ==========================================================
     async function loadGoogleConfig() {
       try {
@@ -2024,18 +1460,374 @@
         const data = await res.json();
         if (data.google_client_id) {
           googleClientId = data.google_client_id;
-          console.log('[CONFIG] Google Client ID を読み込みました');
+          console.log('[CONFIG] Google Client ID を google-config.json から読み込みました');
+        } else {
+          console.log('[CONFIG] google-config.json に google_client_id がありません（デフォルト値を使用）');
         }
         return true;
       } catch (err) {
-        console.warn('[CONFIG] google-config.json 読み込み失敗:', err.message);
+        console.warn('[CONFIG] google-config.json 読み込み失敗（デフォルト値を使用）:', err.message);
         return false;
       }
     }
 
     // ==========================================================
-    // ★ お知らせ取得（GitHub API）
+    // パーティクル
     // ==========================================================
+    (function() {
+      const container = document.getElementById('particles');
+      if (!container) return;
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        const size = 2 + Math.random() * 4;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.animationDelay = (Math.random() * 20) + 's';
+        p.style.animationDuration = (12 + Math.random() * 15) + 's';
+        p.style.opacity = 0.1 + Math.random() * 0.3;
+        container.appendChild(p);
+      }
+    })();
+
+    /* ==================================================
+       トップへ戻るボタン
+    ================================================== */
+    (function() {
+      const btn = document.getElementById('back-to-top');
+      let visible = false;
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        if (scrollY > 400 && !visible) { btn.classList.add('visible'); visible = true; }
+        else if (scrollY <= 400 && visible) { btn.classList.remove('visible'); visible = false; }
+      });
+      btn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    })();
+
+    /* ==================================================
+       スクロールアニメーション
+    ================================================== */
+    (function() {
+      const elements = document.querySelectorAll('.scroll-animate');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+        elements.forEach(el => observer.observe(el));
+      } else {
+        elements.forEach(el => el.classList.add('visible'));
+      }
+    })();
+
+    /* ==================================================
+       ヘッダー スクロール
+    ================================================== */
+    (function() {
+      const header = document.getElementById('header');
+      window.addEventListener('scroll', () => {
+        header.classList.toggle('scrolled', window.scrollY > 50);
+      });
+    })();
+
+    /* ==================================================
+       ハンバーガー
+    ================================================== */
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    document.querySelectorAll('#nav-menu a[data-page]').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+
+    /* ==================================================
+       ページルーティング（裏コマンド対応版）
+    ================================================== */
+    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
+    const memberIds = MEMBER_IDS || [];
+    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
+
+    let maintenanceMode = false;
+    let configLoaded = false;
+
+    // 設定ファイル読み込み（メンテナンスモード用）
+    async function loadServerConfig() {
+      try {
+        const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Config fetch failed');
+        const data = await res.json();
+        const value = data.maintenance;
+        maintenanceMode = (value === 'on' || value === true);
+        configLoaded = true;
+        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode ? 'ON' : 'OFF' });
+        updateMaintenanceUI();
+        return true;
+      } catch (err) {
+        console.warn('[CONFIG] サーバー設定読み込み失敗（デフォルトOFF）:', err.message);
+        maintenanceMode = false;
+        configLoaded = true;
+        updateMaintenanceUI();
+        return false;
+      }
+    }
+
+    function updateMaintenanceUI() {
+      const status = document.getElementById('maintenance-status');
+      const source = document.getElementById('maintenance-source');
+      if (status) {
+        status.textContent = maintenanceMode ? 'ON' : 'OFF';
+        status.className = 'status-badge' + (maintenanceMode ? '' : ' off');
+      }
+      if (source) {
+        source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
+      }
+    }
+
+    function parseHash() {
+      const hash = window.location.hash;
+      if (!hash || hash === '#') return { page: 'home', commands: [] };
+      if (hash.startsWith('#q=')) {
+        let raw = decodeURIComponent(hash.substring(3));
+        let parts = raw.split('=');
+        let path = parts[0];
+        let commands = parts.slice(1);
+        if (commandWords.includes(path)) {
+          return { page: 'home', commands: [path, ...commands] };
+        }
+        let page = '404';
+        let memberId = null;
+        if (path.startsWith('member/')) {
+          const id = path.split('/')[1];
+          if (memberIds.includes(id)) {
+            page = 'member-detail';
+            memberId = id;
+          } else {
+            page = '404';
+          }
+        } else if (validPages.includes(path)) {
+          page = path;
+        } else {
+          page = '404';
+        }
+        return { page, memberId, commands };
+      }
+      return { page: 'home', commands: [] };
+    }
+
+    function getPageFromHash() { return parseHash().page; }
+    function getMemberIdFromHash() { return parseHash().memberId; }
+    function getCommandsFromHash() { return parseHash().commands; }
+
+    /* ==================================================
+       メイン表示関数
+    ================================================== */
+    function showPage() {
+      const parsed = parseHash();
+      let page = parsed.page;
+      const memberId = parsed.memberId;
+      const commands = parsed.commands;
+
+      const titles = {
+        home: '神木チャンネル',
+        member: 'MEMBER - 神木チャンネル',
+        about: 'ABOUT - 神木チャンネル',
+        notices: 'NEWS - 神木チャンネル',
+        credit: 'CREDIT - 神木チャンネル',
+        video: 'VIDEO - 神木チャンネル',
+        contact: 'CONTACT - 神木チャンネル',
+        settings: 'SETTINGS - 神木チャンネル',
+        'member-detail': 'MEMBER - 神木チャンネル'
+      };
+      document.title = titles[page] || '神木チャンネル';
+
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.getElementById('page-404').classList.remove('active');
+      document.getElementById('page-maintenance').classList.remove('active');
+
+      // メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
+      const isContact = (page === 'contact');
+      if (maintenanceMode && !isContact) {
+        document.getElementById('page-maintenance').classList.add('active');
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          if (link.dataset.page === 'contact') link.classList.add('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // ★ 裏コマンド: hide-news ★
+      const hideNews = commands.includes('hide-news');
+      const noticeSection = document.querySelector('#page-home .section:last-child');
+      if (noticeSection) {
+        noticeSection.style.display = hideNews ? 'none' : '';
+      }
+
+      // ★ 裏コマンド: debug ★
+      const debugMode = commands.includes('debug');
+      let badge = document.getElementById('debug-badge');
+      if (debugMode) {
+        console.log('[DEBUG MODE] 裏コマンドが有効です');
+        console.log('  - commands:', commands);
+        console.log('  - maintenance:', maintenanceMode);
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.id = 'debug-badge';
+          badge.style.cssText = `
+            position: fixed; bottom: 80px; left: 20px;
+            background: rgba(139,92,246,0.8); color: #fff;
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+            z-index: 9998; backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+          `;
+          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
+          document.body.appendChild(badge);
+        } else {
+          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
+        }
+        const debugStatus = document.getElementById('debug-status');
+        if (debugStatus) {
+          debugStatus.textContent = 'ON';
+          debugStatus.className = 'status-badge';
+        }
+      } else {
+        if (badge) badge.remove();
+        const debugStatus = document.getElementById('debug-status');
+        if (debugStatus) {
+          debugStatus.textContent = 'OFF';
+          debugStatus.className = 'status-badge off';
+        }
+      }
+
+      if (page === '404') {
+        document.getElementById('page-404').classList.add('active');
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      if (page === 'member-detail' && memberId) {
+        const target = document.getElementById('page-member-detail');
+        if (target) {
+          target.classList.add('active');
+          renderMemberDetail(memberId, commands);
+        }
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          link.classList.toggle('active', link.dataset.page === 'member');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const target = document.getElementById('page-' + page);
+      if (target) {
+        target.classList.add('active');
+        if (page === 'notices') renderAllNotices();
+        if (page === 'video') fetchYouTubeVideos();
+        if (page === 'settings') {
+          updateSettingsUI(commands);
+          updateMaintenanceUI();
+        }
+        if (page === 'contact') {
+          updateUI(); // ★ CONTACTページ表示時にログイン状態を更新 ★
+        }
+      }
+      document.querySelectorAll('nav a[data-page]').forEach(link => {
+        link.classList.toggle('active', link.dataset.page === page);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ==================================================
+       メンバー詳細（裏コマンド対応）
+    ================================================== */
+    function renderMemberDetail(id, commands) {
+      const container = document.getElementById('member-detail-content');
+      if (!container) return;
+      const m = MEMBERS[id];
+      if (!m) {
+        container.innerHTML = `
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
+          <div style="text-align:center;margin-top:20px;">
+            <a class="button secondary" href="#q=member">戻る</a>
+          </div>
+        `;
+        return;
+      }
+      const member = { ...m };
+      // ★ 裏コマンド: osi ★
+      if (id === 'kii' && commands.includes('osi')) {
+        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
+      }
+      // ★ 裏コマンド: kamito ★
+      if (id === 'kamito' && commands.includes('kamito')) {
+        member.hobby = 'BEYBLADE 超特訓中';
+      }
+      container.innerHTML = `
+        <h1>${member.name}</h1>
+        <div class="member-detail-item"><span class="label">趣味</span><span class="value">${member.hobby || '-'}</span></div>
+        <div class="member-detail-item"><span class="label">得意なこと</span><span class="value">${member.skill || '-'}</span></div>
+        <div class="member-detail-item"><span class="label">役割</span><span class="value">${member.role || '-'}</span></div>
+        <div style="text-align:center;margin-top:24px;">
+          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
+        </div>
+      `;
+    }
+
+    /* ==================================================
+       メンバー一覧
+    ================================================== */
+    function renderMemberList(filter = '') {
+      const container = document.getElementById('member-list');
+      if (!container) return;
+      const ids = Object.keys(MEMBERS);
+      if (ids.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>'; return; }
+      const filtered = filter ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter)) : ids;
+      if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
+      container.innerHTML = filtered.map(id => {
+        const m = MEMBERS[id];
+        return `
+          <a href="#q=member/${id}" class="card member-card scroll-animate">
+            <h3>${m.name}</h3>
+            <div class="member-role">${m.role || ''}</div>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </a>
+        `;
+      }).join('');
+      setTimeout(() => {
+        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.15 });
+            observer.observe(el);
+          } else { el.classList.add('visible'); }
+        });
+      }, 100);
+    }
+
+    // メンバー検索
+    (function() {
+      const input = document.getElementById('member-search-input');
+      const clear = document.getElementById('member-search-clear');
+      if (input) {
+        input.addEventListener('input', () => { renderMemberList(input.value); });
+        clear.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
+      }
+    })();
+
+    /* ==================================================
+       お知らせ（GitHub API）
+    ================================================== */
     const noticeList = document.getElementById('notice-list');
     const allNoticesList = document.getElementById('all-notices-list');
     const loadMoreWrap = document.getElementById('load-more-wrap');
@@ -2046,19 +1838,9 @@
 
     function renderNotices(issues, container, limit, filter = '') {
       let items = limit ? issues.slice(0, limit) : issues;
-      if (filter) {
-        items = items.filter(item =>
-          (item.title || '').includes(filter) ||
-          (item.body || '').includes(filter)
-        );
-      }
+      if (filter) { items = items.filter(item => (item.title || '').includes(filter) || (item.body || '').includes(filter)); }
       if (!items || items.length === 0) {
-        container.innerHTML = `
-          <div class="notice">
-            <div class="notice-title">お知らせ</div>
-            <div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div>
-          </div>
-        `;
+        container.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div></div>`;
         return;
       }
       container.innerHTML = items.map((issue, index) => {
@@ -2142,9 +1924,9 @@
       }
     }
 
-    // ==========================================================
-    // ★ YouTube 最新動画取得
-    // ==========================================================
+    /* ==================================================
+       YouTube 最新動画取得
+    ================================================== */
     async function fetchYouTubeVideos() {
       const container = document.getElementById('youtube-list');
       if (!container) return;
@@ -2183,9 +1965,9 @@
       }
     }
 
-    // ==========================================================
-    // ★ Formspree AJAX 初期化
-    // ==========================================================
+    /* ==================================================
+       Formspree AJAX 初期化
+    ================================================== */
     window.addEventListener('load', function() {
       if (window.formspree) {
         window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
@@ -2198,304 +1980,19 @@
       }
     });
 
-    // ==========================================================
-    // ★ メンバー一覧
-    // ==========================================================
-    function renderMemberList(filter = '') {
-      const container = document.getElementById('member-list');
-      if (!container) return;
-      const ids = Object.keys(MEMBERS);
-      if (ids.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>'; return; }
-      const filtered = filter ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter)) : ids;
-      if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
-      container.innerHTML = filtered.map(id => {
-        const m = MEMBERS[id];
-        return `
-          <a href="#q=member/${id}" class="card member-card scroll-animate">
-            <h3>${m.name}</h3>
-            <div class="member-role">${m.role || ''}</div>
-            <p>神木チャンネルのメンバー。</p>
-            <div class="click-hint">タップして詳細を見る</div>
-          </a>
-        `;
-      }).join('');
-      setTimeout(() => {
-        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
-          if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-            }, { threshold: 0.15 });
-            observer.observe(el);
-          } else { el.classList.add('visible'); }
-        });
-      }, 100);
-    }
-
-    (function() {
-      const input = document.getElementById('member-search-input');
-      const clear = document.getElementById('member-search-clear');
-      if (input) {
-        input.addEventListener('input', () => { renderMemberList(input.value); });
-        clear.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
-      }
-    })();
-
-    // ==========================================================
-    // ★ メンバー詳細
-    // ==========================================================
-    function renderMemberDetail(id, commands) {
-      const container = document.getElementById('member-detail-content');
-      if (!container) return;
-      const m = MEMBERS[id];
-      if (!m) {
-        container.innerHTML = `
-          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
-          <div style="text-align:center;margin-top:20px;">
-            <a class="button secondary" href="#q=member">戻る</a>
-          </div>
-        `;
-        return;
-      }
-      const member = { ...m };
-      if (id === 'kii' && commands.includes('osi')) {
-        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
-      }
-      if (id === 'kamito' && commands.includes('kamito')) {
-        member.hobby = 'BEYBLADE 超特訓中';
-      }
-      container.innerHTML = `
-        <h1>${member.name}</h1>
-        <div class="member-detail-item"><span class="label">趣味</span><span class="value">${member.hobby || '-'}</span></div>
-        <div class="member-detail-item"><span class="label">得意なこと</span><span class="value">${member.skill || '-'}</span></div>
-        <div class="member-detail-item"><span class="label">役割</span><span class="value">${member.role || '-'}</span></div>
-        <div style="text-align:center;margin-top:24px;">
-          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
-        </div>
-      `;
-    }
-
-    // ==========================================================
-    // ★ ページルーティング（拡張）
-    // ==========================================================
-    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings', 'users', 'login', 'ko', 'logout'];
-    const memberIds = MEMBER_IDS || [];
-    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
-
-    let maintenanceMode = false;
-    let configLoaded = false;
-
-    async function loadServerConfig() {
-      try {
-        const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
-        const res = await fetch(url, { cache: 'no-cache' });
-        if (!res.ok) throw new Error('Config fetch failed');
-        const data = await res.json();
-        const value = data.maintenance;
-        maintenanceMode = (value === 'on' || value === true);
-        configLoaded = true;
-        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode ? 'ON' : 'OFF' });
-        updateMaintenanceUI();
-        return true;
-      } catch (err) {
-        console.warn('[CONFIG] サーバー設定読み込み失敗:', err.message);
-        maintenanceMode = false;
-        configLoaded = true;
-        updateMaintenanceUI();
+    // Formspree 送信前にログインチェック
+    document.addEventListener('click', function(e) {
+      const target = e.target.closest('[data-fs-submit-btn]');
+      if (target && !isLoggedIn) {
+        e.preventDefault();
+        alert('お問い合わせには Google ログインが必要です。');
         return false;
       }
-    }
+    }, true);
 
-    function updateMaintenanceUI() {
-      const status = document.getElementById('maintenance-status');
-      const source = document.getElementById('maintenance-source');
-      if (status) {
-        status.textContent = maintenanceMode ? 'ON' : 'OFF';
-        status.className = 'status-badge' + (maintenanceMode ? '' : ' off');
-      }
-      if (source) {
-        source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
-      }
-    }
-
-    function parseHash() {
-      const hash = window.location.hash;
-      if (!hash || hash === '#') return { page: 'home', commands: [] };
-      if (hash.startsWith('#q=')) {
-        let raw = decodeURIComponent(hash.substring(3));
-        let parts = raw.split('=');
-        let path = parts[0];
-        let commands = parts.slice(1);
-        if (commandWords.includes(path)) {
-          return { page: 'home', commands: [path, ...commands] };
-        }
-        let page = '404';
-        let memberId = null;
-        if (path.startsWith('member/')) {
-          const id = path.split('/')[1];
-          if (memberIds.includes(id)) {
-            page = 'member-detail';
-            memberId = id;
-          } else {
-            page = '404';
-          }
-        } else if (validPages.includes(path)) {
-          page = path;
-        } else {
-          page = '404';
-        }
-        return { page, memberId, commands };
-      }
-      return { page: 'home', commands: [] };
-    }
-
-    function getPageFromHash() { return parseHash().page; }
-    function getMemberIdFromHash() { return parseHash().memberId; }
-    function getCommandsFromHash() { return parseHash().commands; }
-
-    // ==========================================================
-    // ★ メイン表示関数
-    // ==========================================================
-    function showPage() {
-      const parsed = parseHash();
-      let page = parsed.page;
-      const memberId = parsed.memberId;
-      const commands = parsed.commands;
-
-      const titles = {
-        home: '神木チャンネル',
-        member: 'MEMBER - 神木チャンネル',
-        about: 'ABOUT - 神木チャンネル',
-        notices: 'NEWS - 神木チャンネル',
-        credit: 'CREDIT - 神木チャンネル',
-        video: 'VIDEO - 神木チャンネル',
-        contact: 'CONTACT - 神木チャンネル',
-        settings: 'SETTINGS - 神木チャンネル',
-        users: 'ユーザー - 神木チャンネル',
-        login: 'ログイン - 神木チャンネル',
-        ko: '通知設定 - 神木チャンネル',
-        logout: 'ログアウト - 神木チャンネル',
-        'member-detail': 'MEMBER - 神木チャンネル'
-      };
-      document.title = titles[page] || '神木チャンネル';
-
-      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-      document.getElementById('page-404').classList.remove('active');
-      document.getElementById('page-maintenance').classList.remove('active');
-      document.getElementById('page-login').classList.remove('active');
-      document.getElementById('page-logout').classList.remove('active');
-      document.getElementById('page-users').classList.remove('active');
-      document.getElementById('page-ko').classList.remove('active');
-
-      if (page === 'logout') {
-        document.getElementById('page-logout').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        performLogout();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const isContact = (page === 'contact');
-      if (maintenanceMode && !isContact && page !== 'login' && page !== 'logout') {
-        document.getElementById('page-maintenance').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          if (link.dataset.page === 'contact' || link.dataset.page === 'login') link.classList.add('active');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const hideNews = commands.includes('hide-news');
-      const noticeSection = document.querySelector('#page-home .section:last-child');
-      if (noticeSection) noticeSection.style.display = hideNews ? 'none' : '';
-
-      const debugMode = commands.includes('debug');
-      let badge = document.getElementById('debug-badge');
-      if (debugMode) {
-        console.log('[DEBUG MODE] 裏コマンド:', commands);
-        if (!badge) {
-          badge = document.createElement('div');
-          badge.id = 'debug-badge';
-          badge.style.cssText = 'position:fixed; bottom:80px; left:20px; background:rgba(139,92,246,0.8); color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; z-index:9998; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.1);';
-          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
-          document.body.appendChild(badge);
-        } else {
-          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
-        }
-        const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) { debugStatus.textContent = 'ON'; debugStatus.className = 'status-badge'; }
-      } else {
-        if (badge) badge.remove();
-        const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) { debugStatus.textContent = 'OFF'; debugStatus.className = 'status-badge off'; }
-      }
-
-      if (page === '404') {
-        document.getElementById('page-404').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      if (page === 'member-detail' && memberId) {
-        const target = document.getElementById('page-member-detail');
-        if (target) {
-          target.classList.add('active');
-          renderMemberDetail(memberId, commands);
-        }
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === 'member'));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      if (page === 'users') {
-        document.getElementById('page-users').classList.add('active');
-        renderUserPage();
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      if (page === 'login') {
-        document.getElementById('page-login').classList.add('active');
-        // ログイン済みならボタン非表示
-        if (isLoggedIn) {
-          const container = document.getElementById('google-login-button-container');
-          if (container) container.style.display = 'none';
-        } else {
-          const container = document.getElementById('google-login-button-container');
-          if (container) { container.style.display = 'flex'; initGoogleLogin(); }
-        }
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      if (page === 'ko') {
-        document.getElementById('page-ko').classList.add('active');
-        renderKoPage();
-        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      const target = document.getElementById('page-' + page);
-      if (target) {
-        target.classList.add('active');
-        if (page === 'notices') renderAllNotices();
-        if (page === 'video') fetchYouTubeVideos();
-        if (page === 'settings') {
-          updateSettingsUI(commands);
-          updateMaintenanceUI();
-        }
-      }
-      document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // ==========================================================
-    // ★ SETTINGS
-    // ==========================================================
+    /* ==================================================
+       SETTINGS ページの機能
+    ================================================== */
     function updateSettingsUI(commands) {
       const debugStatus = document.getElementById('debug-status');
       if (debugStatus) {
@@ -2525,7 +2022,12 @@
     document.getElementById('toggle-debug-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasDebug = currentCommands.includes('debug');
-      let newCommands = hasDebug ? currentCommands.filter(c => c !== 'debug') : [...currentCommands, 'debug'];
+      let newCommands;
+      if (hasDebug) {
+        newCommands = currentCommands.filter(c => c !== 'debug');
+      } else {
+        newCommands = [...currentCommands, 'debug'];
+      }
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2535,7 +2037,12 @@
     document.getElementById('toggle-news-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasHide = currentCommands.includes('hide-news');
-      let newCommands = hasHide ? currentCommands.filter(c => c !== 'hide-news') : [...currentCommands, 'hide-news'];
+      let newCommands;
+      if (hasHide) {
+        newCommands = currentCommands.filter(c => c !== 'hide-news');
+      } else {
+        newCommands = [...currentCommands, 'hide-news'];
+      }
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2547,7 +2054,14 @@
       updateMaintenanceUI();
       const currentCommands = getCommandsFromHash();
       const hasMaint = currentCommands.includes('maintenance');
-      let newCommands = maintenanceMode && !hasMaint ? [...currentCommands, 'maintenance'] : (!maintenanceMode && hasMaint ? currentCommands.filter(c => c !== 'maintenance') : currentCommands);
+      let newCommands;
+      if (maintenanceMode && !hasMaint) {
+        newCommands = [...currentCommands, 'maintenance'];
+      } else if (!maintenanceMode && hasMaint) {
+        newCommands = currentCommands.filter(c => c !== 'maintenance');
+      } else {
+        newCommands = currentCommands;
+      }
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2559,28 +2073,28 @@
       location.reload();
     });
 
-    // ==========================================================
-    // ★ 初期化
-    // ==========================================================
+    /* ==================================================
+       初期化（サーバー設定読み込み → Google Config 読み込み → 表示）
+    ================================================== */
     async function init() {
-      await loadGoogleConfig();
+      // 1. メンテナンス設定読み込み
       await loadServerConfig();
+      // 2. Google Client ID 専用ファイル読み込み
+      await loadGoogleConfig();
+      // 3. Google ログインボタン初期化
+      initGoogleLogin();
+      // 4. 各種表示
       renderMemberList('');
       fetchNotices();
-      initGoogleLogin();
-      updateProfileUI();
       showPage();
+      // ★ セッション復元後にUIを更新 ★
+      updateUI();
     }
 
     init();
 
     window.addEventListener('hashchange', showPage);
     window.addEventListener('popstate', showPage);
-    window.addEventListener('loginStateChanged', function() {
-      updateProfileUI();
-      renderUserPage();
-      renderKoPage();
-    });
 
   })();
 </script>
