@@ -28,9 +28,7 @@
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
       LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
       CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json",
-      // ★ Google Client ID 専用ファイル（新しく作る）
       GOOGLE_CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/google-config.json",
-      // ★ デフォルト値（ファイルがない場合）
       GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
     };
 
@@ -243,6 +241,111 @@
       transform-origin:left;
     }
 
+    /* ログインユーザープロフィール（ヘッダー） */
+    .user-profile-header {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      padding:4px 12px 4px 8px;
+      border-radius:999px;
+      border:1px solid var(--card-border);
+      background:var(--card-bg);
+      transition:all 0.3s ease;
+      position:relative;
+    }
+    .user-profile-header:hover {
+      border-color:var(--accent-color);
+      background:rgba(139,92,246,0.1);
+    }
+    .user-profile-header img {
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      border:2px solid var(--accent-color);
+    }
+    .user-profile-header .name {
+      font-size:13px;
+      font-weight:700;
+      color:var(--text-main);
+      max-width:100px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .user-profile-header .logout-btn-mini {
+      background:none;
+      border:none;
+      color:var(--text-sub);
+      font-size:12px;
+      cursor:pointer;
+      padding:0 4px;
+      transition:color 0.3s ease;
+    }
+    .user-profile-header .logout-btn-mini:hover {
+      color:#ff6b6b;
+    }
+    .profile-dropdown {
+      display:none;
+      position:absolute;
+      top:calc(100% + 8px);
+      right:0;
+      background:var(--bg-color);
+      border:1px solid var(--card-border);
+      border-radius:16px;
+      padding:16px 20px;
+      min-width:220px;
+      box-shadow:0 10px 40px rgba(0,0,0,0.5);
+      z-index:1002;
+    }
+    .profile-dropdown.open {
+      display:block;
+      animation:fadeInScale 0.2s ease forwards;
+    }
+    .profile-dropdown .user-info {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+      padding-bottom:12px;
+      border-bottom:1px solid var(--card-border);
+    }
+    .profile-dropdown .user-info img {
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:2px solid var(--accent-color);
+    }
+    .profile-dropdown .user-info .detail .name {
+      font-weight:700;
+      font-size:15px;
+    }
+    .profile-dropdown .user-info .detail .email {
+      font-size:12px;
+      color:var(--text-sub);
+    }
+    .profile-dropdown .logout-btn {
+      width:100%;
+      padding:8px;
+      border-radius:999px;
+      border:1px solid rgba(255,107,107,0.3);
+      background:rgba(255,107,107,0.1);
+      color:#ff6b6b;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .profile-dropdown .logout-btn:hover {
+      background:rgba(255,107,107,0.2);
+    }
+
+    @media(max-width:768px){
+      .user-profile-header .name { display:none; }
+      .user-profile-header { padding:4px 8px; }
+      .user-profile-header img { width:28px; height:28px; }
+    }
+
     /* ===== ページ共通 ===== */
     #app { min-height:100vh; }
     .page {
@@ -413,7 +516,7 @@
     }
     .member-card:hover .click-hint { opacity:1; }
 
-    /* ===== メンバー詳細 ===== */
+    /* ===== メンバー詳細（メッセージフォーム追加） ===== */
     .member-detail {
       min-height:calc(100vh - 70px);
       display:flex; align-items:center; justify-content:center;
@@ -458,7 +561,123 @@
     }
     .member-detail .back-link:hover { color:var(--text-main); }
 
-    /* ===== お知らせ ===== */
+    /* メンバー個別メッセージフォーム */
+    .member-message-form {
+      margin-top:30px;
+      padding-top:30px;
+      border-top:1px solid var(--card-border);
+    }
+    .member-message-form h4 {
+      font-weight:700;
+      font-size:18px;
+      margin-bottom:16px;
+      color:var(--text-main);
+    }
+    .member-message-form .login-required {
+      text-align:center;
+      padding:20px;
+      border-radius:16px;
+      background:rgba(139,92,246,0.08);
+      border:1px solid rgba(139,92,246,0.2);
+      color:var(--text-sub);
+    }
+    .member-message-form .login-required .icon {
+      font-size:32px;
+      display:block;
+      margin-bottom:8px;
+    }
+    .member-message-form .login-required .btn-google {
+      display:inline-block;
+      margin-top:12px;
+      padding:8px 24px;
+      border-radius:999px;
+      background:var(--accent-gradient);
+      color:#fff;
+      font-weight:700;
+      font-size:14px;
+      border:none;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .member-message-form .login-required .btn-google:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 25px rgba(139,92,246,0.4);
+    }
+    .member-message-form .form-group {
+      margin-bottom:14px;
+    }
+    .member-message-form .form-group label {
+      display:block;
+      color:var(--text-sub);
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:0.05em;
+      margin-bottom:4px;
+    }
+    .member-message-form .form-group textarea {
+      width:100%;
+      padding:12px 16px;
+      border-radius:14px;
+      border:1px solid var(--card-border);
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+      font-size:14px;
+      font-family:inherit;
+      transition:border-color 0.3s ease;
+      resize:vertical;
+      min-height:80px;
+    }
+    .member-message-form .form-group textarea:focus {
+      border-color:var(--accent-color);
+      outline:none;
+    }
+    .member-message-form .submit-msg-btn {
+      width:100%;
+      padding:12px;
+      border-radius:999px;
+      border:none;
+      background:var(--accent-gradient);
+      color:#fff;
+      font-weight:800;
+      font-size:15px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    .member-message-form .submit-msg-btn:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 25px rgba(139,92,246,0.4);
+    }
+    .member-message-form .submit-msg-btn:disabled {
+      opacity:0.5;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .member-message-form .msg-success {
+      display:none;
+      color:#06C755;
+      text-align:center;
+      padding:12px;
+      font-weight:700;
+      background:rgba(6,199,85,0.1);
+      border-radius:14px;
+      border:1px solid rgba(6,199,85,0.3);
+      margin-top:12px;
+    }
+    .member-message-form .msg-success.show { display:block; }
+    .member-message-form .msg-error {
+      display:none;
+      color:#ff6b6b;
+      text-align:center;
+      padding:12px;
+      font-weight:700;
+      background:rgba(255,107,107,0.1);
+      border-radius:14px;
+      border:1px solid rgba(255,107,107,0.3);
+      margin-top:12px;
+    }
+    .member-message-form .msg-error.show { display:block; }
+
+    /* ===== お知らせ（いいね + コメント） ===== */
     .notice-box {
       overflow:hidden;
       border:1px solid var(--card-border);
@@ -502,6 +721,127 @@
       font-size:11px; font-weight:700;
       padding:2px 12px; border-radius:999px;
       margin-top:8px; letter-spacing:0.05em;
+    }
+    /* いいねボタン */
+    .notice-like {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:12px;
+    }
+    .notice-like .like-btn {
+      background:none;
+      border:none;
+      font-size:18px;
+      cursor:pointer;
+      transition:transform 0.2s ease;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--card-border);
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .notice-like .like-btn:hover {
+      transform:scale(1.1);
+    }
+    .notice-like .like-btn.liked {
+      color:#ff6b6b;
+      border-color:rgba(255,107,107,0.3);
+      background:rgba(255,107,107,0.1);
+    }
+    .notice-like .like-btn .count {
+      font-size:13px;
+      font-weight:700;
+      color:var(--text-sub);
+    }
+    .notice-like .like-btn.liked .count {
+      color:#ff6b6b;
+    }
+    .notice-like .like-login-msg {
+      font-size:12px;
+      color:var(--text-sub);
+      opacity:0.6;
+    }
+
+    /* コメント欄 */
+    .notice-comments {
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid var(--card-border);
+    }
+    .notice-comments .comment-list {
+      margin-bottom:12px;
+      max-height:200px;
+      overflow-y:auto;
+    }
+    .notice-comments .comment-item {
+      padding:8px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.03);
+      margin-bottom:6px;
+      font-size:14px;
+      color:var(--text-sub);
+    }
+    .notice-comments .comment-item .author {
+      font-weight:700;
+      color:var(--text-main);
+    }
+    .notice-comments .comment-item .time {
+      font-size:11px;
+      color:var(--text-sub);
+      opacity:0.6;
+      margin-left:8px;
+    }
+    .notice-comments .comment-input-area {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .notice-comments .comment-input-area input {
+      flex:1;
+      min-width:150px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid var(--card-border);
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+      font-size:13px;
+      transition:border-color 0.3s ease;
+      outline:none;
+    }
+    .notice-comments .comment-input-area input:focus {
+      border-color:var(--accent-color);
+    }
+    .notice-comments .comment-input-area input::placeholder {
+      color:var(--text-sub);
+    }
+    .notice-comments .comment-input-area .comment-submit {
+      padding:8px 18px;
+      border-radius:999px;
+      border:none;
+      background:var(--accent-gradient);
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      white-space:nowrap;
+    }
+    .notice-comments .comment-input-area .comment-submit:hover {
+      transform:translateY(-2px);
+      box-shadow:0 6px 20px rgba(139,92,246,0.3);
+    }
+    .notice-comments .comment-input-area .comment-submit:disabled {
+      opacity:0.5;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .notice-comments .comment-login-msg {
+      font-size:12px;
+      color:var(--text-sub);
+      opacity:0.6;
     }
 
     .load-more-wrap { text-align:center; margin-top:30px; }
@@ -565,32 +905,8 @@
       color:var(--text-sub); font-size:14px; margin-bottom:20px;
     }
 
-    /* ===== コンタクトフォーム (Google Login 対応) ===== */
-    .contact-wrapper {
-      max-width:600px; margin:0 auto;
-    }
-    .contact-form {
-      background:var(--card-bg);
-      border-radius:24px;
-      border:1px solid var(--card-border);
-      padding:40px 35px;
-      backdrop-filter:blur(10px);
-      transition:all 0.3s ease;
-    }
-    .contact-form.locked {
-      opacity:0.5;
-      pointer-events:none;
-      filter:blur(2px);
-      position:relative;
-    }
-    .contact-form.locked::after {
-      content:'';
-      position:absolute;
-      top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.4);
-      border-radius:24px;
-      z-index:1;
-    }
+    /* ===== コンタクトフォーム ===== */
+    .contact-form { max-width:600px; margin:0 auto; }
     .contact-form label {
       display:block;
       color:var(--text-sub); font-size:13px; font-weight:700;
@@ -656,65 +972,6 @@
     }
     .contact-form .submit-btn.fs-submitting {
       opacity:0.7; cursor:wait;
-    }
-
-    /* Google Login UI */
-    .login-section {
-      text-align:center;
-      margin-bottom:30px;
-      padding:24px;
-      border-radius:20px;
-      border:1px solid var(--card-border);
-      background:var(--card-bg);
-    }
-    .login-section .user-info {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    .login-section .user-info img {
-      width:48px;
-      height:48px;
-      border-radius:50%;
-      border:2px solid var(--accent-color);
-    }
-    .login-section .user-info .name {
-      font-weight:700;
-      font-size:18px;
-    }
-    .login-section .user-info .email {
-      color:var(--text-sub);
-      font-size:14px;
-    }
-    .login-section .logout-btn {
-      background:rgba(255,107,107,0.15);
-      color:#ff6b6b;
-      border:1px solid rgba(255,107,107,0.3);
-      padding:6px 18px;
-      border-radius:999px;
-      font-weight:700;
-      font-size:13px;
-      cursor:pointer;
-      transition:all 0.3s ease;
-    }
-    .login-section .logout-btn:hover {
-      background:rgba(255,107,107,0.25);
-    }
-    .login-section .login-prompt {
-      color:var(--text-sub);
-      font-size:15px;
-    }
-    .login-section .login-prompt .icon {
-      font-size:32px;
-      display:block;
-      margin-bottom:8px;
-    }
-    #g_id_onload {
-      display:flex;
-      justify-content:center;
-      margin-top:12px;
     }
 
     /* ===== YouTube ===== */
@@ -952,8 +1209,8 @@
       .search-box { flex-direction:column; }
       .search-box input { min-width:100%; }
       .youtube-grid { grid-template-columns:1fr; }
-      .contact-form { padding:24px 18px; }
-      .login-section .user-info { flex-direction:column; }
+      .notice-comments .comment-input-area { flex-direction:column; }
+      .notice-comments .comment-input-area input { min-width:100%; }
     }
 
     @media(min-width:769px){
@@ -995,6 +1252,24 @@
       <a href="#q=about" data-page="about">ABOUT</a>
       <a href="#q=credit" data-page="credit">CREDIT</a>
     </nav>
+    <!-- ユーザープロフィール（ログイン時） -->
+    <div id="user-profile-header" style="display:none; position:relative;">
+      <div class="user-profile-header" id="profile-toggle">
+        <img id="header-avatar" src="" alt="avatar">
+        <span class="name" id="header-name">ユーザー</span>
+        <span class="logout-btn-mini" id="header-logout">✕</span>
+      </div>
+      <div class="profile-dropdown" id="profile-dropdown">
+        <div class="user-info">
+          <img id="dropdown-avatar" src="" alt="avatar">
+          <div class="detail">
+            <div class="name" id="dropdown-name">ユーザー名</div>
+            <div class="email" id="dropdown-email">email@example.com</div>
+          </div>
+        </div>
+        <button class="logout-btn" id="dropdown-logout-btn">ログアウト</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1099,56 +1374,30 @@
     </section>
   </div>
 
-  <!-- CONTACT（Google Login 必須） -->
+  <!-- CONTACT -->
   <div id="page-contact" class="page">
     <section class="section">
       <div class="container">
         <h2 class="section-title"><span class="gradient-text">CONTACT</span></h2>
         <p class="section-subtitle">神木チャンネルへのお問い合わせ</p>
+        <div class="contact-form" style="max-width:600px; margin:0 auto;">
+          <form id="my-form" data-fs-form>
+            <label for="contact-name">お名前</label>
+            <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
+            <span class="field-error" data-fs-error="name"></span>
 
-        <div class="contact-wrapper">
+            <label for="contact-email">メールアドレス（任意）</label>
+            <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
+            <span class="field-error" data-fs-error="_replyto"></span>
 
-          <!-- ログインセクション -->
-          <div class="login-section" id="login-section">
-            <!-- 未ログイン時 -->
-            <div id="login-prompt">
-              <span class="icon">🔐</span>
-              <p class="login-prompt">お問い合わせには Google ログインが必要です</p>
-              <div id="g_id_onload"></div>
-            </div>
-            <!-- ログイン済み時（JSで表示切り替え） -->
-            <div id="user-info" style="display:none;">
-              <div class="user-info">
-                <img id="user-avatar" src="" alt="avatar">
-                <div>
-                  <div class="name" id="user-name">ユーザー名</div>
-                  <div class="email" id="user-email">email@example.com</div>
-                </div>
-                <button class="logout-btn" id="logout-btn">ログアウト</button>
-              </div>
-            </div>
-          </div>
+            <label for="contact-message">メッセージ</label>
+            <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
+            <span class="field-error" data-fs-error="message"></span>
 
-          <!-- フォーム（ログインしないと送信できない） -->
-          <div class="contact-form locked" id="contact-form-wrapper">
-            <form id="my-form" data-fs-form>
-              <label for="contact-name">お名前</label>
-              <input type="text" id="contact-name" name="name" data-fs-field placeholder="例: 神木ファン" required>
-              <span class="field-error" data-fs-error="name"></span>
-
-              <label for="contact-email">メールアドレス（任意）</label>
-              <input type="email" id="contact-email" name="_replyto" data-fs-field placeholder="example@email.com">
-              <span class="field-error" data-fs-error="_replyto"></span>
-
-              <label for="contact-message">メッセージ</label>
-              <textarea id="contact-message" name="message" data-fs-field placeholder="メッセージを入力してください..." required></textarea>
-              <span class="field-error" data-fs-error="message"></span>
-
-              <button type="submit" class="submit-btn" data-fs-submit-btn disabled>送信する (ログインが必要)</button>
-              <div data-fs-success>✅ メッセージを送信しました！</div>
-              <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
-            </form>
-          </div>
+            <button type="submit" class="submit-btn" data-fs-submit-btn>送信する</button>
+            <div data-fs-success>✅ メッセージを送信しました！</div>
+            <div data-fs-error>❌ 送信に失敗しました。もう一度お試しください。</div>
+          </form>
         </div>
       </div>
     </section>
@@ -1286,56 +1535,88 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + google-config.json から Client ID 読み込み）
+     JavaScript（全機能 + Googleログイン + プロフィール + いいね + メンバーメッセージ）
 ========================= -->
 <script>
   (function() {
     'use strict';
 
     // ==========================================================
-    // Google Login 管理（google-config.json から Client ID を読み込む）
+    // 認証状態管理
     // ==========================================================
     let isLoggedIn = false;
     let userProfile = null;
-    let googleClientId = CONFIG.GOOGLE_CLIENT_ID; // デフォルト値
+    let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
 
-    // DOM 要素
-    const loginPrompt = document.getElementById('login-prompt');
-    const userInfoDiv = document.getElementById('user-info');
-    const userName = document.getElementById('user-name');
-    const userEmail = document.getElementById('user-email');
-    const userAvatar = document.getElementById('user-avatar');
-    const logoutBtn = document.getElementById('logout-btn');
-    const formWrapper = document.getElementById('contact-form-wrapper');
-    const submitBtn = document.querySelector('[data-fs-submit-btn]');
+    // DOM 要素（プロフィール）
+    const userProfileHeader = document.getElementById('user-profile-header');
+    const headerAvatar = document.getElementById('header-avatar');
+    const headerName = document.getElementById('header-name');
+    const headerLogout = document.getElementById('header-logout');
+    const dropdownAvatar = document.getElementById('dropdown-avatar');
+    const dropdownName = document.getElementById('dropdown-name');
+    const dropdownEmail = document.getElementById('dropdown-email');
+    const dropdownLogout = document.getElementById('dropdown-logout-btn');
+    const profileToggle = document.getElementById('profile-toggle');
+    const profileDropdown = document.getElementById('profile-dropdown');
 
-    function updateUI() {
+    // ==========================================================
+    // UI更新関数
+    // ==========================================================
+    function updateProfileUI() {
       if (isLoggedIn && userProfile) {
-        loginPrompt.style.display = 'none';
-        userInfoDiv.style.display = 'block';
-        userName.textContent = userProfile.name || 'ユーザー';
-        userEmail.textContent = userProfile.email || '';
-        userAvatar.src = userProfile.picture || '';
-        formWrapper.classList.remove('locked');
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = '送信する';
-        }
+        userProfileHeader.style.display = 'flex';
+        headerAvatar.src = userProfile.picture || '';
+        headerName.textContent = userProfile.name || 'ユーザー';
+        dropdownAvatar.src = userProfile.picture || '';
+        dropdownName.textContent = userProfile.name || 'ユーザー名';
+        dropdownEmail.textContent = userProfile.email || 'email@example.com';
       } else {
-        loginPrompt.style.display = 'block';
-        userInfoDiv.style.display = 'none';
-        formWrapper.classList.add('locked');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.textContent = '送信する (ログインが必要)';
-        }
+        userProfileHeader.style.display = 'none';
       }
     }
 
-    // Google コールバック
+    // ==========================================================
+    // プロフィールドロップダウン切替
+    // ==========================================================
+    profileToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', function() {
+      profileDropdown.classList.remove('open');
+    });
+
+    // ==========================================================
+    // ログアウト
+    // ==========================================================
+    function logout() {
+      if (typeof google !== 'undefined' && google.accounts) {
+        google.accounts.id.disableAutoSelect();
+        google.accounts.id.revoke(userProfile?.email || '', () => {});
+      }
+      isLoggedIn = false;
+      userProfile = null;
+      updateProfileUI();
+      // メンバーメッセージフォームの状態更新
+      updateMemberMessageUI();
+      console.log('[Auth] ログアウトしました');
+    }
+
+    headerLogout.addEventListener('click', function(e) {
+      e.stopPropagation();
+      logout();
+    });
+    dropdownLogout.addEventListener('click', function() {
+      logout();
+    });
+
+    // ==========================================================
+    // Google ログイン
+    // ==========================================================
     window.onSignIn = function(response) {
-      const payload = response.credential;
       try {
+        const payload = response.credential;
         const base64Url = payload.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -1348,71 +1629,17 @@
           picture: data.picture
         };
         isLoggedIn = true;
-        updateUI();
+        updateProfileUI();
+        // メンバーメッセージフォームの状態更新
+        updateMemberMessageUI();
         console.log('[Google] ログイン成功:', userProfile.name);
       } catch (e) {
         console.error('[Google] ログイン解析エラー:', e);
       }
     };
 
-    // Google ボタンをレンダリング
-    function initGoogleLogin() {
-      const clientId = googleClientId;
-      if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
-        document.getElementById('g_id_onload').innerHTML = `
-          <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
-            ⚠️ Google Client ID が設定されていません。<br>
-            <span style="font-size:12px; color:var(--text-sub);">google-config.json に google_client_id を追加してください。</span>
-          </div>
-        `;
-        return;
-      }
-
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: window.onSignIn,
-          cancel_on_tap_outside: false,
-          auto_select: false
-        });
-        google.accounts.id.renderButton(
-          document.getElementById('g_id_onload'),
-          { 
-            theme: 'filled_black', 
-            size: 'large', 
-            width: 300,
-            text: 'signin_with',
-            shape: 'pill'
-          }
-        );
-      } else {
-        setTimeout(initGoogleLogin, 500);
-      }
-    }
-
-    // ログアウト
-    function logout() {
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        google.accounts.id.disableAutoSelect();
-        google.accounts.id.revoke(userProfile?.email || '', () => {
-          isLoggedIn = false;
-          userProfile = null;
-          updateUI();
-          console.log('[Google] ログアウトしました');
-        });
-      } else {
-        isLoggedIn = false;
-        userProfile = null;
-        updateUI();
-      }
-    }
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', logout);
-    }
-
     // ==========================================================
-    // ★ google-config.json から Google Client ID を読み込む ★
+    // Google Client ID 読み込み（google-config.json）
     // ==========================================================
     async function loadGoogleConfig() {
       try {
@@ -1422,95 +1649,547 @@
         const data = await res.json();
         if (data.google_client_id) {
           googleClientId = data.google_client_id;
-          console.log('[CONFIG] Google Client ID を google-config.json から読み込みました');
-        } else {
-          console.log('[CONFIG] google-config.json に google_client_id がありません（デフォルト値を使用）');
+          console.log('[CONFIG] Google Client ID を読み込みました');
         }
         return true;
       } catch (err) {
-        console.warn('[CONFIG] google-config.json 読み込み失敗（デフォルト値を使用）:', err.message);
+        console.warn('[CONFIG] google-config.json 読み込み失敗:', err.message);
         return false;
       }
     }
 
     // ==========================================================
-    // パーティクル
+    // Google ログインボタン初期化
     // ==========================================================
-    (function() {
-      const container = document.getElementById('particles');
-      if (!container) return;
-      for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        const size = 2 + Math.random() * 4;
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.animationDelay = (Math.random() * 20) + 's';
-        p.style.animationDuration = (12 + Math.random() * 15) + 's';
-        p.style.opacity = 0.1 + Math.random() * 0.3;
-        container.appendChild(p);
+    function initGoogleLogin() {
+      const clientId = googleClientId;
+      if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
+        console.warn('[Google] Client ID が設定されていません');
+        return;
       }
-    })();
-
-    /* ==================================================
-       トップへ戻るボタン
-    ================================================== */
-    (function() {
-      const btn = document.getElementById('back-to-top');
-      let visible = false;
-      window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (scrollY > 400 && !visible) { btn.classList.add('visible'); visible = true; }
-        else if (scrollY <= 400 && visible) { btn.classList.remove('visible'); visible = false; }
-      });
-      btn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    })();
-
-    /* ==================================================
-       スクロールアニメーション
-    ================================================== */
-    (function() {
-      const elements = document.querySelectorAll('.scroll-animate');
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-        elements.forEach(el => observer.observe(el));
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: window.onSignIn,
+          cancel_on_tap_outside: false,
+          auto_select: false
+        });
+        // CONTACTページにボタンを表示（#contactページ以外にも表示したい場合は別途配置）
+        const container = document.querySelector('#page-contact .contact-form');
+        if (container) {
+          const btnWrapper = document.createElement('div');
+          btnWrapper.style.cssText = 'text-align:center; margin-bottom:20px;';
+          btnWrapper.id = 'google-login-btn-wrapper';
+          container.prepend(btnWrapper);
+          google.accounts.id.renderButton(
+            document.getElementById('google-login-btn-wrapper'),
+            { theme: 'filled_black', size: 'large', width: 300, text: 'signin_with', shape: 'pill' }
+          );
+        }
+        // ログイン済みならUI更新
+        if (isLoggedIn) {
+          updateProfileUI();
+          updateMemberMessageUI();
+        }
       } else {
-        elements.forEach(el => el.classList.add('visible'));
+        setTimeout(initGoogleLogin, 500);
+      }
+    }
+
+    // ==========================================================
+    // メンバーメッセージフォームUI更新（ログイン状態に応じて）
+    // ==========================================================
+    function updateMemberMessageUI() {
+      const containers = document.querySelectorAll('.member-message-form');
+      containers.forEach(container => {
+        const loginRequired = container.querySelector('.login-required');
+        const formGroup = container.querySelector('.form-group');
+        const submitBtn = container.querySelector('.submit-msg-btn');
+        const successMsg = container.querySelector('.msg-success');
+        const errorMsg = container.querySelector('.msg-error');
+
+        if (isLoggedIn && userProfile) {
+          if (loginRequired) loginRequired.style.display = 'none';
+          if (formGroup) formGroup.style.display = 'block';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送信する';
+          }
+          if (successMsg) successMsg.classList.remove('show');
+          if (errorMsg) errorMsg.classList.remove('show');
+        } else {
+          if (loginRequired) loginRequired.style.display = 'block';
+          if (formGroup) formGroup.style.display = 'none';
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '送信する (ログインが必要)';
+          }
+        }
+      });
+    }
+
+    // ==========================================================
+    // メンバー詳細レンダリング（メッセージフォーム追加）
+    // ==========================================================
+    function renderMemberDetail(id, commands) {
+      const container = document.getElementById('member-detail-content');
+      if (!container) return;
+      const m = MEMBERS[id];
+      if (!m) {
+        container.innerHTML = `
+          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
+          <div style="text-align:center;margin-top:20px;">
+            <a class="button secondary" href="#q=member">戻る</a>
+          </div>
+        `;
+        return;
+      }
+      const member = { ...m };
+      if (id === 'kii' && commands.includes('osi')) {
+        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
+      }
+      if (id === 'kamito' && commands.includes('kamito')) {
+        member.hobby = 'BEYBLADE 超特訓中';
+      }
+
+      const formId = CONFIG.FORMSPREE_ID || 'xljrvlvd';
+
+      container.innerHTML = `
+        <h1>${member.name}</h1>
+        <div class="member-detail-item"><span class="label">趣味</span><span class="value">${member.hobby || '-'}</span></div>
+        <div class="member-detail-item"><span class="label">得意なこと</span><span class="value">${member.skill || '-'}</span></div>
+        <div class="member-detail-item"><span class="label">役割</span><span class="value">${member.role || '-'}</span></div>
+
+        <!-- メンバー個別メッセージフォーム -->
+        <div class="member-message-form">
+          <h4>💬 ${member.name}にメッセージを送る</h4>
+          <!-- ログイン必須メッセージ -->
+          <div class="login-required">
+            <span class="icon">🔐</span>
+            <p>メッセージを送るには Google ログインが必要です</p>
+            <button class="btn-google" id="member-login-btn-${id}">Googleでログイン</button>
+          </div>
+          <!-- フォーム（ログインユーザーにのみ表示） -->
+          <div class="form-group" style="display:none;">
+            <label for="msg-to-${id}">メッセージ（${member.name}さんへ）</label>
+            <textarea id="msg-to-${id}" placeholder="応援メッセージを送ろう！" rows="3"></textarea>
+          </div>
+          <button class="submit-msg-btn" data-member-id="${id}" disabled>送信する (ログインが必要)</button>
+          <div class="msg-success">✅ メッセージを送信しました！</div>
+          <div class="msg-error">❌ 送信に失敗しました。もう一度お試しください。</div>
+        </div>
+
+        <div style="text-align:center;margin-top:24px;">
+          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
+        </div>
+      `;
+
+      // メッセージフォームのイベント設定
+      const formContainer = container.querySelector('.member-message-form');
+      const loginRequired = formContainer.querySelector('.login-required');
+      const loginBtn = formContainer.querySelector('.btn-google');
+      const textarea = formContainer.querySelector('textarea');
+      const submitBtn = formContainer.querySelector('.submit-msg-btn');
+      const successMsg = formContainer.querySelector('.msg-success');
+      const errorMsg = formContainer.querySelector('.msg-error');
+
+      // ログインボタン（ログイン処理を呼び出し）
+      if (loginBtn) {
+        loginBtn.addEventListener('click', function() {
+          // Googleログインボタンをクリック（既存のボタンを探してクリック）
+          const googleBtn = document.querySelector('#google-login-btn-wrapper iframe, #google-login-btn-wrapper div[role="button"]');
+          if (googleBtn) {
+            googleBtn.click();
+          } else {
+            // フォールバック：ページ上部のログインボタンをクリック
+            const topBtn = document.querySelector('#google-login-btn-wrapper');
+            if (topBtn) {
+              const iframe = topBtn.querySelector('iframe');
+              if (iframe) iframe.click();
+            }
+          }
+        });
+      }
+
+      // 送信ボタン
+      if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+          const msg = textarea ? textarea.value.trim() : '';
+          if (!msg) {
+            alert('メッセージを入力してください。');
+            return;
+          }
+          const memberName = member.name;
+          const senderName = userProfile ? userProfile.name : '名無し';
+          const senderEmail = userProfile ? userProfile.email : '';
+
+          submitBtn.disabled = true;
+          submitBtn.textContent = '送信中...';
+          successMsg.classList.remove('show');
+          errorMsg.classList.remove('show');
+
+          const formData = new FormData();
+          formData.append('name', senderName);
+          formData.append('_replyto', senderEmail);
+          formData.append('message', `【${memberName}宛】\n${msg}\n\n-- 送信者: ${senderName} (${senderEmail})`);
+
+          fetch(`https://formspree.io/f/${formId}`, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+          })
+          .then(res => {
+            if (res.ok) {
+              successMsg.classList.add('show');
+              if (textarea) textarea.value = '';
+            } else {
+              errorMsg.classList.add('show');
+            }
+          })
+          .catch(() => {
+            errorMsg.classList.add('show');
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送信する';
+          });
+        });
+      }
+
+      // ログイン状態に応じてUI更新
+      updateMemberMessageUI();
+    }
+
+    // ==========================================================
+    // お知らせ一覧レンダリング（いいね + コメント機能付き）
+    // ==========================================================
+    function renderNoticesWithLikes(issues, container, limit, filter = '') {
+      let items = limit ? issues.slice(0, limit) : issues;
+      if (filter) {
+        items = items.filter(item =>
+          (item.title || '').includes(filter) ||
+          (item.body || '').includes(filter)
+        );
+      }
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div class="notice">
+            <div class="notice-title">お知らせ</div>
+            <div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div>
+          </div>
+        `;
+        return;
+      }
+
+      // いいねデータをローカルストレージから読み込み
+      const likesData = JSON.parse(localStorage.getItem('notice_likes') || '{}');
+      const commentsData = JSON.parse(localStorage.getItem('notice_comments') || '{}');
+
+      container.innerHTML = items.map((issue, index) => {
+        const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
+        const title = issue.title || 'お知らせ';
+        const body = issue.body ? issue.body.slice(0, 150) + (issue.body.length > 150 ? '...' : '') : '';
+        const labels = issue.labels.map(l => l.name).join(' ');
+        const issueId = issue.id;
+        const isLiked = likesData[issueId] || false;
+        const likeCount = (likesData[issueId + '_count'] || 0);
+        const comments = commentsData[issueId] || [];
+
+        return `
+          <div class="notice" style="animation-delay: ${index * 0.05}s;" data-issue-id="${issueId}">
+            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
+            <div class="notice-title"><a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a></div>
+            ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
+            ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
+
+            <!-- いいねボタン -->
+            <div class="notice-like">
+              <button class="like-btn ${isLiked ? 'liked' : ''}" data-issue-id="${issueId}">
+                ${isLiked ? '❤️' : '🤍'} <span class="count">${likeCount}</span>
+              </button>
+              ${!isLoggedIn ? `<span class="like-login-msg">（ログインでいいねできます）</span>` : ''}
+            </div>
+
+            <!-- コメント欄 -->
+            <div class="notice-comments">
+              <div class="comment-list">
+                ${comments.map(c => `
+                  <div class="comment-item">
+                    <span class="author">${escapeHTML(c.author)}</span>
+                    <span class="time">${escapeHTML(c.time || '')}</span>
+                    <span>${escapeHTML(c.text)}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="comment-input-area">
+                <input type="text" class="comment-input" placeholder="コメントを書く..." ${!isLoggedIn ? 'disabled' : ''}>
+                <button class="comment-submit" data-issue-id="${issueId}" ${!isLoggedIn ? 'disabled' : ''}>送信</button>
+              </div>
+              ${!isLoggedIn ? `<div class="comment-login-msg">（ログインでコメントできます）</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // いいねボタンのイベント
+      container.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!isLoggedIn) {
+            alert('いいねするには Google ログインが必要です。');
+            return;
+          }
+          const issueId = this.dataset.issueId;
+          const likesData = JSON.parse(localStorage.getItem('notice_likes') || '{}');
+          const isLiked = likesData[issueId] || false;
+          if (isLiked) {
+            // いいね解除
+            likesData[issueId] = false;
+            likesData[issueId + '_count'] = (likesData[issueId + '_count'] || 1) - 1;
+            if (likesData[issueId + '_count'] < 0) likesData[issueId + '_count'] = 0;
+            this.classList.remove('liked');
+            this.innerHTML = `🤍 <span class="count">${likesData[issueId + '_count']}</span>`;
+          } else {
+            likesData[issueId] = true;
+            likesData[issueId + '_count'] = (likesData[issueId + '_count'] || 0) + 1;
+            this.classList.add('liked');
+            this.innerHTML = `❤️ <span class="count">${likesData[issueId + '_count']}</span>`;
+          }
+          localStorage.setItem('notice_likes', JSON.stringify(likesData));
+        });
+      });
+
+      // コメント送信ボタン
+      container.querySelectorAll('.comment-submit').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!isLoggedIn) {
+            alert('コメントするには Google ログインが必要です。');
+            return;
+          }
+          const issueId = this.dataset.issueId;
+          const parent = this.closest('.notice-comments');
+          const input = parent.querySelector('.comment-input');
+          const text = input.value.trim();
+          if (!text) return;
+
+          const commentsData = JSON.parse(localStorage.getItem('notice_comments') || '{}');
+          if (!commentsData[issueId]) commentsData[issueId] = [];
+          commentsData[issueId].push({
+            author: userProfile.name || '匿名',
+            time: new Date().toLocaleString('ja-JP'),
+            text: text
+          });
+          localStorage.setItem('notice_comments', JSON.stringify(commentsData));
+
+          // コメント一覧を再描画（簡易的）
+          const list = parent.querySelector('.comment-list');
+          const item = document.createElement('div');
+          item.className = 'comment-item';
+          item.innerHTML = `
+            <span class="author">${escapeHTML(userProfile.name || '匿名')}</span>
+            <span class="time">${new Date().toLocaleString('ja-JP')}</span>
+            <span>${escapeHTML(text)}</span>
+          `;
+          list.appendChild(item);
+          input.value = '';
+        });
+      });
+
+      // Enterキーでコメント送信
+      container.querySelectorAll('.comment-input').forEach(input => {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            const parent = this.closest('.notice-comments');
+            const btn = parent.querySelector('.comment-submit');
+            if (btn) btn.click();
+          }
+        });
+      });
+    }
+
+    // ==========================================================
+    // 既存のrenderNoticesを上書き
+    // ==========================================================
+    const originalRenderNotices = window.renderNotices || function() {};
+    window.renderNotices = renderNoticesWithLikes;
+
+    // ==========================================================
+    // お知らせ取得（GitHub API）
+    // ==========================================================
+    const noticeList = document.getElementById('notice-list');
+    const allNoticesList = document.getElementById('all-notices-list');
+    const loadMoreWrap = document.getElementById('load-more-wrap');
+    let allIssues = [];
+
+    function escapeHTML(v) { return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+    function formatDate(dateStr) { try { const d = new Date(dateStr); return d.toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }); } catch { return dateStr; } }
+
+    function updateNoticeSearch(filter) {
+      const info = document.getElementById('search-result-info');
+      if (filter) {
+        const count = allIssues.filter(item => (item.title || '').includes(filter) || (item.body || '').includes(filter)).length;
+        info.textContent = `「${filter}」の検索結果: ${count}件`;
+      } else { info.textContent = ''; }
+      renderNoticesWithLikes(allIssues, noticeList, 5, filter);
+      loadMoreWrap.style.display = allIssues.length > 5 && !filter ? 'block' : 'none';
+    }
+
+    (function() {
+      const input = document.getElementById('search-input');
+      const clear = document.getElementById('search-clear');
+      if (input) {
+        input.addEventListener('input', () => { updateNoticeSearch(input.value); });
+        clear.addEventListener('click', () => { input.value = ''; updateNoticeSearch(''); input.focus(); });
       }
     })();
 
-    /* ==================================================
-       ヘッダー スクロール
-    ================================================== */
+    async function fetchNotices() {
+      const owner = CONFIG.GITHUB_OWNER, repo = CONFIG.GITHUB_REPO, token = CONFIG.GITHUB_TOKEN || '', label = CONFIG.GITHUB_LABEL || '';
+      if (!owner || !repo) {
+        noticeList.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">GitHubリポジトリが設定されていません。</div></div>`;
+        return;
+      }
+      try {
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
+        if (label) url += `&labels=${encodeURIComponent(label)}`;
+        const headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+        const res = await fetch(url, { headers });
+        if (res.status === 404) {
+          noticeList.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">リポジトリが見つかりません。<br><span style="font-size:12px; color:#666;">「${owner}/${repo}」を確認してください。</span></div></div>`;
+          return;
+        }
+        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
+        const issues = await res.json();
+        allIssues = issues;
+        updateNoticeSearch('');
+      } catch (err) {
+        console.error('お知らせ取得エラー:', err);
+        noticeList.innerHTML = `<div class="notice"><div class="notice-title">お知らせの読み込みに失敗しました</div><div class="notice-description">エラー: ${escapeHTML(err.message)}</div></div>`;
+      }
+    }
+
+    async function renderAllNotices() {
+      if (!allNoticesList) return;
+      if (allIssues.length > 0) { renderNoticesWithLikes(allIssues, allNoticesList, null); return; }
+      const owner = CONFIG.GITHUB_OWNER, repo = CONFIG.GITHUB_REPO, token = CONFIG.GITHUB_TOKEN || '', label = CONFIG.GITHUB_LABEL || '';
+      try {
+        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
+        if (label) url += `&labels=${encodeURIComponent(label)}`;
+        const headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+        const res = await fetch(url, { headers });
+        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
+        const issues = await res.json();
+        allIssues = issues;
+        renderNoticesWithLikes(issues, allNoticesList, null);
+      } catch (err) {
+        console.error('全件取得エラー:', err);
+        allNoticesList.innerHTML = `<div class="notice"><div class="notice-title">読み込みに失敗しました</div><div class="notice-description">${escapeHTML(err.message)}</div></div>`;
+      }
+    }
+
+    // ==========================================================
+    // YouTube 最新動画取得
+    // ==========================================================
+    async function fetchYouTubeVideos() {
+      const container = document.getElementById('youtube-list');
+      if (!container) return;
+      const apiKey = CONFIG.YOUTUBE_API_KEY, channelId = CONFIG.YOUTUBE_CHANNEL_ID;
+      if (!apiKey || apiKey === 'YOUR_YOUTUBE_API_KEY') {
+        container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">⚠️ YouTube APIキーが設定されていません。<br><span style="font-size:13px;">CONFIG.YOUTUBE_API_KEY を設定してください。</span></div>`;
+        return;
+      }
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=6&order=date&type=video&key=${apiKey}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`YouTube API Error: ${res.status}`);
+        const data = await res.json();
+        if (!data.items || data.items.length === 0) {
+          container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">動画が見つかりませんでした。</div>`;
+          return;
+        }
+        container.innerHTML = data.items.map(item => {
+          const videoId = item.id.videoId, title = item.snippet.title, thumb = item.snippet.thumbnails.medium.url, date = new Date(item.snippet.publishedAt).toLocaleDateString('ja-JP');
+          return `
+            <div class="youtube-item">
+              <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">
+                <img src="${thumb}" alt="${escapeHTML(title)}" loading="lazy">
+              </a>
+              <div class="info">
+                <h4>${escapeHTML(title)}</h4>
+                <div class="meta">📅 ${date}</div>
+                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">▶ 視聴する</a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('YouTube取得エラー:', err);
+        container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">⚠️ 動画の読み込みに失敗しました。<br><span style="font-size:13px;">${escapeHTML(err.message)}</span></div>`;
+      }
+    }
+
+    // ==========================================================
+    // Formspree AJAX 初期化
+    // ==========================================================
+    window.addEventListener('load', function() {
+      if (window.formspree) {
+        window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
+      } else {
+        setTimeout(function() {
+          if (window.formspree) {
+            window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
+          } else { console.warn('Formspree library not loaded.'); }
+        }, 1000);
+      }
+    });
+
+    // ==========================================================
+    // メンバー一覧
+    // ==========================================================
+    function renderMemberList(filter = '') {
+      const container = document.getElementById('member-list');
+      if (!container) return;
+      const ids = Object.keys(MEMBERS);
+      if (ids.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>'; return; }
+      const filtered = filter ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter)) : ids;
+      if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
+      container.innerHTML = filtered.map(id => {
+        const m = MEMBERS[id];
+        return `
+          <a href="#q=member/${id}" class="card member-card scroll-animate">
+            <h3>${m.name}</h3>
+            <div class="member-role">${m.role || ''}</div>
+            <p>神木チャンネルのメンバー。</p>
+            <div class="click-hint">タップして詳細を見る</div>
+          </a>
+        `;
+      }).join('');
+      setTimeout(() => {
+        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.15 });
+            observer.observe(el);
+          } else { el.classList.add('visible'); }
+        });
+      }, 100);
+    }
+
+    // メンバー検索
     (function() {
-      const header = document.getElementById('header');
-      window.addEventListener('scroll', () => {
-        header.classList.toggle('scrolled', window.scrollY > 50);
-      });
+      const input = document.getElementById('member-search-input');
+      const clear = document.getElementById('member-search-clear');
+      if (input) {
+        input.addEventListener('input', () => { renderMemberList(input.value); });
+        clear.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
+      }
     })();
 
-    /* ==================================================
-       ハンバーガー
-    ================================================== */
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    document.querySelectorAll('#nav-menu a[data-page]').forEach(link => {
-      link.addEventListener('click', () => {
-        menuToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-      });
-    });
-    menuToggle.addEventListener('click', () => {
-      menuToggle.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
-
-    /* ==================================================
-       ページルーティング（裏コマンド対応版）
-    ================================================== */
+    // ==========================================================
+    // ページルーティング
+    // ==========================================================
     const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
     const memberIds = MEMBER_IDS || [];
     const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
@@ -1532,7 +2211,7 @@
         updateMaintenanceUI();
         return true;
       } catch (err) {
-        console.warn('[CONFIG] サーバー設定読み込み失敗（デフォルトOFF）:', err.message);
+        console.warn('[CONFIG] サーバー設定読み込み失敗:', err.message);
         maintenanceMode = false;
         configLoaded = true;
         updateMaintenanceUI();
@@ -1587,9 +2266,6 @@
     function getMemberIdFromHash() { return parseHash().memberId; }
     function getCommandsFromHash() { return parseHash().commands; }
 
-    /* ==================================================
-       メイン表示関数
-    ================================================== */
     function showPage() {
       const parsed = parseHash();
       let page = parsed.page;
@@ -1613,7 +2289,6 @@
       document.getElementById('page-404').classList.remove('active');
       document.getElementById('page-maintenance').classList.remove('active');
 
-      // メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
       const isContact = (page === 'contact');
       if (maintenanceMode && !isContact) {
         document.getElementById('page-maintenance').classList.add('active');
@@ -1625,14 +2300,12 @@
         return;
       }
 
-      // 裏コマンド: hide-news
       const hideNews = commands.includes('hide-news');
       const noticeSection = document.querySelector('#page-home .section:last-child');
       if (noticeSection) {
         noticeSection.style.display = hideNews ? 'none' : '';
       }
 
-      // デバッグモード
       const debugMode = commands.includes('debug');
       let badge = document.getElementById('debug-badge');
       if (debugMode) {
@@ -1699,7 +2372,19 @@
           updateMaintenanceUI();
         }
         if (page === 'contact') {
-          updateUI();
+          // Googleログインボタンを再配置（すでにある場合もある）
+          if (!document.getElementById('google-login-btn-wrapper')) {
+            const container = document.querySelector('#page-contact .contact-form');
+            if (container) {
+              const wrapper = document.createElement('div');
+              wrapper.id = 'google-login-btn-wrapper';
+              wrapper.style.cssText = 'text-align:center; margin-bottom:20px;';
+              container.prepend(wrapper);
+              if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.renderButton(wrapper, { theme: 'filled_black', size: 'large', width: 300, text: 'signin_with', shape: 'pill' });
+              }
+            }
+          }
         }
       }
       document.querySelectorAll('nav a[data-page]').forEach(link => {
@@ -1708,251 +2393,9 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* ==================================================
-       メンバー詳細
-    ================================================== */
-    function renderMemberDetail(id, commands) {
-      const container = document.getElementById('member-detail-content');
-      if (!container) return;
-      const m = MEMBERS[id];
-      if (!m) {
-        container.innerHTML = `
-          <h1 style="text-align:center;color:var(--text-sub);">メンバーが見つかりません</h1>
-          <div style="text-align:center;margin-top:20px;">
-            <a class="button secondary" href="#q=member">戻る</a>
-          </div>
-        `;
-        return;
-      }
-      const member = { ...m };
-      if (id === 'kii' && commands.includes('osi')) {
-        member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
-      }
-      if (id === 'kamito' && commands.includes('kamito')) {
-        member.hobby = 'BEYBLADE 超特訓中';
-      }
-      container.innerHTML = `
-        <h1>${member.name}</h1>
-        <div class="member-detail-item"><span class="label">趣味</span><span class="value">${member.hobby || '-'}</span></div>
-        <div class="member-detail-item"><span class="label">得意なこと</span><span class="value">${member.skill || '-'}</span></div>
-        <div class="member-detail-item"><span class="label">役割</span><span class="value">${member.role || '-'}</span></div>
-        <div style="text-align:center;margin-top:24px;">
-          <a class="back-link" href="#q=member">メンバー一覧に戻る</a>
-        </div>
-      `;
-    }
-
-    /* ==================================================
-       メンバー一覧
-    ================================================== */
-    function renderMemberList(filter = '') {
-      const container = document.getElementById('member-list');
-      if (!container) return;
-      const ids = Object.keys(MEMBERS);
-      if (ids.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">メンバー情報がありません。</p>'; return; }
-      const filtered = filter ? ids.filter(id => MEMBERS[id].name.includes(filter) || (MEMBERS[id].role || '').includes(filter)) : ids;
-      if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
-      container.innerHTML = filtered.map(id => {
-        const m = MEMBERS[id];
-        return `
-          <a href="#q=member/${id}" class="card member-card scroll-animate">
-            <h3>${m.name}</h3>
-            <div class="member-role">${m.role || ''}</div>
-            <p>神木チャンネルのメンバー。</p>
-            <div class="click-hint">タップして詳細を見る</div>
-          </a>
-        `;
-      }).join('');
-      setTimeout(() => {
-        document.querySelectorAll('#member-list .scroll-animate').forEach(el => {
-          if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-            }, { threshold: 0.15 });
-            observer.observe(el);
-          } else { el.classList.add('visible'); }
-        });
-      }, 100);
-    }
-
-    // メンバー検索
-    (function() {
-      const input = document.getElementById('member-search-input');
-      const clear = document.getElementById('member-search-clear');
-      if (input) {
-        input.addEventListener('input', () => { renderMemberList(input.value); });
-        clear.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
-      }
-    })();
-
-    /* ==================================================
-       お知らせ（GitHub API）
-    ================================================== */
-    const noticeList = document.getElementById('notice-list');
-    const allNoticesList = document.getElementById('all-notices-list');
-    const loadMoreWrap = document.getElementById('load-more-wrap');
-    let allIssues = [];
-
-    function escapeHTML(v) { return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
-    function formatDate(dateStr) { try { const d = new Date(dateStr); return d.toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }); } catch { return dateStr; } }
-
-    function renderNotices(issues, container, limit, filter = '') {
-      let items = limit ? issues.slice(0, limit) : issues;
-      if (filter) { items = items.filter(item => (item.title || '').includes(filter) || (item.body || '').includes(filter)); }
-      if (!items || items.length === 0) {
-        container.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">${filter ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div></div>`;
-        return;
-      }
-      container.innerHTML = items.map((issue, index) => {
-        const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
-        const title = issue.title || 'お知らせ';
-        const body = issue.body ? issue.body.slice(0, 150) + (issue.body.length > 150 ? '...' : '') : '';
-        const labels = issue.labels.map(l => l.name).join(' ');
-        return `
-          <div class="notice" style="animation-delay: ${index * 0.05}s;">
-            ${dateStr ? `<div class="notice-date">${dateStr}</div>` : ''}
-            <div class="notice-title"><a href="${issue.html_url}" target="_blank" rel="noopener">${escapeHTML(title)}</a></div>
-            ${body ? `<div class="notice-description">${escapeHTML(body)}</div>` : ''}
-            ${labels ? `<span class="notice-label">${escapeHTML(labels)}</span>` : ''}
-          </div>
-        `;
-      }).join('');
-    }
-
-    function updateNoticeSearch(filter) {
-      const info = document.getElementById('search-result-info');
-      if (filter) {
-        const count = allIssues.filter(item => (item.title || '').includes(filter) || (item.body || '').includes(filter)).length;
-        info.textContent = `「${filter}」の検索結果: ${count}件`;
-      } else { info.textContent = ''; }
-      renderNotices(allIssues, noticeList, 5, filter);
-      loadMoreWrap.style.display = allIssues.length > 5 && !filter ? 'block' : 'none';
-    }
-
-    (function() {
-      const input = document.getElementById('search-input');
-      const clear = document.getElementById('search-clear');
-      if (input) {
-        input.addEventListener('input', () => { updateNoticeSearch(input.value); });
-        clear.addEventListener('click', () => { input.value = ''; updateNoticeSearch(''); input.focus(); });
-      }
-    })();
-
-    async function fetchNotices() {
-      const owner = CONFIG.GITHUB_OWNER, repo = CONFIG.GITHUB_REPO, token = CONFIG.GITHUB_TOKEN || '', label = CONFIG.GITHUB_LABEL || '';
-      if (!owner || !repo) {
-        noticeList.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">GitHubリポジトリが設定されていません。</div></div>`;
-        return;
-      }
-      try {
-        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
-        if (label) url += `&labels=${encodeURIComponent(label)}`;
-        const headers = {};
-        if (token) headers['Authorization'] = `token ${token}`;
-        const res = await fetch(url, { headers });
-        if (res.status === 404) {
-          noticeList.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">リポジトリが見つかりません。<br><span style="font-size:12px; color:#666;">「${owner}/${repo}」を確認してください。</span></div></div>`;
-          return;
-        }
-        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
-        const issues = await res.json();
-        allIssues = issues;
-        updateNoticeSearch('');
-      } catch (err) {
-        console.error('お知らせ取得エラー:', err);
-        noticeList.innerHTML = `<div class="notice"><div class="notice-title">お知らせの読み込みに失敗しました</div><div class="notice-description">エラー: ${escapeHTML(err.message)}</div></div>`;
-      }
-    }
-
-    async function renderAllNotices() {
-      if (!allNoticesList) return;
-      if (allIssues.length > 0) { renderNotices(allIssues, allNoticesList, null); return; }
-      const owner = CONFIG.GITHUB_OWNER, repo = CONFIG.GITHUB_REPO, token = CONFIG.GITHUB_TOKEN || '', label = CONFIG.GITHUB_LABEL || '';
-      try {
-        let url = `https://api.github.com/repos/${owner}/${repo}/issues?state=open&sort=created&direction=desc&per_page=50`;
-        if (label) url += `&labels=${encodeURIComponent(label)}`;
-        const headers = {};
-        if (token) headers['Authorization'] = `token ${token}`;
-        const res = await fetch(url, { headers });
-        if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
-        const issues = await res.json();
-        allIssues = issues;
-        renderNotices(issues, allNoticesList, null);
-      } catch (err) {
-        console.error('全件取得エラー:', err);
-        allNoticesList.innerHTML = `<div class="notice"><div class="notice-title">読み込みに失敗しました</div><div class="notice-description">${escapeHTML(err.message)}</div></div>`;
-      }
-    }
-
-    /* ==================================================
-       YouTube 最新動画取得
-    ================================================== */
-    async function fetchYouTubeVideos() {
-      const container = document.getElementById('youtube-list');
-      if (!container) return;
-      const apiKey = CONFIG.YOUTUBE_API_KEY, channelId = CONFIG.YOUTUBE_CHANNEL_ID;
-      if (!apiKey || apiKey === 'YOUR_YOUTUBE_API_KEY') {
-        container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">⚠️ YouTube APIキーが設定されていません。<br><span style="font-size:13px;">CONFIG.YOUTUBE_API_KEY を設定してください。</span></div>`;
-        return;
-      }
-      try {
-        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=6&order=date&type=video&key=${apiKey}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`YouTube API Error: ${res.status}`);
-        const data = await res.json();
-        if (!data.items || data.items.length === 0) {
-          container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">動画が見つかりませんでした。</div>`;
-          return;
-        }
-        container.innerHTML = data.items.map(item => {
-          const videoId = item.id.videoId, title = item.snippet.title, thumb = item.snippet.thumbnails.medium.url, date = new Date(item.snippet.publishedAt).toLocaleDateString('ja-JP');
-          return `
-            <div class="youtube-item">
-              <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">
-                <img src="${thumb}" alt="${escapeHTML(title)}" loading="lazy">
-              </a>
-              <div class="info">
-                <h4>${escapeHTML(title)}</h4>
-                <div class="meta">📅 ${date}</div>
-                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">▶ 視聴する</a>
-              </div>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error('YouTube取得エラー:', err);
-        container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:40px;">⚠️ 動画の読み込みに失敗しました。<br><span style="font-size:13px;">${escapeHTML(err.message)}</span></div>`;
-      }
-    }
-
-    /* ==================================================
-       Formspree AJAX 初期化
-    ================================================== */
-    window.addEventListener('load', function() {
-      if (window.formspree) {
-        window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
-      } else {
-        setTimeout(function() {
-          if (window.formspree) {
-            window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
-          } else { console.warn('Formspree library not loaded.'); }
-        }, 1000);
-      }
-    });
-
-    // Formspree 送信前にログインチェック
-    document.addEventListener('click', function(e) {
-      const target = e.target.closest('[data-fs-submit-btn]');
-      if (target && !isLoggedIn) {
-        e.preventDefault();
-        alert('お問い合わせには Google ログインが必要です。');
-        return false;
-      }
-    }, true);
-
-    /* ==================================================
-       SETTINGS ページの機能
-    ================================================== */
+    // ==========================================================
+    // SETTINGS ページの機能
+    // ==========================================================
     function updateSettingsUI(commands) {
       const debugStatus = document.getElementById('debug-status');
       if (debugStatus) {
@@ -2033,21 +2476,21 @@
       location.reload();
     });
 
-    /* ==================================================
-       初期化（サーバー設定読み込み → Google Config 読み込み → 表示）
-    ================================================== */
+    // ==========================================================
+    // 初期化
+    // ==========================================================
     async function init() {
-      // 1. メンテナンス設定読み込み
-      await loadServerConfig();
-      // 2. Google Client ID 専用ファイル読み込み
       await loadGoogleConfig();
-      // 3. Google ログインボタン初期化
-      initGoogleLogin();
-      // 4. 各種表示
+      await loadServerConfig();
       renderMemberList('');
       fetchNotices();
+      initGoogleLogin();
       showPage();
-      updateUI();
+      // 既にログイン状態があればUI更新
+      if (isLoggedIn) {
+        updateProfileUI();
+        updateMemberMessageUI();
+      }
     }
 
     init();
