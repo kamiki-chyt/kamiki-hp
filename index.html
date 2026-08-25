@@ -208,15 +208,39 @@
     .logo:hover { opacity:0.8; }
     .logo img { display:none; }
     nav {
-      display:flex; align-items:center; gap:30px;
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+      gap:30px;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      max-height:calc(100vh - 70px);
+      padding:20px 30px;
+      position:fixed;
+      top:70px;
+      left:0;
+      width:100%;
+      background:var(--bg-color);
+      transform:translateX(100%);
+      transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+      z-index:999;
+      border-bottom:1px solid var(--card-border);
+    }
+    nav.active {
+      transform:translateX(0);
     }
     nav a {
       color:var(--text-sub);
-      font-size:14px; font-weight:700; letter-spacing:0.1em;
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:0.1em;
       position:relative;
       transition:color 0.3s ease;
+      padding:8px 0;
+      border-bottom:1px solid transparent;
       -webkit-tap-highlight-color:transparent;
       outline:none;
+      text-align:center;
     }
     nav a::after {
       content:'';
@@ -228,17 +252,121 @@
     nav a:hover, nav a.active { color:var(--text-main); }
     nav a.active::after { width:100%; }
 
+    nav .nav-login-section {
+      margin-top:auto;
+      padding-top:20px;
+      border-top:1px solid var(--card-border);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    nav .nav-login-section .login-status {
+      font-size:14px;
+      font-weight:700;
+      color:var(--text-sub);
+      text-align:center;
+      padding:6px 0;
+    }
+    nav .nav-login-section .login-status .username {
+      color:var(--accent-color);
+    }
+    nav .nav-login-section .nav-login-buttons {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    nav .nav-login-section .nav-login-btn {
+      display:block;
+      padding:10px 0;
+      border-radius:999px;
+      border:1px solid var(--card-border);
+      background:rgba(255,255,255,0.03);
+      color:var(--text-main);
+      font-size:14px;
+      font-weight:700;
+      text-align:center;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      text-decoration:none;
+    }
+    nav .nav-login-section .nav-login-btn:hover {
+      background:rgba(255,255,255,0.08);
+      border-color:var(--accent-color);
+    }
+    nav .nav-login-section .nav-login-btn.logout {
+      color:#ff6b6b;
+    }
+    nav .nav-login-section .nav-login-btn.logout:hover {
+      background:rgba(255,107,107,0.1);
+      border-color:#ff6b6b;
+    }
+    nav .nav-login-section .nav-login-btn.login-link {
+      color:var(--accent-color);
+    }
+
     .menu-toggle {
-      display:none;
-      flex-direction:column; gap:5px;
-      cursor:pointer; z-index:1001;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      cursor:pointer;
+      z-index:1001;
       -webkit-tap-highlight-color:transparent;
+      padding:4px;
     }
     .menu-toggle span {
-      width:25px; height:2px;
+      width:25px;
+      height:2px;
       background:var(--text-main);
       transition:0.3s ease;
       transform-origin:left;
+      display:block;
+    }
+    .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
+    .menu-toggle.active span:nth-child(2){ opacity:0; }
+    .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
+
+    @media(min-width:769px){
+      nav {
+        position:static;
+        transform:none;
+        flex-direction:row;
+        align-items:center;
+        gap:30px;
+        padding:0;
+        background:transparent;
+        max-height:none;
+        overflow-y:visible;
+        border-bottom:none;
+        width:auto;
+      }
+      nav a {
+        font-size:14px;
+        padding:0;
+        border-bottom:none;
+        text-align:left;
+      }
+      nav .nav-login-section {
+        flex-direction:row;
+        align-items:center;
+        gap:16px;
+        margin-top:0;
+        padding-top:0;
+        border-top:none;
+      }
+      nav .nav-login-section .login-status {
+        font-size:13px;
+      }
+      nav .nav-login-section .nav-login-buttons {
+        flex-direction:row;
+        gap:8px;
+      }
+      nav .nav-login-section .nav-login-btn {
+        padding:6px 16px;
+        font-size:13px;
+      }
+      .menu-toggle {
+        display:none;
+      }
     }
 
     /* ===== ページ共通 ===== */
@@ -915,22 +1043,6 @@
       .page { padding-top:65px; }
       #page-404 { padding-top:65px; }
       #page-maintenance { padding-top:65px; }
-      .menu-toggle { display:flex; }
-      nav {
-        position:fixed; top:65px; left:0;
-        width:100%; height:calc(100vh - 65px);
-        background:var(--bg-color);
-        flex-direction:column; justify-content:center;
-        gap:40px;
-        transform:translateX(100%);
-        transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
-      }
-      nav.active { transform:translateX(0); }
-      nav a { font-size:20px; }
-      .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
-      .menu-toggle.active span:nth-child(2){ opacity:0; }
-      .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
-      .logo span { display:none; }
       .hero { min-height:calc(100vh - 65px); }
       .buttons { flex-direction:column; }
       .button { width:100%; }
@@ -992,6 +1104,20 @@
       <a href="#q=settings" data-page="settings">SETTINGS</a>
       <a href="#q=about" data-page="about">ABOUT</a>
       <a href="#q=credit" data-page="credit">CREDIT</a>
+
+      <!-- ログインセクション -->
+      <div class="nav-login-section" id="nav-login-section">
+        <div class="login-status" id="nav-login-status">
+          <span id="nav-login-text">ログインしていません</span>
+        </div>
+        <div class="nav-login-buttons" id="nav-login-buttons">
+          <!-- ログイン時: ログアウト & お知らせ取得 -->
+          <a class="nav-login-btn logout" id="nav-logout-btn" href="#q=logout" style="display:none;">🚪 ログアウト</a>
+          <a class="nav-login-btn" id="nav-notice-btn" href="#q=ko" style="display:none;">📧 お知らせを取得する</a>
+          <!-- 未ログイン時: ログイン -->
+          <a class="nav-login-btn login-link" id="nav-login-btn" href="#q=login">🔑 ログイン</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -1284,25 +1410,24 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + google-config.json から Client ID 読み込み + セッション永続化）
+     JavaScript
 ========================= -->
 <script>
   (function() {
     'use strict';
 
     // ==========================================================
-    // ★ セッション管理（リロード対策：localStorageに保存） ★
+    // セッション管理
     // ==========================================================
+    let isLoggedIn = false;
+    let userProfile = null;
+    let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
+
     function saveSession() {
       if (isLoggedIn && userProfile) {
-        try {
-          localStorage.setItem('kamiki_user', JSON.stringify(userProfile));
-          console.log('[Session] 保存しました');
-        } catch (e) {}
+        try { localStorage.setItem('kamiki_user', JSON.stringify(userProfile)); } catch (e) {}
       } else {
-        try {
-          localStorage.removeItem('kamiki_user');
-        } catch (e) {}
+        try { localStorage.removeItem('kamiki_user'); } catch (e) {}
       }
     }
 
@@ -1314,33 +1439,184 @@
           if (data && data.email) {
             userProfile = data;
             isLoggedIn = true;
-            console.log('[Session] 復元成功:', userProfile.name);
             return true;
           }
         }
-      } catch (e) {
-        console.warn('[Session] 復元失敗:', e);
-      }
+      } catch (e) {}
       return false;
     }
 
-    // ==========================================================
-    // Google Login 管理
-    // ==========================================================
-    let isLoggedIn = false;
-    let userProfile = null;
-    let googleClientId = CONFIG.GOOGLE_CLIENT_ID; // デフォルト値
-
-    // 復元を即時実行
     restoreSession();
 
-    // DOM 要素
+    // ==========================================================
+    // メニュー制御（ハンバーガー）
+    // ==========================================================
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    function toggleMenu(forceState) {
+      const isOpen = typeof forceState === 'boolean' ? forceState : !navMenu.classList.contains('active');
+      navMenu.classList.toggle('active', isOpen);
+      menuToggle.classList.toggle('active', isOpen);
+    }
+
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleMenu();
+      });
+    }
+
+    // メニュー内リンククリックで閉じる
+    if (navMenu) {
+      navMenu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            toggleMenu(false);
+          }
+        });
+      });
+    }
+
+    // メニュー外クリックで閉じる（モバイルのみ）
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        const isClickInside = navMenu.contains(e.target) || menuToggle.contains(e.target);
+        if (!isClickInside && navMenu.classList.contains('active')) {
+          toggleMenu(false);
+        }
+      }
+    });
+
+    // ==========================================================
+    // ナビゲーションのログインセクション更新
+    // ==========================================================
+    const navLoginStatus = document.getElementById('nav-login-status');
+    const navLoginText = document.getElementById('nav-login-text');
+    const navLoginBtn = document.getElementById('nav-login-btn');
+    const navLogoutBtn = document.getElementById('nav-logout-btn');
+    const navNoticeBtn = document.getElementById('nav-notice-btn');
+
+    function updateNavLoginUI() {
+      if (isLoggedIn && userProfile) {
+        navLoginText.innerHTML = '👤 ログイン中: <span class="username">' + (userProfile.name || 'ユーザー') + '</span>';
+        navLoginBtn.style.display = 'none';
+        navLogoutBtn.style.display = 'block';
+        navNoticeBtn.style.display = 'block';
+      } else {
+        navLoginText.textContent = 'ログインしていません';
+        navLoginBtn.style.display = 'block';
+        navLogoutBtn.style.display = 'none';
+        navNoticeBtn.style.display = 'none';
+      }
+    }
+
+    // ==========================================================
+    // Google ログイン
+    // ==========================================================
+    window.onSignIn = function(response) {
+      try {
+        const payload = response.credential;
+        const base64Url = payload.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const data = JSON.parse(jsonPayload);
+        userProfile = {
+          name: data.name,
+          email: data.email,
+          picture: data.picture
+        };
+        isLoggedIn = true;
+        saveSession();
+        updateUI();
+        updateNavLoginUI();
+        console.log('[Google] ログイン成功:', userProfile.name);
+      } catch (e) {
+        console.error('[Google] ログイン解析エラー:', e);
+      }
+    };
+
+    function initGoogleLogin() {
+      const clientId = googleClientId;
+      if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
+        document.getElementById('g_id_onload').innerHTML = `
+          <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
+            ⚠️ Google Client ID が設定されていません。<br>
+            <span style="font-size:12px; color:var(--text-sub);">google-config.json に google_client_id を追加してください。</span>
+          </div>
+        `;
+        return;
+      }
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: window.onSignIn,
+          cancel_on_tap_outside: false,
+          auto_select: false
+        });
+        google.accounts.id.renderButton(
+          document.getElementById('g_id_onload'),
+          { theme: 'filled_black', size: 'large', width: 300, text: 'signin_with', shape: 'pill' }
+        );
+      } else {
+        setTimeout(initGoogleLogin, 500);
+      }
+    }
+
+    function logout() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        google.accounts.id.disableAutoSelect();
+        if (userProfile?.email) {
+          google.accounts.id.revoke(userProfile.email, function() {});
+        }
+      }
+      isLoggedIn = false;
+      userProfile = null;
+      saveSession();
+      updateUI();
+      updateNavLoginUI();
+      console.log('[Auth] ログアウトしました');
+      // ログアウトページにいる場合はホームへ
+      if (window.location.hash === '#q=logout') {
+        setTimeout(function() {
+          window.location.hash = '#q=home';
+        }, 1000);
+      }
+    }
+
+    // ログアウトボタン（CONTACTページ用）
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', logout);
+    }
+
+    // ナビのログアウトボタン
+    if (navLogoutBtn) {
+      navLogoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        logout();
+        if (window.innerWidth <= 768) toggleMenu(false);
+      });
+    }
+
+    // ナビのログインボタン
+    if (navLoginBtn) {
+      navLoginBtn.addEventListener('click', function(e) {
+        // そのままリンク先に移動（#q=login）
+        if (window.innerWidth <= 768) toggleMenu(false);
+      });
+    }
+
+    // ==========================================================
+    // CONTACTページUI更新
+    // ==========================================================
     const loginPrompt = document.getElementById('login-prompt');
     const userInfoDiv = document.getElementById('user-info');
     const userName = document.getElementById('user-name');
     const userEmail = document.getElementById('user-email');
     const userAvatar = document.getElementById('user-avatar');
-    const logoutBtn = document.getElementById('logout-btn');
     const formWrapper = document.getElementById('contact-form-wrapper');
     const submitBtn = document.querySelector('[data-fs-submit-btn]');
 
@@ -1365,92 +1641,11 @@
           submitBtn.textContent = '送信する (ログインが必要)';
         }
       }
-    }
-
-    // Google コールバック
-    window.onSignIn = function(response) {
-      const payload = response.credential;
-      try {
-        const base64Url = payload.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        const data = JSON.parse(jsonPayload);
-        userProfile = {
-          name: data.name,
-          email: data.email,
-          picture: data.picture
-        };
-        isLoggedIn = true;
-        saveSession(); // ★ 永続化 ★
-        updateUI();
-        console.log('[Google] ログイン成功:', userProfile.name);
-      } catch (e) {
-        console.error('[Google] ログイン解析エラー:', e);
-      }
-    };
-
-    // Google ボタンをレンダリング
-    function initGoogleLogin() {
-      const clientId = googleClientId;
-      if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
-        document.getElementById('g_id_onload').innerHTML = `
-          <div style="color:#ff6b6b; font-size:14px; padding:12px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
-            ⚠️ Google Client ID が設定されていません。<br>
-            <span style="font-size:12px; color:var(--text-sub);">google-config.json に google_client_id を追加してください。</span>
-          </div>
-        `;
-        return;
-      }
-
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: window.onSignIn,
-          cancel_on_tap_outside: false,
-          auto_select: false
-        });
-        google.accounts.id.renderButton(
-          document.getElementById('g_id_onload'),
-          { 
-            theme: 'filled_black', 
-            size: 'large', 
-            width: 300,
-            text: 'signin_with',
-            shape: 'pill'
-          }
-        );
-      } else {
-        setTimeout(initGoogleLogin, 500);
-      }
-    }
-
-    // ログアウト
-    function logout() {
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        google.accounts.id.disableAutoSelect();
-        google.accounts.id.revoke(userProfile?.email || '', () => {
-          isLoggedIn = false;
-          userProfile = null;
-          saveSession(); // ★ クリア ★
-          updateUI();
-          console.log('[Google] ログアウトしました');
-        });
-      } else {
-        isLoggedIn = false;
-        userProfile = null;
-        saveSession();
-        updateUI();
-      }
-    }
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', logout);
+      updateNavLoginUI();
     }
 
     // ==========================================================
-    // ★ google-config.json から Google Client ID を読み込む ★
+    // Google Client ID 読み込み
     // ==========================================================
     async function loadGoogleConfig() {
       try {
@@ -1460,103 +1655,21 @@
         const data = await res.json();
         if (data.google_client_id) {
           googleClientId = data.google_client_id;
-          console.log('[CONFIG] Google Client ID を google-config.json から読み込みました');
-        } else {
-          console.log('[CONFIG] google-config.json に google_client_id がありません（デフォルト値を使用）');
+          console.log('[CONFIG] Google Client ID を読み込みました');
         }
         return true;
       } catch (err) {
-        console.warn('[CONFIG] google-config.json 読み込み失敗（デフォルト値を使用）:', err.message);
+        console.warn('[CONFIG] google-config.json 読み込み失敗:', err.message);
         return false;
       }
     }
 
     // ==========================================================
-    // パーティクル
+    // メンテナンスモード設定読み込み
     // ==========================================================
-    (function() {
-      const container = document.getElementById('particles');
-      if (!container) return;
-      for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        const size = 2 + Math.random() * 4;
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.animationDelay = (Math.random() * 20) + 's';
-        p.style.animationDuration = (12 + Math.random() * 15) + 's';
-        p.style.opacity = 0.1 + Math.random() * 0.3;
-        container.appendChild(p);
-      }
-    })();
-
-    /* ==================================================
-       トップへ戻るボタン
-    ================================================== */
-    (function() {
-      const btn = document.getElementById('back-to-top');
-      let visible = false;
-      window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (scrollY > 400 && !visible) { btn.classList.add('visible'); visible = true; }
-        else if (scrollY <= 400 && visible) { btn.classList.remove('visible'); visible = false; }
-      });
-      btn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    })();
-
-    /* ==================================================
-       スクロールアニメーション
-    ================================================== */
-    (function() {
-      const elements = document.querySelectorAll('.scroll-animate');
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-        elements.forEach(el => observer.observe(el));
-      } else {
-        elements.forEach(el => el.classList.add('visible'));
-      }
-    })();
-
-    /* ==================================================
-       ヘッダー スクロール
-    ================================================== */
-    (function() {
-      const header = document.getElementById('header');
-      window.addEventListener('scroll', () => {
-        header.classList.toggle('scrolled', window.scrollY > 50);
-      });
-    })();
-
-    /* ==================================================
-       ハンバーガー
-    ================================================== */
-    const menuToggle = document.getElementById('menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    document.querySelectorAll('#nav-menu a[data-page]').forEach(link => {
-      link.addEventListener('click', () => {
-        menuToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-      });
-    });
-    menuToggle.addEventListener('click', () => {
-      menuToggle.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
-
-    /* ==================================================
-       ページルーティング（裏コマンド対応版）
-    ================================================== */
-    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
-    const memberIds = MEMBER_IDS || [];
-    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
-
     let maintenanceMode = false;
     let configLoaded = false;
 
-    // 設定ファイル読み込み（メンテナンスモード用）
     async function loadServerConfig() {
       try {
         const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
@@ -1570,7 +1683,7 @@
         updateMaintenanceUI();
         return true;
       } catch (err) {
-        console.warn('[CONFIG] サーバー設定読み込み失敗（デフォルトOFF）:', err.message);
+        console.warn('[CONFIG] サーバー設定読み込み失敗:', err.message);
         maintenanceMode = false;
         configLoaded = true;
         updateMaintenanceUI();
@@ -1589,6 +1702,13 @@
         source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
       }
     }
+
+    // ==========================================================
+    // ページルーティング
+    // ==========================================================
+    const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
+    const memberIds = MEMBER_IDS || [];
+    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
 
     function parseHash() {
       const hash = window.location.hash;
@@ -1625,9 +1745,6 @@
     function getMemberIdFromHash() { return parseHash().memberId; }
     function getCommandsFromHash() { return parseHash().commands; }
 
-    /* ==================================================
-       メイン表示関数
-    ================================================== */
     function showPage() {
       const parsed = parseHash();
       let page = parsed.page;
@@ -1651,7 +1768,7 @@
       document.getElementById('page-404').classList.remove('active');
       document.getElementById('page-maintenance').classList.remove('active');
 
-      // メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
+      // メンテナンスモード（CONTACT以外）
       const isContact = (page === 'contact');
       if (maintenanceMode && !isContact) {
         document.getElementById('page-maintenance').classList.add('active');
@@ -1663,20 +1780,18 @@
         return;
       }
 
-      // ★ 裏コマンド: hide-news ★
+      // 裏コマンド: hide-news
       const hideNews = commands.includes('hide-news');
       const noticeSection = document.querySelector('#page-home .section:last-child');
       if (noticeSection) {
         noticeSection.style.display = hideNews ? 'none' : '';
       }
 
-      // ★ 裏コマンド: debug ★
+      // デバッグモード
       const debugMode = commands.includes('debug');
       let badge = document.getElementById('debug-badge');
       if (debugMode) {
-        console.log('[DEBUG MODE] 裏コマンドが有効です');
-        console.log('  - commands:', commands);
-        console.log('  - maintenance:', maintenanceMode);
+        console.log('[DEBUG MODE] 裏コマンド:', commands);
         if (!badge) {
           badge = document.createElement('div');
           badge.id = 'debug-badge';
@@ -1694,17 +1809,11 @@
           badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
         }
         const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) {
-          debugStatus.textContent = 'ON';
-          debugStatus.className = 'status-badge';
-        }
+        if (debugStatus) { debugStatus.textContent = 'ON'; debugStatus.className = 'status-badge'; }
       } else {
         if (badge) badge.remove();
         const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) {
-          debugStatus.textContent = 'OFF';
-          debugStatus.className = 'status-badge off';
-        }
+        if (debugStatus) { debugStatus.textContent = 'OFF'; debugStatus.className = 'status-badge off'; }
       }
 
       if (page === '404') {
@@ -1727,6 +1836,16 @@
         return;
       }
 
+      // 特別ページ（account, ko, logout はここでは処理しない）
+      if (page === 'logout') {
+        // ログアウト処理はナビのボタンで行うので、ここでは何もしない
+        // ただし、ページとして表示する場合はホームにリダイレクト
+        if (window.location.hash === '#q=logout') {
+          window.location.hash = '#q=home';
+        }
+        return;
+      }
+
       const target = document.getElementById('page-' + page);
       if (target) {
         target.classList.add('active');
@@ -1737,7 +1856,7 @@
           updateMaintenanceUI();
         }
         if (page === 'contact') {
-          updateUI(); // ★ CONTACTページ表示時にログイン状態を更新 ★
+          updateUI();
         }
       }
       document.querySelectorAll('nav a[data-page]').forEach(link => {
@@ -1746,9 +1865,9 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* ==================================================
-       メンバー詳細（裏コマンド対応）
-    ================================================== */
+    // ==========================================================
+    // メンバー詳細
+    // ==========================================================
     function renderMemberDetail(id, commands) {
       const container = document.getElementById('member-detail-content');
       if (!container) return;
@@ -1763,11 +1882,9 @@
         return;
       }
       const member = { ...m };
-      // ★ 裏コマンド: osi ★
       if (id === 'kii' && commands.includes('osi')) {
         member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
       }
-      // ★ 裏コマンド: kamito ★
       if (id === 'kamito' && commands.includes('kamito')) {
         member.hobby = 'BEYBLADE 超特訓中';
       }
@@ -1782,9 +1899,9 @@
       `;
     }
 
-    /* ==================================================
-       メンバー一覧
-    ================================================== */
+    // ==========================================================
+    // メンバー一覧
+    // ==========================================================
     function renderMemberList(filter = '') {
       const container = document.getElementById('member-list');
       if (!container) return;
@@ -1825,9 +1942,9 @@
       }
     })();
 
-    /* ==================================================
-       お知らせ（GitHub API）
-    ================================================== */
+    // ==========================================================
+    // お知らせ
+    // ==========================================================
     const noticeList = document.getElementById('notice-list');
     const allNoticesList = document.getElementById('all-notices-list');
     const loadMoreWrap = document.getElementById('load-more-wrap');
@@ -1924,9 +2041,9 @@
       }
     }
 
-    /* ==================================================
-       YouTube 最新動画取得
-    ================================================== */
+    // ==========================================================
+    // YouTube
+    // ==========================================================
     async function fetchYouTubeVideos() {
       const container = document.getElementById('youtube-list');
       if (!container) return;
@@ -1965,9 +2082,9 @@
       }
     }
 
-    /* ==================================================
-       Formspree AJAX 初期化
-    ================================================== */
+    // ==========================================================
+    // Formspree
+    // ==========================================================
     window.addEventListener('load', function() {
       if (window.formspree) {
         window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' });
@@ -1980,7 +2097,6 @@
       }
     });
 
-    // Formspree 送信前にログインチェック
     document.addEventListener('click', function(e) {
       const target = e.target.closest('[data-fs-submit-btn]');
       if (target && !isLoggedIn) {
@@ -1990,9 +2106,9 @@
       }
     }, true);
 
-    /* ==================================================
-       SETTINGS ページの機能
-    ================================================== */
+    // ==========================================================
+    // SETTINGS
+    // ==========================================================
     function updateSettingsUI(commands) {
       const debugStatus = document.getElementById('debug-status');
       if (debugStatus) {
@@ -2022,12 +2138,7 @@
     document.getElementById('toggle-debug-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasDebug = currentCommands.includes('debug');
-      let newCommands;
-      if (hasDebug) {
-        newCommands = currentCommands.filter(c => c !== 'debug');
-      } else {
-        newCommands = [...currentCommands, 'debug'];
-      }
+      let newCommands = hasDebug ? currentCommands.filter(c => c !== 'debug') : [...currentCommands, 'debug'];
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2037,12 +2148,7 @@
     document.getElementById('toggle-news-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasHide = currentCommands.includes('hide-news');
-      let newCommands;
-      if (hasHide) {
-        newCommands = currentCommands.filter(c => c !== 'hide-news');
-      } else {
-        newCommands = [...currentCommands, 'hide-news'];
-      }
+      let newCommands = hasHide ? currentCommands.filter(c => c !== 'hide-news') : [...currentCommands, 'hide-news'];
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2054,14 +2160,7 @@
       updateMaintenanceUI();
       const currentCommands = getCommandsFromHash();
       const hasMaint = currentCommands.includes('maintenance');
-      let newCommands;
-      if (maintenanceMode && !hasMaint) {
-        newCommands = [...currentCommands, 'maintenance'];
-      } else if (!maintenanceMode && hasMaint) {
-        newCommands = currentCommands.filter(c => c !== 'maintenance');
-      } else {
-        newCommands = currentCommands;
-      }
+      let newCommands = maintenanceMode && !hasMaint ? [...currentCommands, 'maintenance'] : (!maintenanceMode && hasMaint ? currentCommands.filter(c => c !== 'maintenance') : currentCommands);
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2073,21 +2172,16 @@
       location.reload();
     });
 
-    /* ==================================================
-       初期化（サーバー設定読み込み → Google Config 読み込み → 表示）
-    ================================================== */
+    // ==========================================================
+    // 初期化
+    // ==========================================================
     async function init() {
-      // 1. メンテナンス設定読み込み
       await loadServerConfig();
-      // 2. Google Client ID 専用ファイル読み込み
       await loadGoogleConfig();
-      // 3. Google ログインボタン初期化
       initGoogleLogin();
-      // 4. 各種表示
       renderMemberList('');
       fetchNotices();
       showPage();
-      // ★ セッション復元後にUIを更新 ★
       updateUI();
     }
 
