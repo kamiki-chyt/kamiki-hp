@@ -1023,10 +1023,10 @@
             <div id="debug-status" class="status-badge off">OFF</div>
           </div>
 
-          <!-- お知らせ非表示（コマンド） -->
+          <!-- お知らせ表示切替 -->
           <div class="settings-card">
             <h4>📢 お知らせ表示</h4>
-            <p>ホームページのお知らせセクションの表示/非表示を切り替えます（裏コマンド hide-news 相当）。</p>
+            <p>ホームページのお知らせセクションの表示/非表示を切り替えます。</p>
             <button class="setting-btn" id="toggle-news-btn">お知らせを非表示</button>
             <div id="news-status" class="status-badge">表示中</div>
           </div>
@@ -1039,37 +1039,7 @@
           </div>
         </div>
 
-        <!-- 裏コマンド一覧 -->
-        <div style="margin-top:50px; padding:30px; border-radius:20px; border:1px solid var(--card-border); background:var(--card-bg);">
-          <h4 style="font-size:20px; font-weight:800; margin-bottom:16px;">🔑 裏コマンド一覧</h4>
-          <p style="color:var(--text-sub); font-size:14px; margin-bottom:12px;">
-            URLのハッシュ（#q=...）の末尾に <code style="background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px;">=コマンド</code> を追加することで機能します。
-          </p>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px;">
-            <div style="padding:12px 16px; border-radius:12px; border:1px solid var(--card-border);">
-              <code style="color:var(--accent-color); font-weight:700;">=osi</code>
-              <span style="display:block; font-size:13px; color:var(--text-sub);">きぃの趣味を「推し活（莉犬くん、Coe.くん、如月ゆうくん）」に変更</span>
-            </div>
-            <div style="padding:12px 16px; border-radius:12px; border:1px solid var(--card-border);">
-              <code style="color:var(--accent-color); font-weight:700;">=kamito</code>
-              <span style="display:block; font-size:13px; color:var(--text-sub);">カミトの趣味を「BEYBLADE 超特訓中」に変更</span>
-            </div>
-            <div style="padding:12px 16px; border-radius:12px; border:1px solid var(--card-border);">
-              <code style="color:var(--accent-color); font-weight:700;">=hide-news</code>
-              <span style="display:block; font-size:13px; color:var(--text-sub);">ホームのお知らせセクションを非表示</span>
-            </div>
-            <div style="padding:12px 16px; border-radius:12px; border:1px solid var(--card-border);">
-              <code style="color:var(--accent-color); font-weight:700;">=debug</code>
-              <span style="display:block; font-size:13px; color:var(--text-sub);">デバッグモード（コンソール表示 + バッジ）</span>
-            </div>
-          </div>
-          <div style="margin-top:16px; padding:12px 16px; border-radius:12px; background:rgba(139,92,246,0.08); border-left:3px solid var(--accent-color);">
-            <span style="font-size:13px; color:var(--text-sub);">使用例：</span>
-            <code style="display:block; margin-top:4px; font-size:14px; color:var(--text-main); background:rgba(255,255,255,0.05); padding:6px 12px; border-radius:6px;">
-              https://kamiki-chyt.github.io/kamiki-hp/#q=member/kii=osi
-            </code>
-          </div>
-        </div>
+        <!-- コマンド一覧は削除（ユーザー要望） -->
       </div>
     </section>
   </div>
@@ -1227,23 +1197,29 @@
     });
 
     /* ==================================================
-       ページルーティング（裏コマンド対応）
+       ページルーティング（裏コマンド対応版）
     ================================================== */
     const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
     const memberIds = MEMBER_IDS || [];
+    // コマンドとして認識する単語リスト（ページパス以外）
+    const commandWords = ['osi', 'kamito', 'hide-news', 'debug'];
 
-    // ハッシュからページとコマンドを解析
     function parseHash() {
       const hash = window.location.hash;
       if (!hash || hash === '#') return { page: 'home', commands: [] };
       if (hash.startsWith('#q=')) {
         let raw = decodeURIComponent(hash.substring(3));
-        // raw は "member/kii=osi" のような形式
-        // = で分割してコマンド部分とパス部分を分離
+        // raw は "member/kii=osi" や "hide-news" や "home=hide-news" など
         let parts = raw.split('=');
-        let path = parts[0]; // "member/kii"
-        let commands = parts.slice(1); // ["osi"] または ["osi", "hide-news"] など（=が複数ある場合）
-        // パスが member/kii の場合、member をページ、kii をIDとして扱う
+        let path = parts[0]; // 最初の部分
+        let commands = parts.slice(1); // 残りはコマンド
+
+        // path がコマンド単体（例: "hide-news"）の場合、home とみなす
+        if (commandWords.includes(path)) {
+          return { page: 'home', commands: [path, ...commands] };
+        }
+
+        // ページ判定
         let page = '404';
         let memberId = null;
         if (path.startsWith('member/')) {
@@ -1257,6 +1233,7 @@
         } else if (validPages.includes(path)) {
           page = path;
         } else {
+          // 不明なパス → 404
           page = '404';
         }
         return { page, memberId, commands };
@@ -1264,17 +1241,9 @@
       return { page: 'home', commands: [] };
     }
 
-    function getPageFromHash() {
-      return parseHash().page;
-    }
-
-    function getMemberIdFromHash() {
-      return parseHash().memberId;
-    }
-
-    function getCommandsFromHash() {
-      return parseHash().commands;
-    }
+    function getPageFromHash() { return parseHash().page; }
+    function getMemberIdFromHash() { return parseHash().memberId; }
+    function getCommandsFromHash() { return parseHash().commands; }
 
     /* ==================================================
        メイン表示関数
@@ -1285,7 +1254,6 @@
       const memberId = parsed.memberId;
       const commands = parsed.commands;
 
-      // タイトル設定
       const titles = {
         home: '神木チャンネル',
         member: 'MEMBER - 神木チャンネル',
@@ -1299,7 +1267,6 @@
       };
       document.title = titles[page] || '神木チャンネル';
 
-      // 全ページ非表示
       document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
       document.getElementById('page-404').classList.remove('active');
 
@@ -1330,7 +1297,6 @@
           badge.textContent = '🐞 DEBUG MODE';
           document.body.appendChild(badge);
         }
-        // 設定画面のデバッグ状態も更新
         const debugStatus = document.getElementById('debug-status');
         if (debugStatus) {
           debugStatus.textContent = 'ON';
@@ -1345,7 +1311,6 @@
         }
       }
 
-      // 404 ページ
       if (page === '404') {
         document.getElementById('page-404').classList.add('active');
         document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
@@ -1353,7 +1318,6 @@
         return;
       }
 
-      // メンバー詳細ページ
       if (page === 'member-detail' && memberId) {
         const target = document.getElementById('page-member-detail');
         if (target) {
@@ -1367,7 +1331,6 @@
         return;
       }
 
-      // 通常ページ
       const target = document.getElementById('page-' + page);
       if (target) {
         target.classList.add('active');
@@ -1617,14 +1580,12 @@
        SETTINGS ページの機能
     ================================================== */
     function updateSettingsUI(commands) {
-      // デバッグ状態
       const debugStatus = document.getElementById('debug-status');
       if (debugStatus) {
         const isDebug = commands.includes('debug');
         debugStatus.textContent = isDebug ? 'ON' : 'OFF';
         debugStatus.className = 'status-badge' + (isDebug ? '' : ' off');
       }
-      // お知らせ表示状態
       const newsStatus = document.getElementById('news-status');
       if (newsStatus) {
         const isHidden = commands.includes('hide-news');
@@ -1655,9 +1616,8 @@
       } else {
         newCommands = [...currentCommands, 'debug'];
       }
-      // 現在のハッシュを再構築
       const hash = window.location.hash;
-      const base = hash.split('=')[0]; // "#q=member/kii" など
+      const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
       window.location.hash = newHash;
     });
