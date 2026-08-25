@@ -144,14 +144,6 @@
       0%,100% { border-color:transparent; }
       50% { border-color:var(--accent-color); }
     }
-    @keyframes swipeIn {
-      from { transform:translateX(100%); opacity:0; }
-      to { transform:translateX(0); opacity:1; }
-    }
-    @keyframes swipeOut {
-      from { transform:translateX(0); opacity:1; }
-      to { transform:translateX(-100%); opacity:0; }
-    }
 
     .scroll-animate {
       opacity:0;
@@ -372,7 +364,6 @@
       .menu-toggle.active span:nth-child(2){ opacity:0; }
       .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
 
-      /* モバイルではプロフィールを別途表示 */
       .user-profile-header {
         padding:4px 8px;
       }
@@ -497,119 +488,16 @@
       margin-bottom:16px;
       display:none;
     }
-    /* スワイプボタン風Googleログイン */
-    .google-swipe-btn {
-      position:relative;
+
+    /* 通常のGoogleログインボタン（クリック式） */
+    .google-login-btn-wrapper {
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      width:100%;
-      padding:0;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.03);
-      cursor:pointer;
-      overflow:hidden;
-      transition:all 0.3s ease;
-      height:64px;
-      margin:0 auto;
-    }
-    .google-swipe-btn:hover {
-      border-color:rgba(255,255,255,0.25);
-      background:rgba(255,255,255,0.06);
-    }
-    .google-swipe-btn .swipe-track {
-      display:flex;
-      align-items:center;
-      width:100%;
-      height:100%;
-      transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);
-    }
-    .google-swipe-btn .swipe-track.swiped {
-      transform:translateX(-100%);
-    }
-    .google-swipe-btn .swipe-left {
-      display:flex;
-      align-items:center;
-      gap:14px;
-      padding:0 24px;
-      flex-shrink:0;
-      min-width:50%;
-    }
-    .google-swipe-btn .swipe-left .google-logo {
-      width:28px;
-      height:28px;
-      flex-shrink:0;
-    }
-    .google-swipe-btn .swipe-left .label {
-      font-weight:700;
-      font-size:16px;
-      color:var(--text-main);
-      white-space:nowrap;
-    }
-    .google-swipe-btn .swipe-right {
-      display:flex;
-      align-items:center;
       justify-content:center;
-      flex-shrink:0;
-      min-width:50%;
-      height:100%;
-      background:var(--accent-gradient);
-      color:#fff;
-      font-weight:800;
-      font-size:16px;
-      padding:0 24px;
+      margin:10px 0;
     }
-    .google-swipe-btn .swipe-right .arrow {
-      margin-left:8px;
-      font-size:20px;
-      transition:transform 0.3s ease;
-    }
-    .google-swipe-btn .swipe-right .arrow.animate {
-      animation:slideArrow 0.6s ease infinite alternate;
-    }
-    @keyframes slideArrow {
-      0% { transform:translateX(0); }
-      100% { transform:translateX(6px); }
-    }
-    .google-swipe-btn .drag-handle {
-      position:absolute;
-      left:0;
-      top:0;
-      width:60px;
-      height:100%;
-      cursor:grab;
-      z-index:2;
-      touch-action:none;
-    }
-    .google-swipe-btn .drag-handle:active {
-      cursor:grabbing;
-    }
-    .google-swipe-btn .drag-indicator {
-      position:absolute;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-      width:32px;
-      height:32px;
-      border-radius:50%;
-      background:rgba(255,255,255,0.08);
-      border:2px solid rgba(255,255,255,0.15);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:14px;
-      color:var(--text-sub);
-      transition:all 0.3s ease;
-      pointer-events:none;
-    }
-    .google-swipe-btn .drag-indicator.dragging {
-      background:rgba(139,92,246,0.2);
-      border-color:var(--accent-color);
-      transform:translate(-50%,-50%) scale(1.1);
-    }
-    .google-swipe-btn .drag-indicator .icon {
-      font-size:16px;
+    .google-login-btn-wrapper iframe {
+      width:100% !important;
+      max-width:300px;
     }
 
     /* ===== ログアウトページ ===== */
@@ -1692,7 +1580,7 @@
   </div>
 
   <!-- ==========================================================
-       新規ページ：ログイン
+       新規ページ：ログイン（スワイプ削除・クリック式に戻す）
   ========================================================== -->
   <div id="page-login">
     <div class="login-container">
@@ -1703,28 +1591,8 @@
         ✅ ログイン中: <span id="login-logged-username">ユーザー</span>
       </div>
 
-      <!-- スワイプ式Googleログインボタン -->
-      <div class="google-swipe-btn" id="google-swipe-btn">
-        <div class="drag-handle" id="drag-handle"></div>
-        <div class="swipe-track" id="swipe-track">
-          <div class="swipe-left">
-            <!-- Googleロゴ（SVG） -->
-            <svg class="google-logo" viewBox="0 0 48 48">
-              <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
-              <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
-              <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
-              <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
-            </svg>
-            <span class="label">Googleでログイン</span>
-          </div>
-          <div class="swipe-right">
-            スワイプしてログイン <span class="arrow" id="swipe-arrow">→</span>
-          </div>
-        </div>
-        <div class="drag-indicator" id="drag-indicator">
-          <span class="icon">☰</span>
-        </div>
-      </div>
+      <!-- Google公式ボタン（クリック式） -->
+      <div id="google-login-button-container" class="google-login-btn-wrapper"></div>
 
       <div style="margin-top:20px; font-size:12px; color:var(--text-sub); opacity:0.6;">
         Googleアカウントでログインできます
@@ -1840,7 +1708,6 @@
     let userProfile = null;
     let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
 
-    // ローカルストレージから復元
     function restoreSession() {
       try {
         const saved = localStorage.getItem('kamiki_user');
@@ -1859,17 +1726,12 @@
 
     function saveSession() {
       if (isLoggedIn && userProfile) {
-        try {
-          localStorage.setItem('kamiki_user', JSON.stringify(userProfile));
-        } catch (e) {}
+        try { localStorage.setItem('kamiki_user', JSON.stringify(userProfile)); } catch (e) {}
       } else {
-        try {
-          localStorage.removeItem('kamiki_user');
-        } catch (e) {}
+        try { localStorage.removeItem('kamiki_user'); } catch (e) {}
       }
     }
 
-    // 復元実行
     restoreSession();
 
     // DOM 要素
@@ -1882,14 +1744,8 @@
     const dropdownLogout = document.getElementById('dropdown-logout');
     const navUsers = document.getElementById('nav-users');
 
-    // ログインページ用
     const loginAlreadyLogged = document.getElementById('login-already-logged');
     const loginLoggedUsername = document.getElementById('login-logged-username');
-    const googleSwipeBtn = document.getElementById('google-swipe-btn');
-    const swipeTrack = document.getElementById('swipe-track');
-    const dragHandle = document.getElementById('drag-handle');
-    const dragIndicator = document.getElementById('drag-indicator');
-    const swipeArrow = document.getElementById('swipe-arrow');
 
     // ==========================================================
     // ★ プロフィール表示更新
@@ -1899,33 +1755,32 @@
         profileHeader.style.display = 'flex';
         headerAvatar.src = userProfile.picture || '';
         headerName.textContent = userProfile.name || 'ユーザー';
-        // ナビのユーザーアイコン
         navUsers.textContent = '👤';
         navUsers.style.color = 'var(--accent-color)';
 
-        // ログインページ
         if (loginAlreadyLogged) {
           loginAlreadyLogged.style.display = 'block';
           loginLoggedUsername.textContent = userProfile.name || 'ユーザー';
         }
-        if (googleSwipeBtn) googleSwipeBtn.style.display = 'none';
-
-        // ユーザーページと購読設定を更新
         renderUserPage();
         renderKoPage();
+        // ログインページのボタンを非表示に
+        const btnContainer = document.getElementById('google-login-button-container');
+        if (btnContainer) btnContainer.style.display = 'none';
       } else {
         profileHeader.style.display = 'none';
         navUsers.textContent = 'LOGIN';
         navUsers.style.color = '';
         if (loginAlreadyLogged) loginAlreadyLogged.style.display = 'none';
-        if (googleSwipeBtn) googleSwipeBtn.style.display = 'flex';
         renderUserPage();
         renderKoPage();
+        const btnContainer = document.getElementById('google-login-button-container');
+        if (btnContainer) btnContainer.style.display = 'flex';
       }
     }
 
     // ==========================================================
-    // ★ プロフィールドロップダウン制御
+    // ★ プロフィールドロップダウン
     // ==========================================================
     if (profileHeader) {
       profileHeader.addEventListener('click', function(e) {
@@ -1937,7 +1792,6 @@
       });
     }
 
-    // ドロップダウンアイテム
     if (dropdownProfile) {
       dropdownProfile.addEventListener('click', function() {
         profileDropdown.classList.remove('open');
@@ -1958,182 +1812,7 @@
     }
 
     // ==========================================================
-    // ★ Google スワイプログイン
-    // ==========================================================
-    let isDragging = false;
-    let startX = 0;
-    let currentX = 0;
-    let swiped = false;
-
-    function resetSwipe() {
-      swipeTrack.classList.remove('swiped');
-      swiped = false;
-      dragIndicator.classList.remove('dragging');
-      if (swipeArrow) swipeArrow.classList.remove('animate');
-    }
-
-    function completeSwipe() {
-      if (!swiped) {
-        swiped = true;
-        swipeTrack.classList.add('swiped');
-        dragIndicator.classList.remove('dragging');
-        if (swipeArrow) swipeArrow.classList.add('animate');
-        // Googleログイン実行
-        triggerGoogleLogin();
-        // リセット（戻る）
-        setTimeout(function() {
-          resetSwipe();
-        }, 2000);
-      }
-    }
-
-    // ドラッグ処理（マウス）
-    if (dragHandle) {
-      dragHandle.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        isDragging = true;
-        startX = e.clientX;
-        currentX = 0;
-        dragIndicator.classList.add('dragging');
-        document.addEventListener('mousemove', onDragMove);
-        document.addEventListener('mouseup', onDragEnd);
-      });
-    }
-
-    // ドラッグ処理（タッチ）
-    if (dragHandle) {
-      dragHandle.addEventListener('touchstart', function(e) {
-        const touch = e.touches[0];
-        isDragging = true;
-        startX = touch.clientX;
-        currentX = 0;
-        dragIndicator.classList.add('dragging');
-        document.addEventListener('touchmove', onTouchMove, { passive: true });
-        document.addEventListener('touchend', onTouchEnd);
-      }, { passive: true });
-    }
-
-    function onDragMove(e) {
-      if (!isDragging) return;
-      const deltaX = e.clientX - startX;
-      currentX = deltaX;
-      const progress = Math.min(Math.max(deltaX / 200, 0), 1);
-      if (progress >= 1) {
-        completeSwipe();
-        isDragging = false;
-        document.removeEventListener('mousemove', onDragMove);
-        document.removeEventListener('mouseup', onDragEnd);
-        return;
-      }
-      // トラックを少し動かす
-      const translate = Math.min(deltaX * 0.3, 60);
-      swipeTrack.style.transform = 'translateX(' + translate + 'px)';
-      // インジケーターの色変更
-      if (progress > 0.3) {
-        dragIndicator.style.borderColor = 'var(--accent-color)';
-        dragIndicator.style.background = 'rgba(139,92,246,0.2)';
-      } else {
-        dragIndicator.style.borderColor = 'rgba(255,255,255,0.15)';
-        dragIndicator.style.background = 'rgba(255,255,255,0.08)';
-      }
-    }
-
-    function onDragEnd(e) {
-      if (!isDragging) return;
-      isDragging = false;
-      document.removeEventListener('mousemove', onDragMove);
-      document.removeEventListener('mouseup', onDragEnd);
-      // スワイプが完了していなければリセット
-      if (!swiped) {
-        swipeTrack.style.transform = '';
-        dragIndicator.classList.remove('dragging');
-        dragIndicator.style.borderColor = 'rgba(255,255,255,0.15)';
-        dragIndicator.style.background = 'rgba(255,255,255,0.08)';
-      }
-    }
-
-    function onTouchMove(e) {
-      if (!isDragging) return;
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - startX;
-      currentX = deltaX;
-      const progress = Math.min(Math.max(deltaX / 200, 0), 1);
-      if (progress >= 1) {
-        completeSwipe();
-        isDragging = false;
-        document.removeEventListener('touchmove', onTouchMove);
-        document.removeEventListener('touchend', onTouchEnd);
-        return;
-      }
-      const translate = Math.min(deltaX * 0.3, 60);
-      swipeTrack.style.transform = 'translateX(' + translate + 'px)';
-      if (progress > 0.3) {
-        dragIndicator.style.borderColor = 'var(--accent-color)';
-        dragIndicator.style.background = 'rgba(139,92,246,0.2)';
-      } else {
-        dragIndicator.style.borderColor = 'rgba(255,255,255,0.15)';
-        dragIndicator.style.background = 'rgba(255,255,255,0.08)';
-      }
-    }
-
-    function onTouchEnd(e) {
-      if (!isDragging) return;
-      isDragging = false;
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-      if (!swiped) {
-        swipeTrack.style.transform = '';
-        dragIndicator.classList.remove('dragging');
-        dragIndicator.style.borderColor = 'rgba(255,255,255,0.15)';
-        dragIndicator.style.background = 'rgba(255,255,255,0.08)';
-      }
-    }
-
-    // ==========================================================
-    // ★ Google ログイン実行
-    // ==========================================================
-    function triggerGoogleLogin() {
-      // Googleのログインボタンを模倣
-      const wrapper = document.getElementById('google-login-wrapper-temp');
-      if (!wrapper) {
-        const temp = document.createElement('div');
-        temp.id = 'google-login-wrapper-temp';
-        temp.style.display = 'none';
-        document.body.appendChild(temp);
-        if (typeof google !== 'undefined' && google.accounts) {
-          google.accounts.id.renderButton(temp, {
-            theme: 'filled_black',
-            size: 'large',
-            width: 300,
-            text: 'signin_with',
-            shape: 'pill',
-            click_listener: function() {
-              // 実際のクリックをシミュレート
-            }
-          });
-        }
-        // ボタンをクリック
-        setTimeout(function() {
-          const iframe = temp.querySelector('iframe');
-          if (iframe) {
-            // iframe内のボタンをクリック
-            try {
-              const btn = iframe.contentDocument?.querySelector('button, div[role="button"]');
-              if (btn) btn.click();
-            } catch (e) {
-              // クロスオリジン対策
-            }
-          }
-          // フォールバック：直接ログインを開始
-          if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-            google.accounts.id.prompt();
-          }
-        }, 300);
-      }
-    }
-
-    // ==========================================================
-    // ★ Google コールバック
+    // ★ Google ログインコールバック
     // ==========================================================
     window.onSignIn = function(response) {
       try {
@@ -2152,12 +1831,10 @@
         isLoggedIn = true;
         saveSession();
         updateProfileUI();
-        // ログインページにいる場合はホームへ
         if (window.location.hash === '#q=login') {
           window.location.hash = '#q=home';
         }
         console.log('[Google] ログイン成功:', userProfile.name);
-        // イベント発火
         window.dispatchEvent(new Event('loginStateChanged'));
       } catch (e) {
         console.error('[Google] ログイン解析エラー:', e);
@@ -2165,12 +1842,21 @@
     };
 
     // ==========================================================
-    // ★ Google ログインボタン初期化（スワイプボタン用）
+    // ★ Google ログインボタン初期化（クリック式）
     // ==========================================================
     function initGoogleLogin() {
       const clientId = googleClientId;
       if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
         console.warn('[Google] Client ID が設定されていません');
+        const container = document.getElementById('google-login-button-container');
+        if (container) {
+          container.innerHTML = `
+            <div style="color:#ff6b6b; font-size:13px; padding:10px; background:rgba(255,107,107,0.1); border-radius:12px; border:1px solid rgba(255,107,107,0.2);">
+              ⚠️ Google Client ID 未設定<br>
+              <span style="font-size:11px; color:var(--text-sub);">google-config.json を確認</span>
+            </div>
+          `;
+        }
         return;
       }
       if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
@@ -2180,19 +1866,17 @@
           cancel_on_tap_outside: false,
           auto_select: false
         });
-        // スワイプボタンでログインをトリガーするための準備
-        // 実際のボタンは非表示で作成
-        const temp = document.createElement('div');
-        temp.id = 'google-login-wrapper-temp';
-        temp.style.display = 'none';
-        document.body.appendChild(temp);
-        google.accounts.id.renderButton(temp, {
-          theme: 'filled_black',
-          size: 'large',
-          width: 300,
-          text: 'signin_with',
-          shape: 'pill'
-        });
+        const container = document.getElementById('google-login-button-container');
+        if (container) {
+          container.innerHTML = '';
+          google.accounts.id.renderButton(container, {
+            theme: 'filled_black',
+            size: 'large',
+            width: 300,
+            text: 'signin_with',
+            shape: 'pill'
+          });
+        }
       } else {
         setTimeout(initGoogleLogin, 500);
       }
@@ -2202,7 +1886,6 @@
     // ★ ログアウト処理
     // ==========================================================
     function performLogout() {
-      // Googleログアウト
       if (typeof google !== 'undefined' && google.accounts) {
         google.accounts.id.disableAutoSelect();
         if (userProfile?.email) {
@@ -2213,7 +1896,6 @@
       userProfile = null;
       saveSession();
       updateProfileUI();
-      // ログアウトページからホームへ遷移
       setTimeout(function() {
         if (window.location.hash === '#q=logout') {
           window.location.hash = '#q=home';
@@ -2236,12 +1918,8 @@
           <div class="email">${userProfile.email || ''}</div>
           <div class="provider">🔑 Google アカウント</div>
           <div class="user-actions">
-            <button class="action-btn" id="user-go-settings">
-              🔔 通知設定
-            </button>
-            <button class="action-btn danger" id="user-logout-btn">
-              🚪 ログアウト
-            </button>
+            <button class="action-btn" id="user-go-settings">🔔 通知設定</button>
+            <button class="action-btn danger" id="user-logout-btn">🚪 ログアウト</button>
           </div>
         `;
         document.getElementById('user-go-settings')?.addEventListener('click', function() {
@@ -2271,7 +1949,6 @@
       const container = document.getElementById('ko-content');
       if (!container) return;
       if (isLoggedIn && userProfile) {
-        // 保存された設定を読み込み
         let settings = {};
         try {
           const saved = localStorage.getItem('kamiki_notify');
@@ -2304,14 +1981,12 @@
             通知は登録されたメールアドレス（${userProfile.email}）に送信されます。
           </div>
         `;
-        // トグルイベント
         document.getElementById('toggle-email')?.addEventListener('click', function() {
           this.classList.toggle('active');
         });
         document.getElementById('toggle-push')?.addEventListener('click', function() {
           this.classList.toggle('active');
         });
-        // 保存ボタン
         document.getElementById('ko-save-btn')?.addEventListener('click', function() {
           const email = document.getElementById('toggle-email')?.classList.contains('active') || false;
           const push = document.getElementById('toggle-push')?.classList.contains('active') || false;
@@ -2703,7 +2378,6 @@
       };
       document.title = titles[page] || '神木チャンネル';
 
-      // 全ページ非表示
       document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
       document.getElementById('page-404').classList.remove('active');
       document.getElementById('page-maintenance').classList.remove('active');
@@ -2712,72 +2386,48 @@
       document.getElementById('page-users').classList.remove('active');
       document.getElementById('page-ko').classList.remove('active');
 
-      // ログアウトページの特別処理
       if (page === 'logout') {
         document.getElementById('page-logout').classList.add('active');
         document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        // ログアウト実行
         performLogout();
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
-      // メンテナンスモード（contact以外）
       const isContact = (page === 'contact');
       if (maintenanceMode && !isContact && page !== 'login' && page !== 'logout') {
         document.getElementById('page-maintenance').classList.add('active');
         document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
         document.querySelectorAll('nav a[data-page]').forEach(link => {
-          if (link.dataset.page === 'contact' || link.dataset.page === 'login') {
-            link.classList.add('active');
-          }
+          if (link.dataset.page === 'contact' || link.dataset.page === 'login') link.classList.add('active');
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
-      // 裏コマンド: hide-news
       const hideNews = commands.includes('hide-news');
       const noticeSection = document.querySelector('#page-home .section:last-child');
-      if (noticeSection) {
-        noticeSection.style.display = hideNews ? 'none' : '';
-      }
+      if (noticeSection) noticeSection.style.display = hideNews ? 'none' : '';
 
-      // デバッグモード
       const debugMode = commands.includes('debug');
       let badge = document.getElementById('debug-badge');
       if (debugMode) {
-        console.log('[DEBUG MODE] 裏コマンドが有効です');
-        console.log('  - commands:', commands);
-        console.log('  - maintenance:', maintenanceMode);
+        console.log('[DEBUG MODE] 裏コマンド:', commands);
         if (!badge) {
           badge = document.createElement('div');
           badge.id = 'debug-badge';
-          badge.style.cssText = `
-            position: fixed; bottom: 80px; left: 20px;
-            background: rgba(139,92,246,0.8); color: #fff;
-            padding: 8px 16px; border-radius: 20px;
-            font-size: 12px; font-weight: 700;
-            z-index: 9998; backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
-          `;
+          badge.style.cssText = 'position:fixed; bottom:80px; left:20px; background:rgba(139,92,246,0.8); color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; z-index:9998; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.1);';
           badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
           document.body.appendChild(badge);
         } else {
           badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
         }
         const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) {
-          debugStatus.textContent = 'ON';
-          debugStatus.className = 'status-badge';
-        }
+        if (debugStatus) { debugStatus.textContent = 'ON'; debugStatus.className = 'status-badge'; }
       } else {
         if (badge) badge.remove();
         const debugStatus = document.getElementById('debug-status');
-        if (debugStatus) {
-          debugStatus.textContent = 'OFF';
-          debugStatus.className = 'status-badge off';
-        }
+        if (debugStatus) { debugStatus.textContent = 'OFF'; debugStatus.className = 'status-badge off'; }
       }
 
       if (page === '404') {
@@ -2793,29 +2443,30 @@
           target.classList.add('active');
           renderMemberDetail(memberId, commands);
         }
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.toggle('active', link.dataset.page === 'member');
-        });
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === 'member'));
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
-      // 特別ページ
       if (page === 'users') {
         document.getElementById('page-users').classList.add('active');
         renderUserPage();
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.toggle('active', link.dataset.page === page);
-        });
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
       if (page === 'login') {
         document.getElementById('page-login').classList.add('active');
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.toggle('active', link.dataset.page === page);
-        });
+        // ログイン済みならボタン非表示
+        if (isLoggedIn) {
+          const container = document.getElementById('google-login-button-container');
+          if (container) container.style.display = 'none';
+        } else {
+          const container = document.getElementById('google-login-button-container');
+          if (container) { container.style.display = 'flex'; initGoogleLogin(); }
+        }
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
@@ -2823,14 +2474,11 @@
       if (page === 'ko') {
         document.getElementById('page-ko').classList.add('active');
         renderKoPage();
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-          link.classList.toggle('active', link.dataset.page === page);
-        });
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
-      // 通常ページ
       const target = document.getElementById('page-' + page);
       if (target) {
         target.classList.add('active');
@@ -2841,14 +2489,12 @@
           updateMaintenanceUI();
         }
       }
-      document.querySelectorAll('nav a[data-page]').forEach(link => {
-        link.classList.toggle('active', link.dataset.page === page);
-      });
+      document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.toggle('active', link.dataset.page === page));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ==========================================================
-    // ★ SETTINGS ページの機能
+    // ★ SETTINGS
     // ==========================================================
     function updateSettingsUI(commands) {
       const debugStatus = document.getElementById('debug-status');
@@ -2879,12 +2525,7 @@
     document.getElementById('toggle-debug-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasDebug = currentCommands.includes('debug');
-      let newCommands;
-      if (hasDebug) {
-        newCommands = currentCommands.filter(c => c !== 'debug');
-      } else {
-        newCommands = [...currentCommands, 'debug'];
-      }
+      let newCommands = hasDebug ? currentCommands.filter(c => c !== 'debug') : [...currentCommands, 'debug'];
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2894,12 +2535,7 @@
     document.getElementById('toggle-news-btn').addEventListener('click', function() {
       const currentCommands = getCommandsFromHash();
       const hasHide = currentCommands.includes('hide-news');
-      let newCommands;
-      if (hasHide) {
-        newCommands = currentCommands.filter(c => c !== 'hide-news');
-      } else {
-        newCommands = [...currentCommands, 'hide-news'];
-      }
+      let newCommands = hasHide ? currentCommands.filter(c => c !== 'hide-news') : [...currentCommands, 'hide-news'];
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2911,14 +2547,7 @@
       updateMaintenanceUI();
       const currentCommands = getCommandsFromHash();
       const hasMaint = currentCommands.includes('maintenance');
-      let newCommands;
-      if (maintenanceMode && !hasMaint) {
-        newCommands = [...currentCommands, 'maintenance'];
-      } else if (!maintenanceMode && hasMaint) {
-        newCommands = currentCommands.filter(c => c !== 'maintenance');
-      } else {
-        newCommands = currentCommands;
-      }
+      let newCommands = maintenanceMode && !hasMaint ? [...currentCommands, 'maintenance'] : (!maintenanceMode && hasMaint ? currentCommands.filter(c => c !== 'maintenance') : currentCommands);
       const hash = window.location.hash;
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
@@ -2945,7 +2574,6 @@
 
     init();
 
-    // イベントリスナー
     window.addEventListener('hashchange', showPage);
     window.addEventListener('popstate', showPage);
     window.addEventListener('loginStateChanged', function() {
