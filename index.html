@@ -1264,17 +1264,18 @@
     let maintenanceMode = false; // デフォルトはOFF
     let configLoaded = false;
 
-    // 設定ファイル読み込み（サーバーから）
+    // 設定ファイル読み込み（サーバーから）★ on/off 対応
     async function loadServerConfig() {
       try {
         const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
         const res = await fetch(url, { cache: 'no-cache' });
         if (!res.ok) throw new Error('Config fetch failed');
         const data = await res.json();
-        maintenanceMode = data.maintenance === true;
+        // ★ on/off 判定（文字列で "on" なら true、それ以外は false）
+        const value = data.maintenance;
+        maintenanceMode = (value === 'on' || value === true);
         configLoaded = true;
-        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode });
-        // 設定ページのUI更新
+        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode ? 'ON' : 'OFF' });
         updateMaintenanceUI();
         return true;
       } catch (err) {
@@ -1302,11 +1303,7 @@
     // 裏コマンドで maintenance が指定された場合、ローカルで一時的に上書き（ただし設定ファイルが優先）
     function applyMaintenanceCommand(commands) {
       if (commands.includes('maintenance')) {
-        // コマンドがあればトグル（ただしファイル設定が優先される場合もあるので注意）
-        // 今回はファイル設定を優先し、コマンドは強制上書きしない（開発者向け）
-        // ただし、デバッグ目的でコマンドが有効なら強制ONにする（開発用）
         if (commands.includes('debug')) {
-          // デバッグ時はコマンドを尊重
           maintenanceMode = true;
           updateMaintenanceUI();
         }
@@ -1357,10 +1354,8 @@
       const memberId = parsed.memberId;
       const commands = parsed.commands;
 
-      // デバッグコマンドがあれば強制メンテナンスON（開発用）
       applyMaintenanceCommand(commands);
 
-      // タイトル設定
       const titles = {
         home: '神木チャンネル',
         member: 'MEMBER - 神木チャンネル',
@@ -1374,20 +1369,15 @@
       };
       document.title = titles[page] || '神木チャンネル';
 
-      // 全ページ非表示
       document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
       document.getElementById('page-404').classList.remove('active');
       document.getElementById('page-maintenance').classList.remove('active');
 
-      // ★ メンテナンスモードチェック ★
-      // CONTACT ページだけは常に表示可能。それ以外はメンテナンス画面にリダイレクト（設定がONの場合）
+      // ★ メンテナンスモードチェック（CONTACT以外はメンテナンス画面）
       const isContact = (page === 'contact');
       if (maintenanceMode && !isContact) {
-        // メンテナンスページを表示
         document.getElementById('page-maintenance').classList.add('active');
-        // ナビのアクティブを解除
         document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
-        // ナビのCONTACTだけはアクティブにしておく（任意）
         document.querySelectorAll('nav a[data-page]').forEach(link => {
           if (link.dataset.page === 'contact') link.classList.add('active');
         });
@@ -1769,14 +1759,10 @@
       window.location.hash = newHash;
     });
 
-    // ★ アップデートモード切替（サーバー設定ファイルを書き換えることはできないので、ローカルでトグル）
-    // 実際のサーバー設定を変更するにはGitHub上のconfig.jsonを編集する必要があります。
-    // ここではローカルで強制的にON/OFFする（開発用）＋設定ファイル読み込みを再試行
+    // ★ アップデートモード切替（ローカルトグル + ハッシュ反映）
     document.getElementById('toggle-maintenance-btn').addEventListener('click', function() {
-      // 強制的にトグル（ローカル上書き）
       maintenanceMode = !maintenanceMode;
       updateMaintenanceUI();
-      // ハッシュに maintenance コマンドを追加して状態を保存（任意）
       const currentCommands = getCommandsFromHash();
       const hasMaint = currentCommands.includes('maintenance');
       let newCommands;
@@ -1791,7 +1777,6 @@
       const base = hash.split('=')[0];
       const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
       window.location.hash = newHash;
-      // 再表示
       showPage();
     });
 
@@ -1804,19 +1789,14 @@
        初期化（サーバー設定読み込み→表示）
     ================================================== */
     async function init() {
-      // サーバー設定読み込み
       await loadServerConfig();
-      // メンバーリスト
       renderMemberList('');
-      // お知らせ取得
       fetchNotices();
-      // 初回表示
       showPage();
     }
 
     init();
 
-    // ハッシュ変更時も再適用
     window.addEventListener('hashchange', showPage);
     window.addEventListener('popstate', showPage);
 
