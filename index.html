@@ -23,7 +23,9 @@
       YOUTUBE_CHANNEL_ID: "UCFCWHBYTtv17ku33Jl2lImw",
       FORMSPREE_ID: "xljrvlvd",
       YOUTUBE_CHANNEL_URL: "https://www.youtube.com/@kamiki-ch",
-      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI"
+      LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
+      // ★ サーバー設定ファイル（GitHub上のJSON）
+      CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json"
     };
 
     const MEMBERS = {
@@ -241,6 +243,41 @@
       display:none; min-height:100vh; padding-top:70px;
     }
     .page.active { display:block; animation:fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+    /* ===== メンテナンスページ ===== */
+    #page-maintenance {
+      display:none; min-height:100vh; padding-top:70px;
+      background:var(--bg-color);
+    }
+    #page-maintenance.active {
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; animation:fadeInScale 0.5s ease forwards;
+    }
+    #page-maintenance .maintenance-icon {
+      font-size:80px; display:block; margin-bottom:20px;
+    }
+    #page-maintenance h1 {
+      font-size:clamp(40px,8vw,80px);
+      font-weight:900;
+      background:var(--accent-gradient);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:16px;
+    }
+    #page-maintenance p {
+      color:var(--text-sub);
+      font-size:clamp(16px,2vw,24px);
+      font-weight:700;
+      max-width:600px;
+      margin:0 auto;
+      line-height:1.8;
+    }
+    #page-maintenance .sub {
+      color:#666;
+      font-size:14px;
+      margin-top:12px;
+      font-weight:400;
+    }
 
     #page-404 {
       display:none; min-height:100vh; padding-top:70px;
@@ -790,6 +827,7 @@
       .nav { height:65px; }
       .page { padding-top:65px; }
       #page-404 { padding-top:65px; }
+      #page-maintenance { padding-top:65px; }
       .menu-toggle { display:flex; }
       nav {
         position:fixed; top:65px; left:0;
@@ -1031,6 +1069,17 @@
             <div id="news-status" class="status-badge">表示中</div>
           </div>
 
+          <!-- ★ サイトアップデートモード -->
+          <div class="settings-card">
+            <h4>🔧 サイトアップデートモード</h4>
+            <p>有効にすると、CONTACTページ以外はすべてメンテナンス画面が表示されます（サーバー設定ファイルで管理）。</p>
+            <button class="setting-btn" id="toggle-maintenance-btn">アップデートモード切替</button>
+            <div id="maintenance-status" class="status-badge off">OFF</div>
+            <div style="margin-top:10px; font-size:12px; color:var(--text-sub);">
+              <span id="maintenance-source">設定ファイル: 未読込</span>
+            </div>
+          </div>
+
           <!-- ページリロード -->
           <div class="settings-card">
             <h4>🔄 ページ再読み込み</h4>
@@ -1039,7 +1088,6 @@
           </div>
         </div>
 
-        <!-- コマンド一覧は削除（ユーザー要望） -->
       </div>
     </section>
   </div>
@@ -1097,6 +1145,16 @@
     </section>
   </div>
 
+  <!-- メンテナンスページ -->
+  <div id="page-maintenance">
+    <div>
+      <span class="maintenance-icon">🔧</span>
+      <h1>メンテナンス中</h1>
+      <p>ただいまサイトをアップデートしております。<br>ご不便をおかけしますが、しばらくお待ちください。</p>
+      <p class="sub">お問い合わせは CONTACT ページから受け付けております。</p>
+    </div>
+  </div>
+
   <!-- 404 -->
   <div id="page-404">
     <div><h1>404</h1><p>Not Found</p></div>
@@ -1115,7 +1173,7 @@
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <!-- =========================
-     JavaScript（全機能 + 裏コマンド + SETTINGS）
+     JavaScript（全機能 + 裏コマンド + SETTINGS + アップデートモード）
 ========================= -->
 <script>
   (function() {
@@ -1201,25 +1259,71 @@
     ================================================== */
     const validPages = ['home', 'member', 'about', 'notices', 'credit', 'video', 'contact', 'settings'];
     const memberIds = MEMBER_IDS || [];
-    // コマンドとして認識する単語リスト（ページパス以外）
-    const commandWords = ['osi', 'kamito', 'hide-news', 'debug'];
+    const commandWords = ['osi', 'kamito', 'hide-news', 'debug', 'maintenance'];
+
+    let maintenanceMode = false; // デフォルトはOFF
+    let configLoaded = false;
+
+    // 設定ファイル読み込み（サーバーから）
+    async function loadServerConfig() {
+      try {
+        const url = CONFIG.CONFIG_URL || 'https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json';
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('Config fetch failed');
+        const data = await res.json();
+        maintenanceMode = data.maintenance === true;
+        configLoaded = true;
+        console.log('[CONFIG] サーバー設定読み込み完了:', { maintenance: maintenanceMode });
+        // 設定ページのUI更新
+        updateMaintenanceUI();
+        return true;
+      } catch (err) {
+        console.warn('[CONFIG] サーバー設定読み込み失敗（デフォルトOFF）:', err.message);
+        maintenanceMode = false;
+        configLoaded = true;
+        updateMaintenanceUI();
+        return false;
+      }
+    }
+
+    // 設定ページのメンテナンスUI更新
+    function updateMaintenanceUI() {
+      const status = document.getElementById('maintenance-status');
+      const source = document.getElementById('maintenance-source');
+      if (status) {
+        status.textContent = maintenanceMode ? 'ON' : 'OFF';
+        status.className = 'status-badge' + (maintenanceMode ? '' : ' off');
+      }
+      if (source) {
+        source.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
+      }
+    }
+
+    // 裏コマンドで maintenance が指定された場合、ローカルで一時的に上書き（ただし設定ファイルが優先）
+    function applyMaintenanceCommand(commands) {
+      if (commands.includes('maintenance')) {
+        // コマンドがあればトグル（ただしファイル設定が優先される場合もあるので注意）
+        // 今回はファイル設定を優先し、コマンドは強制上書きしない（開発者向け）
+        // ただし、デバッグ目的でコマンドが有効なら強制ONにする（開発用）
+        if (commands.includes('debug')) {
+          // デバッグ時はコマンドを尊重
+          maintenanceMode = true;
+          updateMaintenanceUI();
+        }
+      }
+    }
 
     function parseHash() {
       const hash = window.location.hash;
       if (!hash || hash === '#') return { page: 'home', commands: [] };
       if (hash.startsWith('#q=')) {
         let raw = decodeURIComponent(hash.substring(3));
-        // raw は "member/kii=osi" や "hide-news" や "home=hide-news" など
         let parts = raw.split('=');
-        let path = parts[0]; // 最初の部分
-        let commands = parts.slice(1); // 残りはコマンド
-
-        // path がコマンド単体（例: "hide-news"）の場合、home とみなす
+        let path = parts[0];
+        let commands = parts.slice(1);
         if (commandWords.includes(path)) {
           return { page: 'home', commands: [path, ...commands] };
         }
-
-        // ページ判定
         let page = '404';
         let memberId = null;
         if (path.startsWith('member/')) {
@@ -1233,7 +1337,6 @@
         } else if (validPages.includes(path)) {
           page = path;
         } else {
-          // 不明なパス → 404
           page = '404';
         }
         return { page, memberId, commands };
@@ -1246,14 +1349,18 @@
     function getCommandsFromHash() { return parseHash().commands; }
 
     /* ==================================================
-       メイン表示関数
+       メイン表示関数（メンテナンスモード対応）
     ================================================== */
     function showPage() {
       const parsed = parseHash();
-      const page = parsed.page;
+      let page = parsed.page;
       const memberId = parsed.memberId;
       const commands = parsed.commands;
 
+      // デバッグコマンドがあれば強制メンテナンスON（開発用）
+      applyMaintenanceCommand(commands);
+
+      // タイトル設定
       const titles = {
         home: '神木チャンネル',
         member: 'MEMBER - 神木チャンネル',
@@ -1267,8 +1374,26 @@
       };
       document.title = titles[page] || '神木チャンネル';
 
+      // 全ページ非表示
       document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
       document.getElementById('page-404').classList.remove('active');
+      document.getElementById('page-maintenance').classList.remove('active');
+
+      // ★ メンテナンスモードチェック ★
+      // CONTACT ページだけは常に表示可能。それ以外はメンテナンス画面にリダイレクト（設定がONの場合）
+      const isContact = (page === 'contact');
+      if (maintenanceMode && !isContact) {
+        // メンテナンスページを表示
+        document.getElementById('page-maintenance').classList.add('active');
+        // ナビのアクティブを解除
+        document.querySelectorAll('nav a[data-page]').forEach(link => link.classList.remove('active'));
+        // ナビのCONTACTだけはアクティブにしておく（任意）
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+          if (link.dataset.page === 'contact') link.classList.add('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
 
       // 裏コマンド: hide-news
       const hideNews = commands.includes('hide-news');
@@ -1283,6 +1408,7 @@
       if (debugMode) {
         console.log('[DEBUG MODE] 裏コマンドが有効です');
         console.log('  - commands:', commands);
+        console.log('  - maintenance:', maintenanceMode);
         if (!badge) {
           badge = document.createElement('div');
           badge.id = 'debug-badge';
@@ -1294,8 +1420,10 @@
             z-index: 9998; backdrop-filter: blur(4px);
             border: 1px solid rgba(255,255,255,0.1);
           `;
-          badge.textContent = '🐞 DEBUG MODE';
+          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
           document.body.appendChild(badge);
+        } else {
+          badge.textContent = '🐞 DEBUG MODE' + (maintenanceMode ? ' [MAINT]' : '');
         }
         const debugStatus = document.getElementById('debug-status');
         if (debugStatus) {
@@ -1336,7 +1464,10 @@
         target.classList.add('active');
         if (page === 'notices') renderAllNotices();
         if (page === 'video') fetchYouTubeVideos();
-        if (page === 'settings') updateSettingsUI(commands);
+        if (page === 'settings') {
+          updateSettingsUI(commands);
+          updateMaintenanceUI();
+        }
       }
       document.querySelectorAll('nav a[data-page]').forEach(link => {
         link.classList.toggle('active', link.dataset.page === page);
@@ -1638,17 +1769,52 @@
       window.location.hash = newHash;
     });
 
+    // ★ アップデートモード切替（サーバー設定ファイルを書き換えることはできないので、ローカルでトグル）
+    // 実際のサーバー設定を変更するにはGitHub上のconfig.jsonを編集する必要があります。
+    // ここではローカルで強制的にON/OFFする（開発用）＋設定ファイル読み込みを再試行
+    document.getElementById('toggle-maintenance-btn').addEventListener('click', function() {
+      // 強制的にトグル（ローカル上書き）
+      maintenanceMode = !maintenanceMode;
+      updateMaintenanceUI();
+      // ハッシュに maintenance コマンドを追加して状態を保存（任意）
+      const currentCommands = getCommandsFromHash();
+      const hasMaint = currentCommands.includes('maintenance');
+      let newCommands;
+      if (maintenanceMode && !hasMaint) {
+        newCommands = [...currentCommands, 'maintenance'];
+      } else if (!maintenanceMode && hasMaint) {
+        newCommands = currentCommands.filter(c => c !== 'maintenance');
+      } else {
+        newCommands = currentCommands;
+      }
+      const hash = window.location.hash;
+      const base = hash.split('=')[0];
+      const newHash = newCommands.length > 0 ? base + '=' + newCommands.join('=') : base;
+      window.location.hash = newHash;
+      // 再表示
+      showPage();
+    });
+
     // リロード
     document.getElementById('reload-btn').addEventListener('click', function() {
       location.reload();
     });
 
     /* ==================================================
-       初期表示
+       初期化（サーバー設定読み込み→表示）
     ================================================== */
-    renderMemberList('');
-    fetchNotices();
-    showPage();
+    async function init() {
+      // サーバー設定読み込み
+      await loadServerConfig();
+      // メンバーリスト
+      renderMemberList('');
+      // お知らせ取得
+      fetchNotices();
+      // 初回表示
+      showPage();
+    }
+
+    init();
 
     // ハッシュ変更時も再適用
     window.addEventListener('hashchange', showPage);
