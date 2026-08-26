@@ -977,7 +977,7 @@
       color:#ff6b6b;
     }
 
-    /* ===== LOGIN ページ専用 ===== */
+    /* ===== LOGIN ページ専用（アイコンと通知機能を削除） ===== */
     .login-page-container {
       max-width:480px;
       margin:40px auto;
@@ -1001,14 +1001,7 @@
       font-size:14px;
       margin-bottom:24px;
     }
-    .login-page-container .profile-avatar {
-      width:80px;
-      height:80px;
-      border-radius:50%;
-      border:3px solid var(--accent-color);
-      margin-bottom:12px;
-      object-fit:cover;
-    }
+    /* アイコン非表示のため削除 */
     .login-page-container .profile-name {
       font-size:24px;
       font-weight:900;
@@ -1044,68 +1037,6 @@
     .login-page-container .action-btn.danger:hover {
       background:rgba(255,107,107,0.1);
       border-color:#ff6b6b;
-    }
-
-    /* トグルスイッチ (購読設定用) */
-    .toggle-wrapper {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 16px;
-      border-radius:16px;
-      border:1px solid var(--card-border);
-      background:rgba(255,255,255,0.02);
-      margin-bottom:12px;
-    }
-    .toggle-wrapper .label {
-      font-weight:700;
-      font-size:15px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .toggle-wrapper .label .desc {
-      font-weight:400;
-      font-size:13px;
-      color:var(--text-sub);
-      display:block;
-    }
-    .switch {
-      position:relative;
-      display:inline-block;
-      width:48px;
-      height:26px;
-      flex-shrink:0;
-    }
-    .switch input {
-      opacity:0;
-      width:0;
-      height:0;
-    }
-    .slider {
-      position:absolute;
-      cursor:pointer;
-      top:0; left:0; right:0; bottom:0;
-      background-color:rgba(255,255,255,0.15);
-      transition:.4s;
-      border-radius:26px;
-    }
-    .slider:before {
-      position:absolute;
-      content:"";
-      height:20px;
-      width:20px;
-      left:3px;
-      bottom:3px;
-      background-color:#fff;
-      transition:.4s;
-      border-radius:50%;
-    }
-    input:checked + .slider {
-      background:var(--accent-gradient);
-    }
-    input:checked + .slider:before {
-      transform:translateX(22px);
     }
 
     /* ===== レスポンシブ ===== */
@@ -1437,7 +1368,7 @@
   </div>
 
   <!-- ==========================================================
-       ★ LOGIN ページ（新設） ★
+       ★ LOGIN ページ（アイコンと通知機能を削除） ★
   ========================================================== -->
   <div id="page-login" class="page">
     <div class="container">
@@ -1511,23 +1442,6 @@
       return false;
     }
     restoreSession();
-
-    // ==========================================================
-    // ★ 購読状態管理 (ローカルストレージ)
-    // ==========================================================
-    let isSubscribed = false;
-    function loadSubscription() {
-      try {
-        const val = localStorage.getItem('kamiki_subscription');
-        isSubscribed = (val === 'true');
-      } catch(e) { isSubscribed = false; }
-    }
-    function saveSubscription() {
-      try {
-        localStorage.setItem('kamiki_subscription', String(isSubscribed));
-      } catch(e) {}
-    }
-    loadSubscription();
 
     // ==========================================================
     // ★ メニュー制御
@@ -1651,11 +1565,9 @@
       saveSession();
       updateAllUI();
       console.log('[Auth] ログアウトしました');
-      // ログアウトページ（#q=logout）にいる場合はホームへ
       if (window.location.hash === '#q=logout') {
         setTimeout(() => { window.location.hash = '#q=home'; }, 500);
       }
-      // 強制再描画
       showPage();
     }
 
@@ -1700,51 +1612,21 @@
     }
 
     // ==========================================================
-    // ★ ログインページ レンダリング
+    // ★ ログインページ レンダリング（アイコン＆通知削除）
     // ==========================================================
     function renderLoginPage() {
       const container = document.getElementById('login-page-content');
       if (!container) return;
 
       if (isLoggedIn && userProfile) {
-        // ログイン済み
+        // ログイン済み（アイコンと通知機能を削除）
         container.innerHTML = `
-          <img class="profile-avatar" src="${userProfile.picture || ''}" alt="avatar">
           <div class="profile-name">${userProfile.name || 'ユーザー'}</div>
           <div class="profile-email">${userProfile.email || ''}</div>
           <div style="margin-bottom:20px; font-size:13px; color:var(--text-sub); background:rgba(139,92,246,0.08); padding:4px 12px; border-radius:999px; display:inline-block;">✅ Google アカウント</div>
-
           <button class="action-btn danger" id="login-page-logout-btn">🚪 ログアウト</button>
-
-          <div class="toggle-wrapper">
-            <div class="label">
-              📧 メール通知を受け取る
-              <span class="desc">（登録メールアドレスに配信）</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="sub-toggle" ${isSubscribed ? 'checked' : ''}>
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <div style="font-size:12px; color:var(--text-sub); margin-top:8px; text-align:left; padding:0 4px;">
-            ${isSubscribed ? '✅ 現在、通知を受け取る設定になっています。' : '❌ 現在、通知はオフです。'}
-          </div>
         `;
-
-        // ログアウトボタン
         document.getElementById('login-page-logout-btn')?.addEventListener('click', logout);
-
-        // トグルスイッチ
-        const toggle = document.getElementById('sub-toggle');
-        if (toggle) {
-          toggle.addEventListener('change', function() {
-            isSubscribed = this.checked;
-            saveSubscription();
-            renderLoginPage(); // 再描画して状態反映
-          });
-        }
-
       } else {
         // 未ログイン
         container.innerHTML = `
@@ -1755,7 +1637,6 @@
             Googleアカウントでログインできます
           </div>
         `;
-        // Googleボタンをレンダリング
         initGoogleLogin('google-login-page-wrapper');
       }
     }
@@ -1962,7 +1843,6 @@
         }
         if (page === 'contact') {
           updateContactUI();
-          // ContactページにもGoogleボタンを再描画
           if (!isLoggedIn) {
             initGoogleLogin('g_id_onload');
           }
