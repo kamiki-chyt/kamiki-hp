@@ -300,7 +300,7 @@ button { font: inherit; cursor: pointer; }
 .modal-body .toc { background: var(--input-bg); border-radius: 12px; padding: 14px 20px; margin-bottom: 18px; font-size: 13px; }
 .modal-body .toc-title { font-weight: 800; margin-bottom: 8px; color: var(--accent-color); display: flex; align-items: center; gap: 6px; }
 .modal-body .toc ul { list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 4px; }
-.modal-body .toc li { padding-left: 14px; position: relative; color: var(--text-sub); }
+.modal-body .toc li { padding-left: 14px; position: relative; color: var(--text-sub); cursor: pointer; }
 .modal-body .toc li::before { content: '›'; position: absolute; left: 0; color: var(--accent-color); }
 .modal-body .toc li.lvl-3 { padding-left: 26px; font-size: 12px; }
 .modal-body .related { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--divider); }
@@ -337,20 +337,6 @@ button { font: inherit; cursor: pointer; }
 .memo-header h4 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 .memo-textarea { flex: 1; width: 100%; padding: 18px; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 14px; resize: none; outline: none; line-height: 1.7; }
 .memo-footer { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--divider); font-size: 11px; color: var(--text-muted); }
-
-/* ========== BGM ========== */
-#bgm-btn {
-  position: fixed; bottom: 30px; left: 30px;
-  width: 46px; height: 46px; border-radius: 50%;
-  background: var(--card-bg); border: 1px solid var(--card-border);
-  color: var(--text-main); display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 999; box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
-}
-#bgm-btn:hover { border-color: var(--accent-color); transform: translateY(-2px); }
-#bgm-btn.playing { background: var(--accent-gradient); color: #fff; border-color: transparent; }
-#bgm-btn .material-symbols-outlined { font-size: 22px; }
-@media(max-width:768px) { #bgm-btn { bottom: 84px; left: 16px; width: 42px; height: 42px; } }
 
 /* ========== フォーカスモードボタン ========== */
 #focus-btn {
@@ -455,6 +441,7 @@ nav.active a:nth-child(6) { animation-delay: 0.3s; }
 nav.active a:nth-child(7) { animation-delay: 0.35s; }
 nav.active a:nth-child(8) { animation-delay: 0.4s; }
 nav.active a:nth-child(9) { animation-delay: 0.45s; }
+nav.active a:nth-child(10) { animation-delay: 0.5s; }
 nav a::after { content: ''; position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); width: 0%; height: 2px; border-radius: 2px; background: var(--accent-gradient); transition: width 0.3s ease; }
 nav a:hover, nav a.active { color: var(--text-main); }
 nav a.active::after { width: 40%; }
@@ -470,7 +457,7 @@ nav .nav-login-section .nav-login-btn.logout:hover { background: rgba(239,68,68,
 nav .nav-login-section .nav-login-btn.login-link { color: var(--accent-color); }
 @media(min-width:900px) {
   .menu-toggle { display: none; }
-  nav { position: static; transform: none; flex-direction: row; align-items: center; gap: 20px; padding: 0; background: transparent; max-height: none; overflow-y: visible; border-bottom: none; width: auto; justify-content: flex-end; }
+  nav { position: static; transform: none; flex-direction: row; align-items: center; gap: 18px; padding: 0; background: transparent; max-height: none; overflow-y: visible; border-bottom: none; width: auto; justify-content: flex-end; }
   nav a { font-size: 12px; padding: 0; text-align: left; animation: none !important; }
   nav a.active::after { width: 100%; }
   nav .nav-login-section { flex-direction: row; align-items: center; gap: 12px; margin-top: 0; padding-top: 0; border-top: none; }
@@ -711,7 +698,6 @@ nav .nav-login-section .nav-login-btn.login-link { color: var(--accent-color); }
 }
 .button .material-symbols-outlined { font-size: 20px; position: relative; z-index: 1; }
 .button > span:not(.material-symbols-outlined) { position: relative; z-index: 1; }
-.button > span:not(.material-symbols-outlined):first-child:last-child { position: relative; z-index: 1; }
 .button:active { transform: scale(0.97); }
 .button.primary { background: var(--accent-gradient); color: #fff; box-shadow: 0 8px 20px rgba(139,92,246,0.3); }
 .button.primary:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(139,92,246,0.45); }
@@ -878,7 +864,7 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   .typewriter-wrap { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 3px solid var(--accent-color); animation: typewriter 2s steps(30) 1s forwards, blinkCursor 0.8s step-end infinite; width: 0; max-width: fit-content; margin: 0 auto; }
 }
 @media print {
-  header, footer, .back-to-top, #scroll-progress, .particles, #toast-container, nav, .cmdk-btn, .notice-actions, #bgm-btn, #focus-btn, #cursor-glow, .circle-progress { display: none !important; }
+  header, footer, .back-to-top, #scroll-progress, .particles, #toast-container, nav, .cmdk-btn, .notice-actions, #focus-btn, #cursor-glow, .circle-progress { display: none !important; }
   body { background: #fff; color: #000; }
   .page { padding-top: 0 !important; }
   .card, .notice-box, .settings-card { box-shadow: none; border-color: #ddd; }
@@ -943,6 +929,7 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
         <div class="shortcut-item"><span>ホーム</span><kbd>G H</kbd></div>
         <div class="shortcut-item"><span>メンバー</span><kbd>G M</kbd></div>
         <div class="shortcut-item"><span>お知らせ</span><kbd>G N</kbd></div>
+        <div class="shortcut-item"><span>お気に入り</span><kbd>G F</kbd></div>
         <div class="shortcut-item"><span>動画</span><kbd>G V</kbd></div>
         <div class="shortcut-item"><span>コンタクト</span><kbd>G C</kbd></div>
         <div class="shortcut-item"><span>ABOUT</span><kbd>G A</kbd></div>
@@ -963,9 +950,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   <textarea class="memo-textarea" id="memo-textarea" placeholder="ここに自由にメモできます..."></textarea>
   <div class="memo-footer"><span id="memo-status">自動保存</span><button class="setting-btn" id="memo-clear" style="padding:4px 12px;font-size:11px;"><span class="material-symbols-outlined" style="font-size:14px;">delete</span>クリア</button></div>
 </div>
-
-<!-- BGM -->
-<button id="bgm-btn" title="BGM"><span class="material-symbols-outlined">music_note</span></button>
 
 <!-- フォーカスモード -->
 <button id="focus-btn" title="フォーカスモード"><span class="material-symbols-outlined">visibility</span></button>
@@ -1369,35 +1353,24 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
 (function() {
 'use strict';
 
-/* ==========================================================
-   1. ローディング
-========================================================== */
+/* 1. ローディング */
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('loading-screen')?.classList.add('hidden');
-  }, 400);
+  setTimeout(() => document.getElementById('loading-screen')?.classList.add('hidden'), 400);
 });
 
-/* ==========================================================
-   2. トースト
-========================================================== */
+/* 2. トースト */
 function toast(message, type = 'info', duration = 2600) {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
+  const c = document.getElementById('toast-container');
+  if (!c) return;
   const el = document.createElement('div');
   el.className = 'toast ' + type;
   const icons = { success: 'check_circle', error: 'error', info: 'info' };
   el.innerHTML = `<span class="material-symbols-outlined">${icons[type] || 'info'}</span><span>${message}</span>`;
-  container.appendChild(el);
-  setTimeout(() => {
-    el.classList.add('hide');
-    setTimeout(() => el.remove(), 350);
-  }, duration);
+  c.appendChild(el);
+  setTimeout(() => { el.classList.add('hide'); setTimeout(() => el.remove(), 350); }, duration);
 }
 
-/* ==========================================================
-   3. テーマ管理
-========================================================== */
+/* 3. テーマ管理 */
 function getStoredTheme() { try { return localStorage.getItem('kamiki_theme'); } catch(e) { return null; } }
 function getAutoTheme() { try { return localStorage.getItem('kamiki_auto_theme') === 'true'; } catch(e) { return false; } }
 function isNightTime() { const h = new Date().getHours(); return h < 6 || h >= 19; }
@@ -1441,9 +1414,7 @@ if (autoThemeToggle) {
   });
 }
 
-/* ==========================================================
-   4. アクセントカラー / フォント / 文字サイズ
-========================================================== */
+/* 4. アクセント/フォント/文字サイズ */
 function setAccent(v) {
   document.documentElement.setAttribute('data-accent', v);
   try { localStorage.setItem('kamiki_accent', v); } catch(e) {}
@@ -1468,9 +1439,7 @@ function setFontScale(s) {
 (function initFS() { let s = 1; try { s = parseFloat(localStorage.getItem('kamiki_font_scale')) || 1; } catch(e) {} setFontScale(s); })();
 document.querySelectorAll('#font-size-toggle button').forEach(b => b.addEventListener('click', () => { setFontScale(parseFloat(b.dataset.size)); toast('文字サイズを変更しました', 'success'); }));
 
-/* ==========================================================
-   5. セッション & ログイン
-========================================================== */
+/* 5. セッション & ログイン */
 let isLoggedIn = false;
 let userProfile = null;
 let googleClientId = CONFIG.GOOGLE_CLIENT_ID;
@@ -1587,9 +1556,7 @@ function renderLoginPage() {
   }
 }
 
-/* ==========================================================
-   6. 設定ファイル読込（キャッシュバスター）
-========================================================== */
+/* 6. 設定読込 */
 async function loadGoogleConfig() {
   try {
     const res = await fetch(CONFIG.GOOGLE_CONFIG_URL + '?_=' + Date.now(), { cache: 'no-store' });
@@ -1616,9 +1583,7 @@ function updateMaintenanceUI() {
   if (src) src.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
 }
 
-/* ==========================================================
-   7. ルーティング（#21 直リンクURL対応）
-========================================================== */
+/* 7. ルーティング */
 const validPages = ['home','member','about','notices','credit','video','contact','settings','login','favorites'];
 const memberIds = MEMBER_IDS || [];
 const commandWords = ['osi','kamito','hide-news','debug','maintenance'];
@@ -1637,7 +1602,6 @@ function parseHash() {
       const id = path.split('/')[1];
       if (memberIds.includes(id)) { page = 'member-detail'; memberId = id; }
     } else if (path.startsWith('notice/')) {
-      // ★ #21: お知らせ直リンク用
       noticeId = path.split('/')[1];
       page = 'home';
     } else if (validPages.includes(path)) page = path;
@@ -1721,18 +1685,14 @@ function showPage() {
   document.querySelectorAll('nav a[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // ★ #21: 直リンクでお知らせモーダルを開く
   if (noticeId && allIssues.length > 0) {
     setTimeout(() => openNoticeModal(noticeId, false), 300);
   } else if (noticeId) {
-    // お知らせ未読込の場合は後で開くよう予約
     window.__pendingNoticeId = noticeId;
   }
 }
 
-/* ==========================================================
-   8. メンバー
-========================================================== */
+/* 8. メンバー */
 function renderMemberDetail(id, commands) {
   const container = document.getElementById('member-detail-content');
   if (!container) return;
@@ -1778,9 +1738,7 @@ function renderMemberList(filter = '', containerId = 'member-list') {
   clear?.addEventListener('click', () => { input.value = ''; renderMemberList(''); input.focus(); });
 })();
 
-/* ==========================================================
-   9. ABOUT ページ
-========================================================== */
+/* 9. ABOUT */
 function renderAboutPage() {
   const tl = document.getElementById('about-timeline');
   if (tl && !tl.dataset.rendered) {
@@ -1798,7 +1756,6 @@ function renderAboutPage() {
     }));
     faq.dataset.rendered = '1';
   }
-  // カウントアップ発火
   setTimeout(() => {
     document.querySelectorAll('#page-about .scroll-animate').forEach(el => {
       if ('IntersectionObserver' in window) {
@@ -1809,7 +1766,6 @@ function renderAboutPage() {
   }, 100);
 }
 
-/* カウントアップ */
 function animateCountUp(scope) {
   scope.querySelectorAll('[data-count]').forEach(el => {
     if (el.dataset.animated) return;
@@ -1828,9 +1784,7 @@ function animateCountUp(scope) {
   });
 }
 
-/* ==========================================================
-   10. お知らせ
-========================================================== */
+/* 10. お知らせ */
 const noticeList = document.getElementById('notice-list');
 const allNoticesList = document.getElementById('all-notices-list');
 const favoritesList = document.getElementById('favorites-list');
@@ -1859,7 +1813,6 @@ function getFavorites() { try { return JSON.parse(localStorage.getItem('kamiki_f
 function saveFavorites() { try { localStorage.setItem('kamiki_favorites', JSON.stringify(favorites)); } catch {} }
 function toggleFavorite(id) { const i = favorites.indexOf(id); if (i >= 0) favorites.splice(i, 1); else favorites.push(id); saveFavorites(); }
 
-// 既読管理
 function getReadIssues() { try { return JSON.parse(localStorage.getItem('kamiki_read') || '[]'); } catch { return []; } }
 function saveReadIssues() { try { localStorage.setItem('kamiki_read', JSON.stringify(readIssues)); } catch {} }
 function markAsRead(id) { if (!readIssues.includes(id)) { readIssues.push(id); saveReadIssues(); } }
@@ -1881,8 +1834,7 @@ function renderStats() {
   const favCount = favorites.length;
   const unread = total - readIssues.length;
   let totalReading = 0;
-  const visible = getVisibleIssues('');
-  visible.forEach(i => totalReading += estimateReadingTime(i.body));
+  getVisibleIssues('').forEach(i => totalReading += estimateReadingTime(i.body));
   const html = `<span class="stat-item"><span class="material-symbols-outlined">article</span>記事 <strong>${total}</strong></span><span class="stat-item"><span class="material-symbols-outlined">label</span>ラベル <strong>${labels.size}</strong></span><span class="stat-item"><span class="material-symbols-outlined">star</span>お気に入り <strong>${favCount}</strong></span><span class="stat-item"><span class="material-symbols-outlined">mail</span>未読 <strong>${unread}</strong></span><span class="stat-item"><span class="material-symbols-outlined">schedule</span>合計 <strong>${totalReading}分</strong></span>`;
   if (statsBarEl) statsBarEl.innerHTML = html;
   if (statsBarAllEl) statsBarAllEl.innerHTML = html;
@@ -1907,7 +1859,6 @@ function renderLabelFilters() {
   document.querySelectorAll('.label-chip').forEach(c => c.addEventListener('click', () => { activeLabel = c.dataset.label || ''; renderLabelFilters(); updateNoticeSearch(document.getElementById('search-input')?.value || ''); renderAllNotices(); renderFavorites(); }));
 }
 
-// ラベルクラウド
 function renderLabelCloud() {
   if (!labelCloud) return;
   const counts = {};
@@ -1929,7 +1880,6 @@ function renderLabelCloud() {
   }));
 }
 
-// 月別グラフ
 function renderStatChart() {
   if (!statChart || !statChartBars) return;
   const months = {};
@@ -1948,7 +1898,6 @@ function renderStatChart() {
   }).join('');
 }
 
-// ソート
 function sortItems(items) {
   const arr = [...items];
   if (activeSort === 'oldest') arr.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
@@ -1967,7 +1916,6 @@ function renderNotices(issues, container, limit, filter = '') {
     container.innerHTML = `<div class="notice"><div class="notice-title">お知らせ</div><div class="notice-description">${filter || activeLabel ? '該当するお知らせはありません。' : '現在、お知らせはありません。'}</div></div>`;
     return;
   }
-  // ★ #21: data-slug属性にIDを持つ（表示はしない）
   container.innerHTML = items.map((issue, index) => {
     const dateStr = issue.created_at ? formatDate(issue.created_at) : '';
     const title = issue.title || 'お知らせ';
@@ -2040,7 +1988,6 @@ function renderFavorites() {
   renderNotices(items, favoritesList, null);
 }
 
-// ★ #21: URL対応モーダル
 function openNoticeModal(id, updateUrl = true) {
   const issue = allIssues.find(i => String(i.id) === String(id));
   if (!issue) return;
@@ -2055,7 +2002,6 @@ function openNoticeModal(id, updateUrl = true) {
   let html = escapeHTML(issue.body || '');
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/^## (.+)$/gm, '<h2>$1</h2>').replace(/^# (.+)$/gm, '<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
 
-  // 目次自動生成
   const headings = [];
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
@@ -2071,7 +2017,6 @@ function openNoticeModal(id, updateUrl = true) {
   }
   html = tocHtml + tmp.innerHTML;
 
-  // 関連記事
   const related = allIssues.filter(i => i.id !== issue.id && i.labels.some(l => issue.labels.some(ml => ml.name === l.name))).slice(0, 3);
   let relatedHtml = '';
   if (related.length > 0) {
@@ -2081,8 +2026,7 @@ function openNoticeModal(id, updateUrl = true) {
 
   bodyEl.innerHTML = html;
   bodyEl.querySelectorAll('[data-jump]').forEach(el => el.addEventListener('click', () => {
-    const t = bodyEl.querySelector('#' + el.dataset.jump);
-    t?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    bodyEl.querySelector('#' + el.dataset.jump)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
   bodyEl.querySelectorAll('[data-related-id]').forEach(el => el.addEventListener('click', () => openNoticeModal(el.dataset.relatedId, true)));
 
@@ -2109,20 +2053,14 @@ function openNoticeModal(id, updateUrl = true) {
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
 
-  // ★ URLを直リンクに更新（履歴を汚さない）
-  if (updateUrl) {
-    history.replaceState(null, '', '#q=notice/' + issue.id);
-  }
-  // お知らせリスト側の既読マーク更新
+  if (updateUrl) history.replaceState(null, '', '#q=notice/' + issue.id);
   renderStats();
   document.querySelectorAll(`[data-slug="${issue.id}"]`).forEach(el => el.classList.remove('unread'));
 }
 function closeNoticeModal() {
   document.getElementById('notice-modal').classList.remove('active');
   document.body.style.overflow = '';
-  if (location.hash.startsWith('#q=notice/')) {
-    history.replaceState(null, '', '#q=home');
-  }
+  if (location.hash.startsWith('#q=notice/')) history.replaceState(null, '', '#q=home');
 }
 document.getElementById('modal-close')?.addEventListener('click', closeNoticeModal);
 document.getElementById('notice-modal')?.addEventListener('click', (e) => { if (e.target.id === 'notice-modal') closeNoticeModal(); });
@@ -2170,11 +2108,9 @@ async function fetchNotices() {
     allIssues = issues;
     renderLabelFilters(); renderStats(); renderLabelCloud(); renderStatChart();
     updateNoticeSearch('');
-    // 直リンクで開く予約があれば
     if (window.__pendingNoticeId) {
       setTimeout(() => { openNoticeModal(window.__pendingNoticeId, false); window.__pendingNoticeId = null; }, 200);
     }
-    // 通知
     if (prevIds.length > 0 && issues.length > 0) {
       const newOnes = issues.filter(i => !prevIds.includes(i.id));
       if (newOnes.length > 0 && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
@@ -2205,9 +2141,7 @@ async function renderAllNotices() {
   }
 }
 
-/* ==========================================================
-   11. YouTube
-========================================================== */
+/* 11. YouTube */
 async function fetchYouTubeVideos() {
   const container = document.getElementById('youtube-list');
   if (!container) return;
@@ -2229,9 +2163,7 @@ async function fetchYouTubeVideos() {
   } catch (err) { container.innerHTML = `<div style="text-align:center;color:var(--text-sub);padding:40px;grid-column:1/-1;">読み込み失敗<br><span style="font-size:13px;">${escapeHTML(err.message)}</span></div>`; }
 }
 
-/* ==========================================================
-   12. Formspree
-========================================================== */
+/* 12. Formspree */
 window.addEventListener('load', () => {
   const init = () => { if (window.formspree) window.formspree('initForm', { formElement: '#my-form', formId: CONFIG.FORMSPREE_ID || 'xljrvlvd' }); };
   if (window.formspree) init(); else setTimeout(init, 1000);
@@ -2241,9 +2173,7 @@ document.addEventListener('click', (e) => {
   if (t && !isLoggedIn) { e.preventDefault(); toast('お問い合わせには Google ログインが必要です', 'error'); return false; }
 }, true);
 
-/* ==========================================================
-   13. SETTINGS
-========================================================== */
+/* 13. SETTINGS */
 function updateSettingsUI(commands) {
   const ds = document.getElementById('debug-status');
   if (ds) { const d = commands.includes('debug'); ds.textContent = d ? 'ON' : 'OFF'; ds.className = 'status-badge' + (d ? '' : ' off'); }
@@ -2292,7 +2222,6 @@ document.getElementById('request-notification-btn')?.addEventListener('click', a
   else toast('通知拒否', 'error');
 });
 
-// 設定エクスポート/インポート
 document.getElementById('export-settings-btn')?.addEventListener('click', () => {
   const data = {};
   ['kamiki_theme','kamiki_auto_theme','kamiki_accent','kamiki_font','kamiki_font_scale','kamiki_favorites','kamiki_read','kamiki_search_history','kamiki_memo'].forEach(k => { try { const v = localStorage.getItem(k); if (v !== null) data[k] = v; } catch(e) {} });
@@ -2318,7 +2247,6 @@ document.getElementById('import-settings-file')?.addEventListener('change', (e) 
   reader.readAsText(file);
 });
 
-// メモ
 const memoPanel = document.getElementById('memo-panel');
 const memoTextarea = document.getElementById('memo-textarea');
 const memoStatus = document.getElementById('memo-status');
@@ -2338,14 +2266,11 @@ document.getElementById('open-memo-btn')?.addEventListener('click', () => memoPa
 document.getElementById('memo-close')?.addEventListener('click', () => memoPanel?.classList.remove('open'));
 document.getElementById('memo-clear')?.addEventListener('click', () => { if (confirm('メモをクリアしますか？')) { if (memoTextarea) memoTextarea.value = ''; try { localStorage.removeItem('kamiki_memo'); } catch(e) {} toast('メモをクリア', 'info'); } });
 
-// ショートカットモーダル
 document.getElementById('open-shortcut-btn')?.addEventListener('click', () => document.getElementById('shortcut-modal')?.classList.add('active'));
 document.getElementById('shortcut-close')?.addEventListener('click', () => document.getElementById('shortcut-modal')?.classList.remove('active'));
 document.getElementById('shortcut-modal')?.addEventListener('click', (e) => { if (e.target.id === 'shortcut-modal') e.target.classList.remove('active'); });
 
-/* ==========================================================
-   14. コマンドパレット
-========================================================== */
+/* 14. コマンドパレット */
 const cmdkOverlay = document.getElementById('cmdk-overlay');
 const cmdkInput = document.getElementById('cmdk-input');
 const cmdkList = document.getElementById('cmdk-list');
@@ -2372,7 +2297,6 @@ const COMMANDS = [
   { label:'メモを開く', icon:'edit_note', action:() => memoPanel?.classList.add('open') },
   { label:'ショートカット一覧', icon:'keyboard', action:() => document.getElementById('shortcut-modal')?.classList.add('active') },
   { label:'フォーカスモード', icon:'visibility', action:() => { document.body.classList.toggle('focus-mode'); toast('フォーカスモード切替', 'info'); } },
-  { label:'BGM 再生/停止', icon:'music_note', action:() => document.getElementById('bgm-btn')?.click() },
   { label:'YouTubeを開く', icon:'play_circle', action:() => window.open(CONFIG.YOUTUBE_CHANNEL_URL, '_blank') },
   { label:'LINEを開く', icon:'chat', action:() => window.open(CONFIG.LINE_OFFICIAL_URL, '_blank') },
   { label:'トップへ戻る', icon:'arrow_upward', action:() => window.scrollTo({ top:0, behavior:'smooth' }) },
@@ -2405,9 +2329,7 @@ document.getElementById('cmdk-trigger')?.addEventListener('click', openCmdk);
 document.getElementById('cmdk-close')?.addEventListener('click', closeCmdk);
 cmdkOverlay?.addEventListener('click', (e) => { if (e.target.id === 'cmdk-overlay') closeCmdk(); });
 
-/* ==========================================================
-   15. キーボードショートカット
-========================================================== */
+/* 15. キーボードショートカット */
 let gPressed = false, gTimer;
 document.addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmdk(); return; }
@@ -2427,9 +2349,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ==========================================================
-   16. スクロール処理（パララックス、進捗、ヘッダー縮小、円形進捗）
-========================================================== */
+/* 16. スクロール */
 const backTop = document.getElementById('back-to-top');
 const progress = document.getElementById('scroll-progress');
 const header = document.getElementById('header');
@@ -2446,48 +2366,39 @@ window.addEventListener('scroll', () => {
   if (progress) progress.style.width = (pct * 100) + '%';
   backTop?.classList.toggle('visible', y > 400);
   header?.classList.toggle('scrolled', y > 20);
-  // ヘッダー縮小: 下スクロール時
   if (header) {
     if (y > lastScroll && y > 200) header.classList.add('shrink');
     else if (y < lastScroll - 20) header.classList.remove('shrink');
   }
   lastScroll = y;
-  // 円形進捗
   if (circleProgress && circleFg) {
     circleProgress.classList.toggle('visible', y > 100);
     circleFg.style.strokeDashoffset = String(CIRC * (1 - pct));
   }
-  // ヒーローパララックス
   if (heroParallax && document.getElementById('page-home')?.classList.contains('active')) {
     heroParallax.style.transform = `translateY(${y * 0.3}px)`;
     heroParallax.style.opacity = String(Math.max(0, 1 - y / 600));
   }
-  // スクロール位置記憶
   clearTimeout(scrollSaveTimer);
   scrollSaveTimer = setTimeout(() => { try { sessionStorage.setItem('kamiki_scroll_' + location.hash, String(y)); } catch(e) {} }, 300);
 }, { passive: true });
 backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-/* ==========================================================
-   17. カーソルグロー（PC）
-========================================================== */
+/* 17. カーソルグロー */
 (function initCursorGlow() {
   const glow = document.getElementById('cursor-glow');
   if (!glow || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
   let mx = -400, my = -400, gx = -400, gy = -400;
   document.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; });
   function animate() {
-    gx += (mx - gx) * 0.12;
-    gy += (my - gy) * 0.12;
+    gx += (mx - gx) * 0.12; gy += (my - gy) * 0.12;
     glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
     requestAnimationFrame(animate);
   }
   animate();
 })();
 
-/* ==========================================================
-   18. ボタンリップル & マグネット
-========================================================== */
+/* 18. リップル & マグネット */
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.button, .icon-btn, .setting-btn, .modal-action, .share-btn, .load-more-btn, .action-btn');
   if (!btn) return;
@@ -2515,9 +2426,7 @@ document.addEventListener('click', (e) => {
   });
 })();
 
-/* ==========================================================
-   19. 3Dチルト
-========================================================== */
+/* 19. 3Dチルト */
 function init3DTilt(scope) {
   if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
   scope.querySelectorAll('.tilt').forEach(card => {
@@ -2531,9 +2440,7 @@ function init3DTilt(scope) {
   });
 }
 
-/* ==========================================================
-   20. スクロールアニメ
-========================================================== */
+/* 20. スクロールアニメ */
 function initScrollAnimations(scope = document) {
   scope.querySelectorAll('.scroll-animate').forEach(el => {
     if ('IntersectionObserver' in window) {
@@ -2543,9 +2450,7 @@ function initScrollAnimations(scope = document) {
   });
 }
 
-/* ==========================================================
-   21. パーティクル
-========================================================== */
+/* 21. パーティクル */
 (function initParticles() {
   const c = document.getElementById('particles'); if (!c) return;
   const count = window.innerWidth < 768 ? 12 : 24;
@@ -2561,41 +2466,7 @@ function initScrollAnimations(scope = document) {
   }
 })();
 
-/* ==========================================================
-   22. BGM（Web Audio API で環境音生成）
-========================================================== */
-(function initBGM() {
-  const btn = document.getElementById('bgm-btn');
-  if (!btn) return;
-  let ctx = null, osc1 = null, osc2 = null, gain = null, playing = false, lfo = null;
-  function start() {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state === 'suspended') ctx.resume();
-    gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
-    osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = 220;
-    osc2 = ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 277.18;
-    const lfoGain = ctx.createGain(); lfoGain.gain.value = 0.02;
-    lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.15;
-    lfo.connect(lfoGain); lfoGain.connect(gain.gain);
-    osc1.connect(gain); osc2.connect(gain);
-    osc1.start(); osc2.start(); lfo.start();
-    gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 1.5);
-    playing = true;
-  }
-  function stop() {
-    if (gain && ctx) gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
-    setTimeout(() => { try { osc1?.stop(); osc2?.stop(); lfo?.stop(); } catch(e) {} osc1 = osc2 = lfo = null; }, 900);
-    playing = false;
-  }
-  btn.addEventListener('click', () => {
-    if (playing) { stop(); btn.classList.remove('playing'); btn.querySelector('.material-symbols-outlined').textContent = 'music_note'; toast('BGM 停止', 'info'); }
-    else { start(); btn.classList.add('playing'); btn.querySelector('.material-symbols-outlined').textContent = 'music_off'; toast('BGM 再生（アンビエント）', 'success'); }
-  });
-})();
-
-/* ==========================================================
-   23. フォーカスモード
-========================================================== */
+/* 22. フォーカスモード */
 document.getElementById('focus-btn')?.addEventListener('click', function() {
   document.body.classList.toggle('focus-mode');
   this.classList.toggle('active');
@@ -2604,9 +2475,7 @@ document.getElementById('focus-btn')?.addEventListener('click', function() {
   toast(document.body.classList.contains('focus-mode') ? 'フォーカスモード ON' : 'OFF', 'info');
 });
 
-/* ==========================================================
-   24. 初期化
-========================================================== */
+/* 23. 初期化 */
 async function init() {
   await loadServerConfig();
   await loadGoogleConfig();
