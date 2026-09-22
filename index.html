@@ -32,19 +32,20 @@ const CONFIG = {
   GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
 };
 const MEMBERS = {
-  kamito: { id:'kamito', name:'カミト', hobby:'BEYBLADE', skill:'ゲーム', role:'企画説明 / 挨拶', birthday:'' },
-  kii:    { id:'kii',    name:'きぃ',   hobby:'推し活',   skill:'プログラミング', role:'撮影 / 編集', birthday:'' }
+  kamito: { id:'kamito', name:'カミト', hobby:'BEYBLADE', skill:'ゲーム', role:'企画説明 / 挨拶', birthday:'12/04' },
+  kii:    { id:'kii',    name:'きぃ',   hobby:'推し活',   skill:'プログラミング', role:'撮影 / 編集', birthday:'03/10' },
+  kaki:   { id:'kaki',   name:'かき',   hobby:'アニメを見ること', skill:'テニス', role:'企画考案', birthday:'08/20' }
 };
 const MEMBER_IDS = Object.keys(MEMBERS);
 const HISTORY = [
   { year:'2026.08.03', title:'YouTubeチャンネル登録', desc:'神木チャンネルのYouTubeチャンネルを開設しました。' },
   { year:'2026.08.19', title:'初投稿!! 自己紹介動画を公開', desc:'カミトときぃの自己紹介動画を公開しました。' },
   { year:'2026.08.21', title:'公式ホームページ完成', desc:'神木チャンネルの公式ホームページを公開しました。' },
-  { year:'2026年内', title:'登録者100人を目指す', desc:'年内にチャンネル登録者100人を達成するため、2人で活動中です！' },
-  { year:'Next...', title:'さらなる挑戦へ', desc:'新しい企画やコンテンツに2人で挑戦していきます。' }
+  { year:'2026年内', title:'登録者100人を目指す', desc:'年内にチャンネル登録者100人を達成するため、活動中です！' },
+  { year:'Next...', title:'さらなる挑戦へ', desc:'新しい企画やコンテンツに挑戦していきます。' }
 ];
 const FAQS = [
-  { q:'神木チャンネルってどんなチャンネル？', a:'カミトときぃの2人で、いろいろなことに挑戦しながら面白い動画を届けるチャンネルです。' },
+  { q:'神木チャンネルってどんなチャンネル？', a:'カミト・きぃ・かきの3人で、いろいろなことに挑戦しながら面白い動画を届けるチャンネルです。' },
   { q:'動画の更新頻度は？', a:'不定期更新ですが、できるだけ頻度高く投稿できるよう頑張っています。' },
   { q:'お知らせや企画の募集は？', a:'YouTubeのコメント欄で企画の案を募集しています。ぜひコメントお願いします！' },
   { q:'お問い合わせはどうすれば？', a:'CONTACTページからGoogleログインの上、フォームをご利用ください。' },
@@ -180,9 +181,9 @@ button { font: inherit; cursor: pointer; }
 @keyframes spin { to{transform:rotate(360deg);} }
 @keyframes starPop { 0%{transform:scale(0.5);} 50%{transform:scale(1.3);} 100%{transform:scale(1);} }
 @keyframes ripple { to{transform:scale(4);opacity:0;} }
-@keyframes waveMove { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
 @keyframes menuStagger { from{opacity:0;transform:translateX(20px);} to{opacity:1;transform:translateX(0);} }
 @keyframes gradientWave { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+@keyframes birthdayBounce { 0%,100%{transform:translateY(0) rotate(0);} 25%{transform:translateY(-3px) rotate(-8deg);} 50%{transform:translateY(-5px) rotate(8deg);} 75%{transform:translateY(-3px) rotate(-4deg);} }
 
 /* ========== カーソルグロー ========== */
 #cursor-glow {
@@ -268,7 +269,6 @@ button { font: inherit; cursor: pointer; }
 .cmdk-item:hover, .cmdk-item.active { background: var(--accent-soft); }
 .cmdk-item .material-symbols-outlined { font-size: 20px; color: var(--accent-color); }
 .cmdk-item-label { flex: 1; font-weight: 700; font-size: 14px; }
-.cmdk-item-hint { font-size: 11px; color: var(--text-muted); }
 .cmdk-empty { text-align: center; padding: 40px 20px; color: var(--text-sub); font-size: 14px; }
 .cmdk-footer { display: flex; align-items: center; gap: 12px; justify-content: flex-end; padding: 10px 16px; border-top: 1px solid var(--divider); font-size: 11px; color: var(--text-muted); }
 .cmdk-footer kbd { background: var(--input-bg); border: 1px solid var(--input-border); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 10px; }
@@ -531,25 +531,40 @@ nav .nav-login-section .nav-login-btn.login-link { color: var(--accent-color); }
 
 /* ========== メンバー ========== */
 .member-card { text-align: center; cursor: pointer; position: relative; overflow: hidden; }
-.member-avatar { width: 68px; height: 68px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; box-shadow: 0 8px 24px rgba(139,92,246,0.3); }
+.member-avatar { width: 68px; height: 68px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; box-shadow: 0 8px 24px rgba(139,92,246,0.3); position: relative; }
 .member-avatar .material-symbols-outlined { color: #fff; font-size: 34px; font-variation-settings: 'FILL' 1; }
+.member-avatar .birthday-badge {
+  position: absolute; top: -6px; right: -6px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gold); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(245,158,11,0.5);
+  animation: birthdayBounce 2s ease-in-out infinite;
+}
+.member-avatar .birthday-badge .material-symbols-outlined { font-size: 14px; color: #fff; font-variation-settings: 'FILL' 1; }
 .member-card h3 { display: inline-block; font-size: 26px; }
 .member-card .member-role { font-size: 12px; color: var(--accent-color); font-weight: 700; margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
-.member-card .member-birthday { font-size: 11px; color: var(--text-muted); margin-top: 4px; display: inline-flex; align-items: center; gap: 3px; }
-.member-card .member-birthday .material-symbols-outlined { font-size: 13px; }
+.member-card .member-birthday { font-size: 11px; color: var(--text-muted); margin-top: 6px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 10px; border-radius: 999px; background: var(--input-bg); }
+.member-card .member-birthday .material-symbols-outlined { font-size: 13px; color: var(--gold); }
+.member-card .member-birthday.is-today { background: var(--gold); color: #fff; font-weight: 800; animation: birthdayBounce 1.5s ease-in-out infinite; }
+.member-card .member-birthday.is-today .material-symbols-outlined { color: #fff; }
 .member-card .click-hint { font-size: 12px; color: var(--text-muted); opacity: 0.7; margin-top: 12px; transition: opacity 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 4px; }
 .member-card .click-hint .material-symbols-outlined { font-size: 16px; transition: transform 0.3s ease; }
 .member-card:hover .click-hint { opacity: 1; }
 .member-card:hover .click-hint .material-symbols-outlined { transform: translateX(4px); }
 .member-detail { min-height: calc(100vh - 70px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
 .member-detail-card { max-width: 620px; width: 100%; padding: 48px 44px; border-radius: 28px; border: 1px solid var(--card-border); background: var(--card-bg); box-shadow: var(--card-shadow-hover); animation: fadeInScale 0.5s ease forwards; }
-.member-detail-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; box-shadow: 0 12px 32px rgba(139,92,246,0.4); }
+.member-detail-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; box-shadow: 0 12px 32px rgba(139,92,246,0.4); position: relative; }
 .member-detail-avatar .material-symbols-outlined { color: #fff; font-size: 52px; font-variation-settings: 'FILL' 1; }
+.member-detail-avatar .birthday-badge { width: 32px; height: 32px; top: -8px; right: -8px; }
+.member-detail-avatar .birthday-badge .material-symbols-outlined { font-size: 18px; }
 .member-detail-card h1 { font-size: 34px; font-weight: 900; text-align: center; margin-bottom: 28px; animation: glowPulse 3s ease-in-out infinite; }
 .member-detail-item { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--divider); animation: slideInLeft 0.5s ease forwards; opacity: 0; }
 .member-detail-item:nth-child(2){ animation-delay: 0.1s; }
 .member-detail-item:nth-child(3){ animation-delay: 0.2s; }
 .member-detail-item:nth-child(4){ animation-delay: 0.3s; }
+.member-detail-item:nth-child(5){ animation-delay: 0.4s; }
 .member-detail-item:last-child { border-bottom: none; }
 .member-detail-item .label { color: var(--text-sub); font-weight: 700; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
 .member-detail-item .label .material-symbols-outlined { font-size: 16px; color: var(--accent-color); }
@@ -873,29 +888,18 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
 </head>
 <body>
 
-<!-- ローディング -->
-<div id="loading-screen">
-  <div class="loader"><div class="loader-inner">神木</div></div>
-</div>
-
-<!-- カーソルグロー -->
+<div id="loading-screen"><div class="loader"><div class="loader-inner">神木</div></div></div>
 <div id="cursor-glow"></div>
-
-<!-- スクロール進捗 -->
 <div id="scroll-progress"></div>
-
-<!-- 円形進捗 -->
 <div class="circle-progress" id="circle-progress">
   <svg width="42" height="42" viewBox="0 0 42 42">
     <circle class="bg" cx="21" cy="21" r="18"/>
     <circle class="fg" cx="21" cy="21" r="18" id="circle-fg" stroke-dasharray="113" stroke-dashoffset="113"/>
   </svg>
 </div>
-
 <div id="toast-container"></div>
 <div class="particles" id="particles"></div>
 
-<!-- コマンドパレット -->
 <div id="cmdk-overlay">
   <div class="cmdk">
     <div class="cmdk-input-wrap">
@@ -908,7 +912,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </div>
 </div>
 
-<!-- お知らせモーダル -->
 <div class="modal-overlay" id="notice-modal">
   <div class="modal-content">
     <div class="modal-header"><h3 id="modal-title">お知らせ</h3><button class="modal-close" id="modal-close"><span class="material-symbols-outlined">close</span></button></div>
@@ -917,7 +920,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </div>
 </div>
 
-<!-- ショートカットモーダル -->
 <div class="modal-overlay" id="shortcut-modal">
   <div class="modal-content">
     <div class="modal-header"><h3><span class="material-symbols-outlined" style="vertical-align:middle;color:var(--accent-color);">keyboard</span> キーボードショートカット</h3><button class="modal-close" id="shortcut-close"><span class="material-symbols-outlined">close</span></button></div>
@@ -941,7 +943,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </div>
 </div>
 
-<!-- メモパネル -->
 <div id="memo-panel">
   <div class="memo-header">
     <h4><span class="material-symbols-outlined" style="color:var(--accent-color);">edit_note</span>クイックメモ</h4>
@@ -951,13 +952,9 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   <div class="memo-footer"><span id="memo-status">自動保存</span><button class="setting-btn" id="memo-clear" style="padding:4px 12px;font-size:11px;"><span class="material-symbols-outlined" style="font-size:14px;">delete</span>クリア</button></div>
 </div>
 
-<!-- フォーカスモード -->
 <button id="focus-btn" title="フォーカスモード"><span class="material-symbols-outlined">visibility</span></button>
-
-<!-- トップへ戻る -->
 <button class="back-to-top" id="back-to-top"><span class="material-symbols-outlined">arrow_upward</span></button>
 
-<!-- ヘッダー -->
 <header id="header">
   <div class="nav">
     <a href="#q=home" class="logo" data-page="home"><span class="logo-icon"><span class="material-symbols-outlined">auto_awesome</span></span><span>神木チャンネル</span></a>
@@ -990,7 +987,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
 
 <div id="app">
 
-<!-- HOME -->
 <div id="page-home" class="page">
   <section class="hero">
     <div class="hero-inner" id="hero-parallax">
@@ -1037,7 +1033,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- MEMBER -->
 <div id="page-member" class="page">
   <section class="section">
     <div class="container">
@@ -1052,10 +1047,8 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- MEMBER DETAIL -->
 <div id="page-member-detail" class="page"><section class="member-detail"><div class="member-detail-card" id="member-detail-content"></div></section></div>
 
-<!-- NEWS 全件 -->
 <div id="page-notices" class="page">
   <section class="section">
     <div class="container">
@@ -1076,7 +1069,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- FAVORITES -->
 <div id="page-favorites" class="page">
   <section class="section">
     <div class="container">
@@ -1087,7 +1079,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- VIDEO -->
 <div id="page-video" class="page">
   <section class="section">
     <div class="container">
@@ -1104,7 +1095,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- CONTACT -->
 <div id="page-contact" class="page">
   <section class="section">
     <div class="container">
@@ -1130,7 +1120,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- SETTINGS -->
 <div id="page-settings" class="page">
   <section class="section">
     <div class="container">
@@ -1239,13 +1228,12 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- ABOUT -->
 <div id="page-about" class="page">
   <section class="about-hero">
     <div class="container">
       <div class="about-hero-badge"><span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>ABOUT US</div>
       <h1><span class="gradient-text">2人で、なんか面白いこと。</span></h1>
-      <p class="about-hero-lead">神木チャンネルは、カミトときぃの2人で運営するYouTubeチャンネルです。動画・お知らせ・様々な挑戦をこのサイトから発信していきます。</p>
+      <p class="about-hero-lead">神木チャンネルは、カミト・きぃ・かきの3人で運営するYouTubeチャンネルです。動画・お知らせ・様々な挑戦をこのサイトから発信していきます。</p>
     </div>
   </section>
   <section class="section" style="padding-top:20px;">
@@ -1254,11 +1242,11 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
         <div class="about-main-card scroll-animate">
           <h2><span class="material-symbols-outlined">info</span>私たちについて</h2>
           <p>神木チャンネルは「2人で、なんか面白いこと。」をコンセプトに、エンタメ動画を中心に様々なコンテンツを発信しているYouTubeチャンネルです。</p>
-          <p>企画・撮影・編集まで、2人で力を合わせて作り上げています。視聴者の皆さんに楽しんでもらえるよう、日々新しいことに挑戦中です。</p>
+          <p>企画・撮影・編集まで、メンバー全員で力を合わせて作り上げています。視聴者の皆さんに楽しんでもらえるよう、日々新しいことに挑戦中です。</p>
           <p>このホームページでは、最新のお知らせ・メンバー情報・動画・お問い合わせなど、神木チャンネルのすべてをここからチェックできます。</p>
         </div>
         <div class="about-stats scroll-animate">
-          <div class="stat-card"><span class="material-symbols-outlined">group</span><div class="num" data-count="2">0</div><div class="label">メンバー</div></div>
+          <div class="stat-card"><span class="material-symbols-outlined">group</span><div class="num" data-count="3">0</div><div class="label">メンバー</div></div>
           <div class="stat-card"><span class="material-symbols-outlined">smart_display</span><div class="num">∞</div><div class="label">コンテンツ</div></div>
           <div class="stat-card"><span class="material-symbols-outlined">rocket_launch</span><div class="num">24/7</div><div class="label">挑戦中</div></div>
           <div class="stat-card"><span class="material-symbols-outlined">favorite</span><div class="num" data-count="100">0</div><div class="label">% 全力</div></div>
@@ -1271,7 +1259,7 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
       <h2 class="section-title"><span class="material-symbols-outlined">view_module</span><span class="gradient-text">活動の柱</span></h2>
       <p class="section-subtitle">神木チャンネルが大切にしている3つのテーマ</p>
       <div class="pillar-grid">
-        <div class="pillar-card scroll-animate"><div class="icon"><span class="material-symbols-outlined">movie</span></div><h3>エンタメ</h3><p>見て楽しい、笑える、そんな動画を2人で作り上げています。企画から編集まで、こだわり抜いたコンテンツをお届けします。</p></div>
+        <div class="pillar-card scroll-animate"><div class="icon"><span class="material-symbols-outlined">movie</span></div><h3>エンタメ</h3><p>見て楽しい、笑える、そんな動画をメンバーで作り上げています。企画から編集まで、こだわり抜いたコンテンツをお届けします。</p></div>
         <div class="pillar-card scroll-animate"><div class="icon"><span class="material-symbols-outlined">flag</span></div><h3>挑戦</h3><p>新しいことに臆せず挑戦する。BEYBLADE、ゲーム、企画…なんでもやってみる精神で活動しています。</p></div>
         <div class="pillar-card scroll-animate"><div class="icon"><span class="material-symbols-outlined">diversity_3</span></div><h3>仲間</h3><p>視聴者の皆さん、メンバー、支えてくれるすべての方と一緒に成長していく。そんな温かいコミュニティを目指しています。</p></div>
       </div>
@@ -1287,7 +1275,7 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   <section class="section" style="padding-top:40px;">
     <div class="container">
       <h2 class="section-title"><span class="material-symbols-outlined">group</span><span class="gradient-text">メンバー</span></h2>
-      <p class="section-subtitle">神木チャンネルを支える2人</p>
+      <p class="section-subtitle">神木チャンネルを支えるメンバー</p>
       <div class="cards" id="about-member-list"></div>
     </div>
   </section>
@@ -1312,7 +1300,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- CREDIT -->
 <div id="page-credit" class="page">
   <section class="section">
     <div class="container">
@@ -1334,13 +1321,10 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </section>
 </div>
 
-<!-- LOGIN -->
 <div id="page-login" class="page"><div class="container"><div class="login-page-container" id="login-page-content"></div></div></div>
 
-<!-- メンテナンス -->
 <div id="page-maintenance"><div><div class="maintenance-icon"><span class="material-symbols-outlined">construction</span></div><h1>メンテナンス中</h1><p>ただいまサイトをアップデートしております。<br>ご不便をおかけしますが、しばらくお待ちください。</p><p class="sub">お問い合わせは CONTACT ページから受け付けております。</p></div></div>
 
-<!-- 404 -->
 <div id="page-404"><div><h1>404</h1><p>Not Found</p></div></div>
 
 </div>
@@ -1693,6 +1677,13 @@ function showPage() {
 }
 
 /* 8. メンバー */
+function isBirthdayToday(birthday) {
+  if (!birthday) return false;
+  const now = new Date();
+  const [m, d] = birthday.split('/').map(Number);
+  return now.getMonth() + 1 === m && now.getDate() === d;
+}
+
 function renderMemberDetail(id, commands) {
   const container = document.getElementById('member-detail-content');
   if (!container) return;
@@ -1701,13 +1692,14 @@ function renderMemberDetail(id, commands) {
   const member = { ...m };
   if (id === 'kii' && commands.includes('osi')) member.hobby = '推し活（莉犬くん、Coe.くん、如月ゆうくん）';
   if (id === 'kamito' && commands.includes('kamito')) member.hobby = 'BEYBLADE 超特訓中';
+  const bdayToday = isBirthdayToday(member.birthday);
   container.innerHTML = `
-    <div class="member-detail-avatar"><span class="material-symbols-outlined">person</span></div>
+    <div class="member-detail-avatar"><span class="material-symbols-outlined">person</span>${bdayToday ? '<span class="birthday-badge"><span class="material-symbols-outlined">cake</span></span>' : ''}</div>
     <h1>${member.name}</h1>
     <div class="member-detail-item"><span class="label"><span class="material-symbols-outlined">interests</span>趣味</span><span class="value">${member.hobby || '-'}</span></div>
     <div class="member-detail-item"><span class="label"><span class="material-symbols-outlined">star</span>得意なこと</span><span class="value">${member.skill || '-'}</span></div>
     <div class="member-detail-item"><span class="label"><span class="material-symbols-outlined">badge</span>役割</span><span class="value">${member.role || '-'}</span></div>
-    ${member.birthday ? `<div class="member-detail-item"><span class="label"><span class="material-symbols-outlined">cake</span>記念日</span><span class="value">${member.birthday}</span></div>` : ''}
+    ${member.birthday ? `<div class="member-detail-item"><span class="label"><span class="material-symbols-outlined">cake</span>誕生日</span><span class="value">${member.birthday}${bdayToday ? ' 🎉' : ''}</span></div>` : ''}
     <a class="back-link" href="#q=member"><span class="material-symbols-outlined">arrow_back</span>メンバー一覧に戻る</a>`;
 }
 
@@ -1719,11 +1711,12 @@ function renderMemberList(filter = '', containerId = 'member-list') {
   if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--text-sub);">該当するメンバーはいません。</p>'; return; }
   container.innerHTML = filtered.map(id => {
     const m = MEMBERS[id];
+    const bdayToday = isBirthdayToday(m.birthday);
     return `<a href="#q=member/${id}" class="card member-card tilt scroll-animate">
-      <div class="member-avatar"><span class="material-symbols-outlined">person</span></div>
+      <div class="member-avatar"><span class="material-symbols-outlined">person</span>${bdayToday ? '<span class="birthday-badge"><span class="material-symbols-outlined">cake</span></span>' : ''}</div>
       <h3>${m.name}</h3>
       <div class="member-role">${m.role || ''}</div>
-      ${m.birthday ? `<div class="member-birthday"><span class="material-symbols-outlined">cake</span>${m.birthday}</div>` : ''}
+      ${m.birthday ? `<div class="member-birthday ${bdayToday ? 'is-today' : ''}"><span class="material-symbols-outlined">cake</span>${m.birthday}${bdayToday ? ' お誕生日！' : ''}</div>` : ''}
       <p>神木チャンネルのメンバー。</p>
       <div class="click-hint">詳細を見る<span class="material-symbols-outlined">arrow_forward</span></div>
     </a>`;
@@ -2493,6 +2486,15 @@ async function init() {
 
   const savedScroll = sessionStorage.getItem('kamiki_scroll_' + location.hash);
   if (savedScroll && parseInt(savedScroll) > 100) setTimeout(() => window.scrollTo({ top: parseInt(savedScroll), behavior: 'auto' }), 100);
+
+  // 誕生日チェック
+  setTimeout(() => {
+    Object.values(MEMBERS).forEach(m => {
+      if (isBirthdayToday(m.birthday)) {
+        setTimeout(() => toast(`🎉 本日は ${m.name} の誕生日です！`, 'success', 5000), 1500);
+      }
+    });
+  }, 1000);
 }
 
 init();
