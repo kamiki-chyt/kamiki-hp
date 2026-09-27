@@ -31,6 +31,7 @@ const CONFIG = {
   LINE_OFFICIAL_URL: "https://lin.ee/ZQ6s0yI",
   CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json",
   GOOGLE_CONFIG_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/google-config.json",
+  KOUKAI_URL: "https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/koukai.txt",
   GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
 };
 const MEMBERS = {
@@ -823,14 +824,6 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
   </div>
 </div>
 
-<div class="modal-overlay" id="notice-modal">
-  <div class="modal-content">
-    <div class="modal-header"><h3 id="modal-title">お知らせ</h3><button class="modal-close" id="modal-close"><span class="material-symbols-outlined">close</span></button></div>
-    <div class="modal-body" id="modal-body"></div>
-    <div class="modal-footer" id="modal-footer"></div>
-  </div>
-</div>
-
 <div class="modal-overlay" id="shortcut-modal">
   <div class="modal-content">
     <div class="modal-header"><h3><span class="material-symbols-outlined" style="vertical-align:middle;color:var(--accent-color);">keyboard</span> ショートカット設定</h3><button class="modal-close" id="shortcut-close"><span class="material-symbols-outlined">close</span></button></div>
@@ -1596,6 +1589,83 @@ function updateMaintenanceUI() {
   if (src) src.textContent = '設定ファイル: ' + (configLoaded ? (maintenanceMode ? 'メンテナンス中' : '通常') : '未読込');
 }
 
+/* ===== カウントダウン（koukai.txt） ===== */
+let koukaiList = [];
+
+async function loadKoukai() {
+  const info = $('#countdown-info');
+  try {
+    const res = await fetch((CONFIG.KOUKAI_URL || '') + '?_=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('fetch failed: ' + res.status);
+    const text = await res.text();
+    koukaiList = parseKoukai(text);
+    console.log('[KOUKAI] 読み込み成功:', koukaiList.length, '件');
+    renderCountdown();
+  } catch (e) {
+    console.warn('[KOUKAI] 読み込み失敗:', e);
+    koukaiList = [];
+    renderCountdown();
+    if (info) info.innerHTML = '<span style="color:var(--text-muted);font-size:12px;">公開予定を読み込めませんでした</span>';
+  }
+}
+
+function parseKoukai(text) {
+  const items = [];
+  const lines = String(text).split(/\r?\n/);
+  const re = /^\/\s*(\d{4})-(\d{1,2})-(\d{1,2})-(\d{1,2})-(\d{1,2})\s*<([^>]*)>\s*(?:\(([^)]*)\))?/;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line || !line.startsWith('/')) continue;
+    const m = line.match(re);
+    if (!m) continue;
+    const [, y, mo, d, h, mi, title, memo] = m;
+    const date = new Date(parseInt(y), parseInt(mo) - 1, parseInt(d), parseInt(h), parseInt(mi), 0, 0);
+    if (isNaN(date.getTime())) continue;
+    items.push({ date, title: (title || '').trim(), memo: (memo || '').trim() });
+  }
+  items.sort((a, b) => a.date - b.date);
+  return items;
+}
+
+function renderCountdown() {
+  const $d = $('#cd-day'), $h = $('#cd-hour'), $m = $('#cd-min'), $s = $('#cd-sec');
+  const info = $('#countdown-info');
+  const now = new Date();
+  const next = koukaiList.find(k => k.date > now);
+
+  if (!next) {
+    if ($d) $d.textContent = '0';
+    if ($h) $h.textContent = '00';
+    if ($m) $m.textContent = '00';
+    if ($s) $s.textContent = '00';
+    if (info) info.innerHTML = koukaiList.length === 0
+      ? '<span style="color:var(--text-muted);font-size:12px;">公開予定は未設定です</span>'
+      : '現在、公開予定はありません';
+    return;
+  }
+
+  const diff = Math.max(0, next.date - now);
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff / 3600000) % 24);
+  const m = Math.floor((diff / 60000) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  if ($d) $d.textContent = d;
+  if ($h) $h.textContent = String(h).padStart(2, '0');
+  if ($m) $m.textContent = String(m).padStart(2, '0');
+  if ($s) $s.textContent = String(s).padStart(2, '0');
+
+  const wk = ['日','月','火','水','木','金','土'][next.date.getDay()];
+  const dateStr = `${next.date.getMonth()+1}/${next.date.getDate()} (${wk}) ${String(next.date.getHours()).padStart(2,'0')}:${String(next.date.getMinutes()).padStart(2,'0')}`;
+
+  if (info) {
+    let html = `次の公開 <strong>${dateStr}</strong>`;
+    if (next.title) html += `<br><span style="color:var(--accent-color);font-weight:800;font-size:15px;">${escapeHTML(next.title)}</span>`;
+    if (next.memo) html += `<br><span style="font-size:12px;color:var(--text-muted);">${escapeHTML(next.memo)}</span>`;
+    info.innerHTML = html;
+  }
+}
+setInterval(() => { if (koukaiList.length > 0) renderCountdown(); }, 1000);
+
 const validPages = ['home','member','about','notices','credit','video','contact','settings','login','favorites','calendar','history','notice-detail'];
 const memberIds = MEMBER_IDS || [];
 const commandWords = ['osi','kamito','hide-news','debug','maintenance'];
@@ -2285,7 +2355,7 @@ $('#clear-cache-btn')?.addEventListener('click', () => {
   try { localStorage.clear(); sessionStorage.clear(); $('#cache-status').textContent = '削除しました。再読込...'; toast('キャッシュ削除', 'success'); setTimeout(() => location.reload(), 1200); }
   catch (e) { $('#cache-status').textContent = '失敗: ' + e.message; toast('失敗', 'error'); }
 });
-$('#reload-config-btn')?.addEventListener('click', async () => { toast('再取得中...', 'info', 1500); await loadServerConfig(); showPage(); toast(maintenanceMode ? 'メンテナンス: ON' : 'メンテナンス: OFF', maintenanceMode ? 'error' : 'success'); });
+$('#reload-config-btn')?.addEventListener('click', async () => { toast('再取得中...', 'info', 1500); await loadServerConfig(); await loadKoukai(); showPage(); toast(maintenanceMode ? 'メンテナンス: ON' : 'メンテナンス: OFF', maintenanceMode ? 'error' : 'success'); });
 $('#reload-btn')?.addEventListener('click', () => location.reload());
 $('#request-notification-btn')?.addEventListener('click', async () => {
   if (!('Notification' in window)) { toast('未対応', 'error'); return; }
@@ -2416,7 +2486,7 @@ const COMMANDS = [
   { label:'LINEを開く', icon:'chat', action:() => window.open(CONFIG.LINE_OFFICIAL_URL, '_blank') },
   { label:'トップへ戻る', icon:'arrow_upward', action:() => window.scrollTo({ top:0, behavior:'smooth' }) },
   { label:'キャッシュクリア', icon:'delete', action:() => { if (confirm('キャッシュ削除？')) { localStorage.clear(); sessionStorage.clear(); location.reload(); } } },
-  { label:'メンテナンス再読込', icon:'refresh', action:() => { loadServerConfig(); toast('再読込', 'success'); } },
+  { label:'メンテナンス再読込', icon:'refresh', action:() => { loadServerConfig(); loadKoukai(); toast('再読込', 'success'); } },
   { label:'通知を許可', icon:'notifications', action:() => { if (!('Notification' in window)) { toast('未対応', 'error'); return; } Notification.requestPermission().then(p => { updateNotificationUI(); toast(p === 'granted' ? '許可' : '拒否', p === 'granted' ? 'success' : 'error'); }); } }
 ];
 function openCmdk() { cmdkOverlay.classList.add('active'); cmdkInput.value = ''; cmdkIndex = 0; renderCmdkList(''); setTimeout(() => cmdkInput.focus(), 60); document.body.style.overflow = 'hidden'; }
@@ -2545,34 +2615,6 @@ $('#qr-close')?.addEventListener('click', () => $('#qr-modal').classList.remove(
 $('#qr-modal')?.addEventListener('click', (e) => { if (e.target.id === 'qr-modal') e.target.classList.remove('active'); });
 $('#qr-copy')?.addEventListener('click', () => { navigator.clipboard.writeText(location.origin + location.pathname).then(() => toast('URLコピー', 'success')); });
 
-(function initCountdown() {
-  function getNext() {
-    const now = new Date();
-    const target = new Date(now);
-    const day = now.getDay();
-    const daysUntilSat = (6 - day + 7) % 7 || 7;
-    target.setDate(now.getDate() + daysUntilSat);
-    target.setHours(20, 0, 0, 0);
-    return target;
-  }
-  function tick() {
-    const now = new Date(); const target = getNext();
-    let diff = Math.max(0, target - now);
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff / (1000*60*60)) % 24);
-    const m = Math.floor((diff / (1000*60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-    const $d = $('#cd-day'), $h = $('#cd-hour'), $m = $('#cd-min'), $s = $('#cd-sec');
-    if ($d) $d.textContent = d;
-    if ($h) $h.textContent = String(h).padStart(2, '0');
-    if ($m) $m.textContent = String(m).padStart(2, '0');
-    if ($s) $s.textContent = String(s).padStart(2, '0');
-    const info = $('#countdown-info');
-    if (info) info.innerHTML = `次の動画公開 <strong>${target.getMonth()+1}/${target.getDate()} (土) 20:00</strong> まで`;
-  }
-  tick(); setInterval(tick, 1000);
-})();
-
 const backTop = $('#back-to-top'), progress = $('#scroll-progress'), header = $('#header');
 const circleProgress = $('#circle-progress'), circleFg = $('#circle-fg'), heroParallax = $('#hero-parallax');
 let lastScroll = 0, scrollSaveTimer;
@@ -2663,6 +2705,7 @@ function initScrollAnimations(scope = document) {
 async function init() {
   await loadServerConfig();
   await loadGoogleConfig();
+  loadKoukai();
   initGoogleLogin('g_id_onload');
   renderMemberList('');
   fetchNotices();
