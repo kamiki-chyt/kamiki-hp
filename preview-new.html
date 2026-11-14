@@ -248,6 +248,11 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
   .lm-sep{text-align:center;color:var(--text-muted);font-weight:700;font-size:.8rem;margin:2px 0 12px;}
   .lm-row{display:flex;gap:10px;}
   .lm-err{background:#fff1f3;border:1.5px solid #ffc9d2;color:#c2435e;border-radius:12px;padding:.6em .9em;font-weight:700;font-size:.86rem;margin-bottom:12px;}
+#loginModal [hidden]{display:none!important}
+.lm-captcha{display:flex;justify-content:center;margin:4px 0 10px;min-height:78px}
+#loginModal .lm-btn:disabled{opacity:.45;cursor:not-allowed}
+#lmEmailPanel input,#lmPhonePanel input{width:100%;box-sizing:border-box;padding:13px 16px;border:2px solid #e2dbf8;border-radius:14px;font-family:inherit;font-size:1rem;margin-bottom:10px;color:#241b3a;background:#f5f2ff}
+#lmEmailPanel input:focus,#lmPhonePanel input:focus{outline:none;border-color:#b7a6f5;box-shadow:0 0 0 4px rgba(150,120,255,.18);background:#fff}
   .lm-err[hidden]{display:none;}
   .lm-info{background:#eefaf4;border:1.5px solid #bfe9d2;color:#1e7d55;border-radius:12px;padding:.6em .9em;font-weight:700;font-size:.86rem;margin-bottom:12px;}
   .lm-info[hidden]{display:none;}
@@ -543,32 +548,50 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 
 <div id="toast" role="status"></div>
 
+<section id="linkEmailBox" hidden style="max-width:760px;margin:18px auto 0;padding:0 18px;position:relative;z-index:5">
+  <div style="background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.65);border-radius:18px;padding:20px;box-shadow:0 18px 42px rgba(10,6,32,.35)">
+    <p style="font-size:.85rem;color:#5b5470;font-weight:700;margin-bottom:10px">ログインリンクが開かれました。確認のため、ログインに使ったメールアドレスを入力してください。</p>
+    <input type="email" id="linkEmailInput" placeholder="メールアドレス" autocomplete="email" style="width:100%;box-sizing:border-box;padding:13px 16px;border:2px solid #e2dbf8;border-radius:14px;font-family:inherit;font-size:1rem;color:#241b3a;background:#f5f2ff">
+    <button class="lm-btn lm-primary" id="linkEmailGo" type="button" style="margin-top:10px;justify-content:center">ログインを完了する</button>
+  </div>
+</section>
 <div id="loginModal" hidden>
   <div class="lm-box">
     <h3>とろろぉーーーーIDでログイン</h3>
     <p class="lm-sub">対応サイト共通のアカウントでログインします。いずれかの方法をお選びください。</p>
     <p class="lm-err" id="lmError" hidden></p>
     <p class="lm-info" id="lmInfo" hidden></p>
-    <button class="lm-btn" id="lmScratch" type="button"><span class="material-symbols-outlined">stadia_controller</span>Scratchでログイン</button>
-    <button class="lm-btn" id="lmGoogle" type="button"><span class="material-symbols-outlined">account_circle</span>Googleでログイン</button>
-    <button class="lm-btn" id="lmGithub" type="button"><span class="material-symbols-outlined">code</span>GitHubでログイン</button>
-    <button class="lm-btn" id="lmPasskey" type="button"><span class="material-symbols-outlined">passkey</span>パスキーでログイン</button>
-    <div class="lm-sep">または メールアドレスで</div>
-    <form id="lmEmailForm">
-      <input type="email" id="lmEmail" placeholder="メールアドレス" autocomplete="email" required>
-      <input type="password" id="lmPassword" placeholder="パスワード" autocomplete="current-password" required>
-      <div class="lm-row">
-        <button type="submit" class="lm-btn lm-primary">ログイン</button>
-        <button type="button" class="lm-btn" id="lmEmailSignup">新規登録</button>
+    <div class="lm-captcha" id="lmCaptcha"></div>
+    <p class="lm-note" id="lmCaptchaNote">ログインするには、まず上の「私はロボットではありません」にチェックしてください。</p>
+    <button class="lm-btn" id="lmScratch" type="button" disabled><span class="material-symbols-outlined">stadia_controller</span>Scratchでログイン</button>
+    <button class="lm-btn" id="lmGoogle" type="button" disabled><span class="material-symbols-outlined">account_circle</span>Googleでログイン</button>
+    <button class="lm-btn" id="lmGithub" type="button" disabled><span class="material-symbols-outlined">code</span>GitHubでログイン</button>
+    <button class="lm-btn" id="lmPasskey" type="button" disabled><span class="material-symbols-outlined">passkey</span>パスキーでログイン</button>
+    <button class="lm-btn" id="lmEmailBtn" type="button" disabled><span class="material-symbols-outlined">mail</span>メールアドレスでログイン</button>
+    <div id="lmEmailPanel" hidden>
+      <input type="email" id="lmEmail" placeholder="メールアドレス" autocomplete="email">
+      <button class="lm-btn lm-primary" id="lmEmailSend" type="button">ログインリンクを送信</button>
+      <p class="lm-note">メールに届くリンクを開くとログインできます。初めての方も、リンクを開くだけで登録できます。</p>
+    </div>
+    <button class="lm-btn" id="lmPhoneBtn" type="button" disabled><span class="material-symbols-outlined">smartphone</span>電話番号でログイン</button>
+    <div id="lmPhonePanel" hidden>
+      <input type="tel" id="lmPhone" placeholder="電話番号（例：09012345678）" autocomplete="tel">
+      <button class="lm-btn lm-primary" id="lmPhoneSend" type="button">SMSでコードを送信</button>
+      <div id="lmPhoneCodeWrap" hidden>
+        <input type="text" id="lmPhoneCode" placeholder="SMSで届いた6桁のコード" inputmode="numeric" autocomplete="one-time-code">
+        <button class="lm-btn lm-primary" id="lmPhoneLogin" type="button">コードでログイン</button>
       </div>
-    </form>
-    <button type="button" class="lm-btn" id="lmReset"><span class="material-symbols-outlined">lock_reset</span>パスワードを忘れた場合</button>
+      <p class="lm-note">日本の電話番号に対応しています。SMSで6桁のコードをお送りします。</p>
+    </div>
+    <div id="lmRecaptcha"></div>
     <button type="button" class="lm-btn" id="lmClose">閉じる</button>
     <p class="lm-note">Scratchログインは ScratchLoginSystem（suzunokana × とろろぉーーーー）を使用します。パスキーは登録した端末でのみご利用いただけます。</p>
+    <p class="lm-note" style="text-align:center">このページは reCAPTCHA によって保護されており、Google の<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">プライバシーポリシー</a>と<a href="https://policies.google.com/terms" target="_blank" rel="noopener">利用規約</a>が適用されます。</p>
   </div>
 </div>
 
 <script src="https://tr3131kami.github.io/ScratchLoginSystem/scratch-login.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=explicit&hl=ja" async defer></script>
 <script>
 (function(){
 'use strict';
@@ -1020,8 +1043,8 @@ renderContactGate();
 <script type="module">
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, getAdditionalUserInfo } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, GithubAuthProvider, signOut, getAdditionalUserInfo, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBfKW5cuKxXBFHWV1MRumSey8PPwgcCfvQ',
@@ -1067,6 +1090,17 @@ if (window.ScratchLogin) {
 let fbUser = null;
 let fbMemberNo = null;
 let fbMemberBusy = false;
+let scratchNo = null;
+let scratchNoFor = null;
+let scratchNoBusy = false;
+async function resolveScratchNo() {
+  if (fbUser || !scratchUser || scratchNoBusy || scratchNoFor === scratchUser) return;
+  scratchNoBusy = true;
+  scratchNoFor = scratchUser;
+  try { const s = await getDoc(doc(db, 'scratchIndex', scratchUser)); if (s.exists()) scratchNo = s.data().no; } catch (e) {}
+  scratchNoBusy = false;
+  render();
+}
 
 function identity() {
   if (fbUser) {
@@ -1088,7 +1122,7 @@ function loadScratchAvatar(username) {
 function methodLabel() {
   if (fbUser) {
     const p = (fbUser.providerData && fbUser.providerData[0] && fbUser.providerData[0].providerId) || '';
-    return ({ 'google.com': 'Google', 'github.com': 'GitHub', 'password': 'メールアドレス' })[p] || 'ログイン';
+    return ({ 'google.com': 'Google', 'github.com': 'GitHub', 'password': 'メールアドレス', 'phone': '電話番号' })[p] || 'ログイン';
   }
   if (pkUserName()) return 'パスキー';
   if (scratchUser) return 'Scratch';
@@ -1096,6 +1130,7 @@ function methodLabel() {
 }
 function memberNoText() {
   if (fbUser) return fbMemberNo !== null ? '会員No.' + String(fbMemberNo).padStart(4, '0') : '会員No.発行中…';
+  if (scratchUser && scratchNo !== null) return '会員No.' + String(scratchNo).padStart(4, '0');
   return '会員No. —';
 }
 async function ensureMemberNo() {
@@ -1116,32 +1151,66 @@ async function ensureMemberNo() {
         return next;
       });
     }
+    try {
+      const snap2 = await getDoc(userRef);
+      const linked = snap2.exists() ? (snap2.data().scratch || null) : null;
+      if (linked) await setDoc(doc(db, 'scratchIndex', linked), { no: fbMemberNo });
+      if (scratchUser && !linked) { await updateDoc(userRef, { scratch: scratchUser }); await setDoc(doc(db, 'scratchIndex', scratchUser), { no: fbMemberNo }); }
+    } catch (e) {}
   } catch (e) { /* 番号が取れなかったら次回また試す */ }
   fbMemberBusy = false;
   render();
 }
 function render() {
+  resolveScratchNo();
   const id = identity();
   const profile = id ? { name: id.name, email: fbUser ? (fbUser.email || '') : '', picture: id.avatar || '' } : null;
   if (typeof window.__kamikiSetLogin === 'function') { try { window.__kamikiSetLogin(profile); } catch (e) {} }
   else if (typeof updateAllUI === 'function') { try { updateAllUI(); } catch (e) {} }
   if (scratchUser && !fbUser && !scratchAvatarUrl) loadScratchAvatar(scratchUser);
 }
-function openModal() { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; modal.hidden = false; }
+const RC_SITE_KEY = '6LdM-B8uAAAAAO_cTgYfgtVkm2QeyTVnt3Oojt-1';
+let rcWidget = null;
+function rcSetEnabled(on) {
+  ['lmScratch', 'lmGoogle', 'lmGithub', 'lmEmailBtn', 'lmPhoneBtn', 'lmPasskey'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !on; });
+  const note = document.getElementById('lmCaptchaNote'); if (note) note.style.display = on ? 'none' : '';
+}
+function rcEnsure() {
+  if (!window.grecaptcha || !grecaptcha.render) { setTimeout(rcEnsure, 300); return; }
+  if (rcWidget === null) {
+    try { rcWidget = grecaptcha.render('lmCaptcha', { sitekey: RC_SITE_KEY, callback: () => rcSetEnabled(true), 'expired-callback': () => rcSetEnabled(false), 'error-callback': () => rcSetEnabled(false) }); } catch (e) {}
+  } else { try { grecaptcha.reset(rcWidget); } catch (e) {} }
+  rcSetEnabled(false);
+}
+function openModal() { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; const ep = document.getElementById('lmEmailPanel'), pp = document.getElementById('lmPhonePanel'), cw = document.getElementById('lmPhoneCodeWrap'); if (ep) ep.hidden = true; if (pp) pp.hidden = true; if (cw) cw.hidden = true; rcEnsure(); modal.hidden = false; }
 function closeModal() { modal.hidden = true; }
 function showError(text) { lmError.textContent = text; lmError.hidden = false; }
 function friendlyError(e) {
   const code = e && e.code ? e.code : '';
   const map = {
-    'auth/invalid-credential': 'メールアドレスかパスワードが違います',
-    'auth/user-not-found': 'メールアドレスかパスワードが違います',
-    'auth/wrong-password': 'メールアドレスかパスワードが違います',
-    'auth/email-already-in-use': 'このメールアドレスは登録済みです。「ログイン」を押してください',
-    'auth/weak-password': 'パスワードが短すぎます（6文字以上にしてください）',
     'auth/invalid-email': 'メールアドレスの形式が違います',
+    'auth/missing-email': 'メールアドレスを入力してください',
+    'auth/invalid-credential': 'ログイン情報が違います',
+    'auth/user-not-found': 'ログイン情報が違います',
+    'auth/wrong-password': 'ログイン情報が違います',
+    'auth/email-already-in-use': 'このメールアドレスは登録済みです',
+    'auth/weak-password': 'パスワードが短すぎます（6文字以上にしてください）',
     'auth/popup-closed-by-user': 'ログイン画面が閉じられました。もう一度お試しください',
+    'auth/cancelled-popup-request': 'ログイン画面が閉じられました。もう一度お試しください',
+    'auth/popup-blocked': 'ポップアップがブロックされました。ブラウザの設定で許可してください',
     'auth/account-exists-with-different-credential': 'このメールアドレスは別の方法で登録済みです。別のログイン方法をお試しください',
-    'auth/unauthorized-domain': 'このサイトのドメインが許可されていません'
+    'auth/unauthorized-domain': 'このサイトのドメインが許可されていません',
+    'auth/operation-not-allowed': 'このログイン方法はまだ有効になっていません',
+    'auth/invalid-phone-number': '電話番号の形式が違います',
+    'auth/missing-phone-number': '電話番号を入力してください',
+    'auth/invalid-verification-code': 'コードが違います',
+    'auth/code-expired': 'コードの期限が切れました。もう一度送信してください',
+    'auth/too-many-requests': '試行回数が多すぎます。しばらく待ってからお試しください',
+    'auth/quota-exceeded': '送信上限に達しました。時間をおいてお試しください',
+    'auth/captcha-check-failed': '人間認証に失敗しました。もう一度お試しください',
+    'auth/network-request-failed': '通信に失敗しました。接続を確認してもう一度お試しください',
+    'auth/expired-action-code': 'リンクの期限が切れています。もう一度リンクを送信してください',
+    'auth/invalid-action-code': 'リンクが無効です。最新のメール内のリンクを開いてください'
   };
   return map[code] || 'ログインに失敗しました';
 }
@@ -1262,34 +1331,74 @@ document.getElementById('lmScratch').addEventListener('click', doScratchLogin);
 document.getElementById('lmGoogle').addEventListener('click', () => socialLogin('google'));
 document.getElementById('lmGithub').addEventListener('click', () => socialLogin('github'));
 document.getElementById('lmPasskey').addEventListener('click', () => { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; pkLoginFlow(); });
-document.getElementById('lmEmailForm').addEventListener('submit', e => {
-  e.preventDefault();
+function lmInfoShow(t) { const i = document.getElementById('lmInfo'); if (i) { i.textContent = t; i.hidden = false; } }
+function lmInfoHide() { const i = document.getElementById('lmInfo'); if (i) i.hidden = true; }
+function togglePanel(which) {
+  const ep = document.getElementById('lmEmailPanel'), pp = document.getElementById('lmPhonePanel');
+  lmError.hidden = true; lmInfoHide();
+  if (which === 'email') { const willShow = ep.hidden; ep.hidden = !willShow; pp.hidden = true; }
+  else { const willShow = pp.hidden; pp.hidden = !willShow; ep.hidden = true; }
+}
+document.getElementById('lmEmailBtn').addEventListener('click', () => togglePanel('email'));
+document.getElementById('lmPhoneBtn').addEventListener('click', () => togglePanel('phone'));
+document.getElementById('lmEmailSend').addEventListener('click', async () => {
+  lmError.hidden = true; lmInfoHide();
   const email = document.getElementById('lmEmail').value.trim();
-  const pass = document.getElementById('lmPassword').value;
-  signInWithEmailAndPassword(auth, email, pass)
-    .then(() => closeModal())
-    .catch(err => showError(friendlyError(err)));
+  if (!email) { showError('メールアドレスを入力してください'); return; }
+  try {
+    await sendSignInLinkToEmail(auth, email, { url: location.origin + location.pathname, handleCodeInApp: true });
+    try { localStorage.setItem('tororo_email_for_link', email); } catch (e) {}
+    lmInfoShow('ログインリンクをメールでお送りしました。届いたメールのリンクを開いてください');
+  } catch (e) { showError(friendlyError(e)); }
 });
-document.getElementById('lmEmailSignup').addEventListener('click', () => {
-  const email = document.getElementById('lmEmail').value.trim();
-  const pass = document.getElementById('lmPassword').value;
-  if (!email || !pass) { showError('メールアドレスとパスワードを入力してください'); return; }
-  createUserWithEmailAndPassword(auth, email, pass)
-    .then(() => closeModal())
-    .catch(err => showError(friendlyError(err)));
+function toE164JP(raw) {
+  let v = (raw || '').replace(/[^0-9+]/g, '');
+  if (v.startsWith('+')) return v;
+  if (v.startsWith('0')) v = v.slice(1);
+  return '+81' + v;
+}
+let phoneVerifier = null, phoneConfirmation = null;
+function getPhoneVerifier() {
+  if (!phoneVerifier) phoneVerifier = new RecaptchaVerifier(auth, 'lmRecaptcha', { size: 'invisible' });
+  return phoneVerifier;
+}
+document.getElementById('lmPhoneSend').addEventListener('click', async () => {
+  lmError.hidden = true; lmInfoHide();
+  const raw = document.getElementById('lmPhone').value.trim();
+  if (!raw) { showError('電話番号を入力してください'); return; }
+  try {
+    phoneConfirmation = await signInWithPhoneNumber(auth, toE164JP(raw), getPhoneVerifier());
+    document.getElementById('lmPhoneCodeWrap').hidden = false;
+    lmInfoShow('SMSでコードをお送りしました。届いた6桁のコードを入力してください');
+  } catch (e) { showError(friendlyError(e)); }
 });
-document.getElementById('lmReset').addEventListener('click', () => {
-  const email = document.getElementById('lmEmail').value.trim();
-  if (!email) { showError('まずメールアドレスを入力してください'); return; }
-  sendPasswordResetEmail(auth, email)
-    .then(() => {
-      lmError.hidden = true;
-      const info = document.getElementById('lmInfo');
-      info.textContent = 'パスワード再設定のメールをお送りしました。メールをご確認ください';
-      info.hidden = false;
-    })
-    .catch(err => showError(friendlyError(err)));
+document.getElementById('lmPhoneLogin').addEventListener('click', async () => {
+  lmError.hidden = true; lmInfoHide();
+  const code = document.getElementById('lmPhoneCode').value.trim();
+  if (!phoneConfirmation) { showError('先に「SMSでコードを送信」を押してください'); return; }
+  if (!code) { showError('コードを入力してください'); return; }
+  try { await phoneConfirmation.confirm(code); closeModal(); }
+  catch (e) { showError(friendlyError(e)); }
 });
+let linkHref = null;
+async function completeEmailLink(email, href) {
+  try {
+    await signInWithEmailLink(auth, email, href || location.href);
+    try { localStorage.removeItem('tororo_email_for_link'); } catch (e) {}
+    if (history.replaceState) { try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {} }
+    closeModal(); render();
+  } catch (e) { showError(friendlyError(e)); openModal(); }
+}
+if (isSignInWithEmailLink(auth, location.href)) {
+  linkHref = location.href;
+  if (history.replaceState) { try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {} }
+  let saved = null;
+  try { saved = localStorage.getItem('tororo_email_for_link'); } catch (e) {}
+  if (saved) completeEmailLink(saved, linkHref);
+  else { const box = document.getElementById('linkEmailBox'); if (box) box.hidden = false; }
+}
+const linkGoEl = document.getElementById('linkEmailGo');
+if (linkGoEl) linkGoEl.addEventListener('click', () => { const v = document.getElementById('linkEmailInput').value.trim(); if (!v) return; document.getElementById('linkEmailBox').hidden = true; completeEmailLink(v, linkHref); });
 
 getRedirectResult(auth).then(result => { if (result) { rememberName(result); render(); } }).catch(() => {});
 onAuthStateChanged(auth, user => { fbUser = user; if (!user) fbMemberNo = null; render(); if (user) ensureMemberNo(); });
