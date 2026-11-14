@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>神木チャンネル 公式サイト</title>
-<meta name="description" content="神木チャンネル（カミト・きぃ）の公式サイト。お知らせ・メンバー・動画・お問い合わせはこちら。">
+<title>Kamiki Channel Official Site</title>
+<meta name="description" content="The official site of Kamiki Channel (Kamito & Kii). News, members, videos and contact.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -251,6 +251,14 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
   .lm-info{background:#eefaf4;border:1.5px solid #bfe9d2;color:#1e7d55;border-radius:12px;padding:.6em .9em;font-weight:700;font-size:.86rem;margin-bottom:12px;}
   .lm-info[hidden]{display:none;}
   .lm-note{font-size:.78rem;color:var(--text-muted);font-weight:700;margin-top:2px;}
+#qrModal[hidden]{display:none !important}
+.day-badge{position:absolute;top:10px;left:10px;z-index:2;background:var(--grad);color:#fff;font-weight:900;font-size:.74rem;padding:4px 11px;border-radius:999px;box-shadow:0 6px 16px rgba(168,85,247,.5);letter-spacing:.04em}
+.video-card{position:relative}
+.progress-track{height:14px;border-radius:999px;background:rgba(139,92,246,.15);border:1px solid var(--border);overflow:hidden}
+.progress-fill{height:100%;background:var(--grad);border-radius:999px;transition:width .8s cubic-bezier(.22,.9,.3,1)}
+.challenge-hero{text-align:center;padding:52px 0 6px}
+.challenge-hero h1{font-size:clamp(1.9rem,5.6vw,3.2rem);font-weight:900;line-height:1.3}
+#homeChallenge .card{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px;text-align:left}
 </style>
 </head>
 <body>
@@ -258,12 +266,13 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 
 <header class="site-header">
   <div class="header-in">
-    <a class="logo" href="#q=home"><span class="logo-ic"><span class="ms">auto_awesome</span></span>神木チャンネル</a>
+    <a class="logo" href="#q=home"><span class="logo-ic"><span class="ms">auto_awesome</span></span>Kamiki Channel</a>
     <nav class="main-nav" id="mainNav">
       <a href="#q=home" data-nav="home"><span class="ms">home</span><span class="nav-lbl">HOME</span></a>
       <a href="#q=member" data-nav="member"><span class="ms">group</span><span class="nav-lbl">MEMBER</span></a>
       <a href="#q=news" data-nav="news"><span class="ms">newspaper</span><span class="nav-lbl">NEWS</span></a>
       <a href="#q=video" data-nav="video"><span class="ms">smart_display</span><span class="nav-lbl">VIDEO</span></a>
+      <a href="#q=challenge" data-nav="challenge"><span class="ms">local_fire_department</span><span class="nav-lbl">CHALLENGE</span></a>
       <a href="#q=about" data-nav="about"><span class="ms">info</span><span class="nav-lbl">ABOUT</span></a>
       <a href="#q=contact" data-nav="contact"><span class="ms">mail</span><span class="nav-lbl">CONTACT</span></a>
       <a href="#q=credit" data-nav="credit"><span class="ms">verified</span><span class="nav-lbl">CREDIT</span></a>
@@ -271,8 +280,8 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
     </nav>
     <div class="header-user">
       <span class="user-chip" id="navUser"></span>
-      <button class="btn primary small" id="navLogin" type="button"><span class="ms">login</span>ログイン</button>
-      <button class="btn ghost small" id="navLogout" type="button" hidden><span class="ms">logout</span>ログアウト</button>
+      <button class="btn primary small" id="navLogin" type="button"><span class="ms">login</span>Log in</button>
+      <button class="btn ghost small" id="navLogout" type="button" hidden><span class="ms">logout</span>Log out</button>
     </div>
   </div>
 </header>
@@ -281,57 +290,58 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <!-- ============ HOME ============ -->
 <div class="page" id="page-home">
   <section class="hero">
-    <span class="hero-badge"><span class="ms">verified</span>公式サイト</span>
-    <h1><span class="grad-text">神木チャンネル</span></h1>
-    <p class="motto">2人で、なんか面白いこと。</p>
+    <span class="hero-badge"><span class="ms">verified</span>OFFICIAL SITE</span>
+    <h1><span class="grad-text">Kamiki Channel</span></h1>
+    <p class="motto">Two of us, doing something fun.</p>
     <div class="btns">
       <a class="btn primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener"><span class="ms">play_circle</span>YouTube</a>
       <a class="btn ghost" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener"><span class="ms">chat</span>LINE</a>
-      <button class="btn ghost" id="heroQrBtn" type="button"><span class="ms">qr_code_2</span>QRコード</button>
+      <button class="btn ghost" id="heroQrBtn" type="button"><span class="ms">qr_code_2</span>QR Code</button>
     </div>
     <div class="hiatus">
       <span class="ms">campaign</span>
       <div>
-        <h3>活動休止のお知らせ</h3>
-        <p>メンバーのカミトの病気のため、神木チャンネルは約1か月間、活動を休止いたします。なお、休止期間は延びる場合があります。再開の際は改めてお知らせしますので、今しばらくお待ちください。なお、きぃのソロ動画は引き続き投稿していきます（コラボがあるかもしれません）。</p>
+        <h3>Hiatus Announcement</h3>
+        <p>Due to Kamito’s illness, Kamiki Channel will be on hiatus for about one month. The hiatus may be extended. We will announce when activities resume, so please bear with us. Kii will keep posting solo videos in the meantime (collaborations may happen).</p>
       </div>
     </div>
     <div class="countdown">
       <div class="cd-grid">
-        <div class="cd-item"><div class="cd-num" id="cd-day">-</div><div class="cd-lbl">日</div></div>
-        <div class="cd-item"><div class="cd-num" id="cd-hour">-</div><div class="cd-lbl">時間</div></div>
-        <div class="cd-item"><div class="cd-num" id="cd-min">-</div><div class="cd-lbl">分</div></div>
-        <div class="cd-item"><div class="cd-num" id="cd-sec">-</div><div class="cd-lbl">秒</div></div>
+        <div class="cd-item"><div class="cd-num" id="cd-day">-</div><div class="cd-lbl">DAYS</div></div>
+        <div class="cd-item"><div class="cd-num" id="cd-hour">-</div><div class="cd-lbl">HRS</div></div>
+        <div class="cd-item"><div class="cd-num" id="cd-min">-</div><div class="cd-lbl">MIN</div></div>
+        <div class="cd-item"><div class="cd-num" id="cd-sec">-</div><div class="cd-lbl">SEC</div></div>
       </div>
-      <p class="cd-info" id="cd-info">次の動画公開まで</p>
+      <p class="cd-info" id="cd-info">Until the next video</p>
     </div>
+    <div id="homeChallenge"></div>
   </section>
 
   <section class="section reveal">
     <div class="sec-head"><span class="ic"><span class="ms">newspaper</span></span><h2>NEWS</h2></div>
-    <p class="sec-sub">神木チャンネルからのお知らせ</p>
-    <div class="grid c3" id="homeNews"><p class="empty-note">読み込み中…</p></div>
-    <p class="more-link"><a href="#q=news">お知らせをすべて見る →</a></p>
+    <p class="sec-sub">Latest updates from Kamiki Channel</p>
+    <div class="grid c3" id="homeNews"><p class="empty-note">Loading...</p></div>
+    <p class="more-link"><a href="#q=news">See all news →</a></p>
   </section>
 
   <section class="section reveal">
     <div class="sec-head"><span class="ic"><span class="ms">group</span></span><h2>MEMBER</h2></div>
-    <p class="sec-sub">神木チャンネルのメンバー</p>
+    <p class="sec-sub">The members of Kamiki Channel</p>
     <div class="grid c2" id="homeMembers"></div>
-    <p class="more-link"><a href="#q=member">メンバー紹介を詳しく見る →</a></p>
+    <p class="more-link"><a href="#q=member">Meet the members →</a></p>
   </section>
 
   <section class="section reveal">
     <div class="sec-head"><span class="ic"><span class="ms">smart_display</span></span><h2>VIDEO</h2></div>
-    <p class="sec-sub">最新の動画</p>
-    <div class="grid c3" id="homeVideos"><p class="empty-note">読み込み中…</p></div>
-    <p class="more-link"><a href="#q=video">動画をすべて見る →</a></p>
+    <p class="sec-sub">Latest videos</p>
+    <div class="grid c3" id="homeVideos"><p class="empty-note">Loading...</p></div>
+    <p class="more-link"><a href="#q=video">See all videos →</a></p>
   </section>
 
   <section class="section reveal">
     <div class="card" style="text-align:center;padding:36px 24px">
-      <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:8px">一緒に楽しもう。</h2>
-      <p style="color:var(--sub);font-weight:600;margin-bottom:20px">YouTubeチャンネル登録・LINE公式アカウントの友だち追加で、最新情報をチェック！</p>
+      <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:8px">Join the fun.</h2>
+      <p style="color:var(--sub);font-weight:600;margin-bottom:20px">Subscribe on YouTube and add us on LINE to stay up to date!</p>
       <div class="btns" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <a class="btn primary" href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener"><span class="ms">play_circle</span>YouTube</a>
         <a class="btn ghost" href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener"><span class="ms">chat</span>LINE</a>
@@ -344,17 +354,17 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-member">
   <section class="section" style="margin-top:44px">
     <div class="sec-head"><span class="ic"><span class="ms">group</span></span><h2>MEMBER</h2></div>
-    <p class="sec-sub">神木チャンネルを支えるメンバー</p>
+    <p class="sec-sub">The members behind Kamiki Channel</p>
     <div class="grid c2" id="memberCards"></div>
   </section>
   <section class="section reveal">
-    <div class="sec-head"><span class="ic"><span class="ms">timeline</span></span><h2>沿革</h2></div>
-    <p class="sec-sub">神木チャンネルのあゆみ</p>
+    <div class="sec-head"><span class="ic"><span class="ms">timeline</span></span><h2>HISTORY</h2></div>
+    <p class="sec-sub">The story so far</p>
     <div class="timeline" id="historyList"></div>
   </section>
   <section class="section reveal">
-    <div class="sec-head"><span class="ic"><span class="ms">help</span></span><h2>よくある質問</h2></div>
-    <p class="sec-sub">よくいただくご質問</p>
+    <div class="sec-head"><span class="ic"><span class="ms">help</span></span><h2>FAQ</h2></div>
+    <p class="sec-sub">Frequently asked questions</p>
     <div id="faqList"></div>
   </section>
 </div>
@@ -363,14 +373,14 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-news">
   <section class="section" style="margin-top:44px" id="newsMain">
     <div class="sec-head"><span class="ic"><span class="ms">newspaper</span></span><h2>NEWS</h2></div>
-    <p class="sec-sub">神木チャンネルからのお知らせ</p>
+    <p class="sec-sub">Updates from Kamiki Channel</p>
     <div class="search-box">
-      <input type="text" id="newsSearch" placeholder="お知らせを検索..." autocomplete="off">
+      <input type="text" id="newsSearch" placeholder="Search news..." autocomplete="off">
     </div>
-    <div class="news-list" id="newsList"><p class="empty-note">読み込み中…</p></div>
+    <div class="news-list" id="newsList"><p class="empty-note">Loading...</p></div>
   </section>
   <section class="section" style="margin-top:44px" id="newsDetail" hidden>
-    <button class="btn ghost small" id="newsBack" type="button"><span class="ms">arrow_back</span>お知らせ一覧に戻る</button>
+    <button class="btn ghost small" id="newsBack" type="button"><span class="ms">arrow_back</span>Back to news</button>
     <div class="card" style="margin-top:18px">
       <div class="news-date" id="ndDate"></div>
       <h2 class="news-title" id="ndTitle" style="font-size:1.35rem;margin:8px 0 14px"></h2>
@@ -383,9 +393,35 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-video">
   <section class="section" style="margin-top:44px">
     <div class="sec-head"><span class="ic"><span class="ms">smart_display</span></span><h2>VIDEO</h2></div>
-    <p class="sec-sub">神木チャンネルの動画（新しい順）</p>
-    <div class="grid c3" id="videoGrid"><p class="empty-note">読み込み中…</p></div>
-    <p class="more-link"><a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTubeチャンネルで見る →</a></p>
+    <p class="sec-sub">Videos from Kamiki Channel (newest first)</p>
+    <div class="grid c3" id="videoGrid"><p class="empty-note">Loading...</p></div>
+    <p class="more-link"><a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">Watch on YouTube →</a></p>
+  </section>
+</div>
+
+<!-- ============ CHALLENGE ============ -->
+<div class="page" id="page-challenge">
+  <section class="challenge-hero">
+    <span class="hero-badge"><span class="ms">local_fire_department</span>30-DAY CHALLENGE</span>
+    <h1><span class="grad-text">Can Kii grow the channel<br>while Kamito is away?</span></h1>
+    <p class="about-lead">Kamito is on hiatus for about a month. During that time, Kii posts a video every single day — a 30-day challenge to grow the channel toward 100 subscribers.</p>
+  </section>
+  <section class="section reveal">
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card stat-box"><div class="s-num" id="chToday">-</div><div class="s-lbl">Today</div></div>
+      <div class="card stat-box"><div class="s-num" id="chPosted">-</div><div class="s-lbl">Videos posted</div></div>
+      <div class="card stat-box"><div class="s-num" id="chLeft">-</div><div class="s-lbl">Days to go</div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;font-weight:900;font-size:.88rem;margin-bottom:9px"><span>Progress</span><span id="chProgressText">-</span></div>
+      <div class="progress-track"><div class="progress-fill" id="chProgressFill" style="width:0%"></div></div>
+      <p style="color:var(--sub);font-weight:600;font-size:.88rem;margin-top:12px">Period: Nov 12 – Dec 11, 2026 (30 days). Goal: reach 100 subscribers by the end of the year.</p>
+    </div>
+  </section>
+  <section class="section reveal">
+    <div class="sec-head"><span class="ic"><span class="ms">smart_display</span></span><h2>POSTED VIDEOS</h2></div>
+    <p class="sec-sub">Every video from the challenge, day by day</p>
+    <div class="grid c3" id="challengeGrid"><p class="empty-note">Loading...</p></div>
   </section>
 </div>
 
@@ -393,30 +429,30 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-about">
   <section class="about-hero">
     <span class="hero-badge"><span class="ms">auto_awesome</span>ABOUT US</span>
-    <h1><span class="grad-text">2人で、なんか面白いこと。</span></h1>
-    <p class="about-lead">神木チャンネルは、カミトときぃの2人で運営するYouTubeチャンネルです。動画・お知らせ・様々な挑戦をこのサイトから発信していきます。</p>
+    <h1><span class="grad-text">Two of us, doing something fun.</span></h1>
+    <p class="about-lead">Kamiki Channel is a YouTube channel run by two friends, Kamito and Kii. News, videos and new challenges — all posted here.</p>
   </section>
   <section class="section reveal">
-    <div class="sec-head"><span class="ic"><span class="ms">info</span></span><h2>私たちについて</h2></div>
+    <div class="sec-head"><span class="ic"><span class="ms">info</span></span><h2>ABOUT US</h2></div>
     <div class="card">
-      <p style="font-weight:600;color:var(--sub)">神木チャンネルは「2人で、なんか面白いこと。」をコンセプトに、エンタメ動画を中心に様々なコンテンツを発信しているYouTubeチャンネルです。<br>企画・撮影・編集まで、2人で力を合わせて作り上げています。視聴者の皆さんに楽しんでもらえるよう、日々新しいことに挑戦中です。<br>このホームページでは、最新のお知らせ・メンバー情報・動画・お問い合わせなど、神木チャンネルのすべてをここからチェックできます。</p>
+      <p style="font-weight:600;color:var(--sub)">Kamiki Channel is built around one idea: “Two of us, doing something fun.” We make entertainment videos of all kinds.<br>From planning and filming to editing, the two of us do it all together — and we are always trying something new so viewers can have a good time.<br>On this site you can check the latest news, member profiles, videos and more — everything about Kamiki Channel in one place.</p>
     </div>
   </section>
   <section class="section reveal">
     <div class="stats-row">
-      <div class="card stat-box"><div class="s-num">2</div><div class="s-lbl">メンバー</div></div>
-      <div class="card stat-box"><div class="s-num">∞</div><div class="s-lbl">コンテンツ</div></div>
-      <div class="card stat-box"><div class="s-num">24/7</div><div class="s-lbl">挑戦中</div></div>
-      <div class="card stat-box"><div class="s-num">100%</div><div class="s-lbl">全力</div></div>
+      <div class="card stat-box"><div class="s-num">2</div><div class="s-lbl">Members</div></div>
+      <div class="card stat-box"><div class="s-num">∞</div><div class="s-lbl">Content</div></div>
+      <div class="card stat-box"><div class="s-num">24/7</div><div class="s-lbl">Challenging</div></div>
+      <div class="card stat-box"><div class="s-num">100%</div><div class="s-lbl">Full power</div></div>
     </div>
   </section>
   <section class="section reveal">
-    <div class="sec-head"><span class="ic"><span class="ms">view_module</span></span><h2>活動の柱</h2></div>
-    <p class="sec-sub">神木チャンネルが大切にしている3つのテーマ</p>
+    <div class="sec-head"><span class="ic"><span class="ms">view_module</span></span><h2>WHAT WE VALUE</h2></div>
+    <p class="sec-sub">Three themes at the heart of the channel</p>
     <div class="grid c3">
-      <div class="card pillar"><div class="p-ic"><span class="ms">movie</span></div><h3>エンタメ</h3><p>見て楽しい、笑える、そんな動画を2人で作り上げています。企画から編集まで、こだわり抜いたコンテンツをお届けします。</p></div>
-      <div class="card pillar"><div class="p-ic"><span class="ms">flag</span></div><h3>挑戦</h3><p>新しいことに臆せず挑戦する。BEYBLADE、ゲーム、企画…なんでもやってみる精神で活動しています。</p></div>
-      <div class="card pillar"><div class="p-ic"><span class="ms">diversity_3</span></div><h3>仲間</h3><p>視聴者の皆さん、メンバー、支えてくれるすべての方と一緒に成長していく。そんな温かいコミュニティを目指しています。</p></div>
+      <div class="card pillar"><div class="p-ic"><span class="ms">movie</span></div><h3>Entertainment</h3><p>Videos that are fun to watch and make you laugh. We pour care into every step, from the idea to the final edit.</p></div>
+      <div class="card pillar"><div class="p-ic"><span class="ms">flag</span></div><h3>Challenge</h3><p>We never shy away from trying new things. BEYBLADE, games, wild ideas — if it sounds fun, we give it a go.</p></div>
+      <div class="card pillar"><div class="p-ic"><span class="ms">diversity_3</span></div><h3>Community</h3><p>Growing together with our viewers and everyone who supports us. We aim to build a warm, welcoming community.</p></div>
     </div>
   </section>
 </div>
@@ -425,20 +461,20 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-contact">
   <section class="section" style="margin-top:44px">
     <div class="sec-head"><span class="ic"><span class="ms">mail</span></span><h2>CONTACT</h2></div>
-    <p class="sec-sub">神木チャンネルへのお問い合わせ</p>
+    <p class="sec-sub">Get in touch with Kamiki Channel</p>
     <div class="card locked-box" id="contactLocked">
       <span class="ms big">lock</span>
-      <h3 style="font-weight:900;font-size:1.15rem;margin:10px 0 6px">お問い合わせにはログインが必要です</h3>
-      <p style="color:var(--sub);font-weight:600;margin-bottom:18px">とろろぉーーーーIDでログインすると、フォームが使えるようになります。</p>
-      <button class="btn primary" id="contactLoginBtn" type="button"><span class="ms">login</span>ログイン</button>
+      <h3 style="font-weight:900;font-size:1.15rem;margin:10px 0 6px">Login required</h3>
+      <p style="color:var(--sub);font-weight:600;margin-bottom:18px">Log in with your Tororo ID to use the contact form.</p>
+      <button class="btn primary" id="contactLoginBtn" type="button"><span class="ms">login</span>Log in</button>
     </div>
     <div class="card form-card" id="contactFormWrap" hidden>
       <p style="font-weight:700;color:var(--sub);margin-bottom:18px" id="contactUserInfo"></p>
       <form id="contactForm">
-        <div class="field"><label for="cfName">お名前</label><input id="cfName" type="text" required autocomplete="name"></div>
-        <div class="field"><label for="cfEmail">メールアドレス</label><input id="cfEmail" type="email" required autocomplete="email"></div>
-        <div class="field"><label for="cfMsg">お問い合わせ内容</label><textarea id="cfMsg" rows="6" required></textarea></div>
-        <button class="btn primary" type="submit" id="cfSubmit"><span class="ms">send</span>送信する</button>
+        <div class="field"><label for="cfName">Name</label><input id="cfName" type="text" required autocomplete="name"></div>
+        <div class="field"><label for="cfEmail">Email</label><input id="cfEmail" type="email" required autocomplete="email"></div>
+        <div class="field"><label for="cfMsg">Message</label><textarea id="cfMsg" rows="6" required></textarea></div>
+        <button class="btn primary" type="submit" id="cfSubmit"><span class="ms">send</span>Send</button>
         <p class="form-msg" id="cfResult"></p>
       </form>
     </div>
@@ -449,11 +485,11 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-credit">
   <section class="section" style="margin-top:44px">
     <div class="sec-head"><span class="ic"><span class="ms">verified</span></span><h2>CREDIT</h2></div>
-    <p class="sec-sub">このサイトで使用している素材・サービス</p>
+    <p class="sec-sub">Materials &amp; services used on this site</p>
     <div class="credit-grid" id="creditGrid"></div>
     <div style="margin-top:38px;text-align:center;color:var(--muted);font-size:.86rem;font-weight:600;border-top:1px solid var(--border);padding-top:26px">
-      <p>このサイトは神木チャンネルによって運営されています。</p>
-      <p style="margin-top:4px">&copy; 2026 神木チャンネル</p>
+      <p>This site is operated by Kamiki Channel.</p>
+      <p style="margin-top:4px">&copy; 2026 Kamiki Channel</p>
     </div>
   </section>
 </div>
@@ -462,26 +498,34 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 <div class="page" id="page-login">
   <section class="section" style="margin-top:44px">
     <div class="sec-head"><span class="ic"><span class="ms">login</span></span><h2>LOGIN</h2></div>
-    <p class="sec-sub">とろろぉーーーーID（とろID）でログインできます</p>
+    <p class="sec-sub">Log in with your Tororo ID</p>
     <div id="login-page-content"></div>
   </section>
 </div>
 </main>
+<div id="qrModal" hidden style="position:fixed;inset:0;z-index:3000;background:rgba(10,5,24,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px">
+  <div style="background:#fff;color:#241b3a;border-radius:22px;padding:28px;text-align:center;max-width:320px;width:100%">
+    <h3 style="font-weight:900;margin-bottom:6px">QR Code</h3>
+    <p style="font-size:.85rem;color:#6f6690;font-weight:600;margin-bottom:16px">Scan to open this site</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=https%3A%2F%2Fkamiki-chyt.github.io%2Fkamiki-hp%2F" alt="QR Code" width="220" height="220" style="border-radius:12px">
+    <div style="margin-top:18px"><button class="btn primary small" id="qrClose" type="button" style="background:linear-gradient(120deg,#8b5cf6,#e879f9);color:#fff;border:none;padding:10px 26px;border-radius:999px;font-weight:900;cursor:pointer">Close</button></div>
+  </div>
+</div>
 
 <footer>
   <div class="footer-in">
-    <p class="f-logo">神木チャンネル</p>
-    <p>2人で、なんか面白いこと。</p>
-    <p style="margin-top:8px"><a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTube</a> ・ <a href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">LINE</a> ・ <a href="https://tr3131kami.github.io/id/" target="_blank" rel="noopener">とろろぉーーーーID</a></p>
-    <p style="margin-top:10px">&copy; 2026 神木チャンネル</p>
+    <p class="f-logo">Kamiki Channel</p>
+    <p>Two of us, doing something fun.</p>
+    <p style="margin-top:8px"><a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener">YouTube</a> ・ <a href="https://lin.ee/ZQ6s0yI" target="_blank" rel="noopener">LINE</a> ・ <a href="https://tr3131kami.github.io/id/" target="_blank" rel="noopener">Tororo ID</a></p>
+    <p style="margin-top:10px">&copy; 2026 Kamiki Channel</p>
   </div>
 </footer>
 
 <div id="maintenanceScreen" hidden>
   <div>
     <span class="ms">construction</span>
-    <h1 style="font-weight:900;margin:12px 0 8px">メンテナンス中</h1>
-    <p style="color:var(--sub);font-weight:600">ただいまサイトをアップデートしております。<br>ご不便をおかけしますが、しばらくお待ちください。</p>
+    <h1 style="font-weight:900;margin:12px 0 8px">Under Maintenance</h1>
+    <p style="color:var(--sub);font-weight:600">We are updating the site right now.<br>Sorry for the inconvenience — please check back soon.</p>
   </div>
 </div>
 
@@ -496,31 +540,31 @@ var $$ = function(s, c){ return Array.from((c||document).querySelectorAll(s)); }
 var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
 
 var MEMBERS = [
-  { id:'kamito', name:'カミト', initial:'カ', role:'企画説明 / 挨拶', hobby:'BEYBLADE', skill:'ゲーム', birthday:'12/04', instagram:'', status:'活動休止中' },
-  { id:'kii', name:'きぃ', initial:'き', role:'撮影 / 編集', hobby:'推し活', skill:'プログラミング', birthday:'03/10', instagram:'https://www.instagram.com/kii.kamiki', status:'' }
+  { id:'kamito', name:'Kamito', initial:'K', role:'Planning / Hosting', hobby:'BEYBLADE', skill:'Gaming', birthday:'12/04', instagram:'', status:'On hiatus' },
+  { id:'kii', name:'Kii', initial:'K', role:'Filming / Editing', hobby:'Supporting his faves', skill:'Programming', birthday:'03/10', instagram:'https://www.instagram.com/kii.kamiki', status:'' }
 ];
 var HISTORY = [
-  { year:'2026.08.03', title:'YouTubeチャンネル登録', desc:'神木チャンネルのYouTubeチャンネルを開設しました。' },
-  { year:'2026.08.19', title:'初投稿!! 自己紹介動画を公開', desc:'カミトときぃの自己紹介動画を公開しました。' },
-  { year:'2026.08.21', title:'公式ホームページ完成', desc:'神木チャンネルの公式ホームページを公開しました。' },
-  { year:'2026年内', title:'登録者100人を目指す', desc:'年内にチャンネル登録者100人を達成するため、2人で活動中です！' },
-  { year:'Next...', title:'さらなる挑戦へ', desc:'新しい企画やコンテンツに2人で挑戦していきます。' }
+  { year:'2026.08.03', title:'YouTube channel created', desc:'The Kamiki Channel YouTube channel was launched.' },
+  { year:'2026.08.19', title:'First video: Meet Kamito & Kii', desc:'Our self-introduction video was published.' },
+  { year:'2026.08.21', title:'Official website launched', desc:'The official Kamiki Channel website opened.' },
+  { year:'By the end of 2026', title:'Goal: 100 subscribers', desc:'Working together to reach 100 subscribers by the end of the year!' },
+  { year:'Next...', title:'New challenges ahead', desc:'More projects and content from the two of us.' }
 ];
 var FAQS = [
-  { q:'神木チャンネルってどんなチャンネル？', a:'カミトときぃの2人で、いろいろなことに挑戦しながら面白い動画を届けるチャンネルです。' },
-  { q:'動画の更新頻度は？', a:'不定期更新ですが、できるだけ頻度高く投稿できるよう頑張っています。' },
-  { q:'お知らせや企画の募集は？', a:'YouTubeのコメント欄で企画の案を募集しています。ぜひコメントお願いします！' },
-  { q:'お問い合わせはどうすれば？', a:'CONTACTページからログインの上、フォームをご利用ください。' },
-  { q:'チャンネル登録者100人プロジェクトとは？', a:'年内に登録者100人を達成する目標を掲げています。皆さんのご協力をお待ちしています！' }
+  { q:'What kind of channel is Kamiki Channel?', a:'Kamito and Kii taking on all kinds of challenges and making fun videos together.' },
+  { q:'How often do you post videos?', a:'Uploads are irregular for now, but we do our best to post as often as we can.' },
+  { q:'Can I suggest video ideas?', a:'Yes! We welcome ideas in the YouTube comments. Feel free to leave one!' },
+  { q:'How can I contact you?', a:'Please log in and use the form on the CONTACT page.' },
+  { q:'What is the 100-subscriber project?', a:'Our goal of reaching 100 subscribers by the end of the year. Your support means a lot!' }
 ];
 var CREDITS = [
   { icon:'text_fields', name:'Google Fonts', desc:'Montserrat / Noto Sans JP / Material Symbols', url:'https://fonts.google.com/', urlText:'fonts.google.com' },
-  { icon:'public', name:'GitHub API', desc:'お知らせデータの取得', url:'https://github.com/', urlText:'github.com' },
-  { icon:'smart_display', name:'YouTube Data API', desc:'最新動画の取得', url:'https://developers.google.com/youtube/v3', urlText:'developers.google.com' },
-  { icon:'forward_to_inbox', name:'Formspree', desc:'お問い合わせフォーム', url:'https://formspree.io/', urlText:'formspree.io' },
-  { icon:'badge', name:'とろID ログインシステム', desc:'とろろぉーーーーIDによるログイン機能（Scratch / Google / GitHub / メール / パスキー）', url:'https://tr3131kami.github.io/id/', urlText:'tr3131kami.github.io/id/' },
-  { icon:'palette', name:'パーティクル', desc:'CSSアニメーション（オリジナル）', url:'', urlText:'' },
-  { icon:'rocket_launch', name:'ホスティング', desc:'GitHub Pages', url:'https://pages.github.com/', urlText:'pages.github.com' }
+  { icon:'public', name:'GitHub API', desc:'Fetching news data', url:'https://github.com/', urlText:'github.com' },
+  { icon:'smart_display', name:'YouTube RSS', desc:'Fetching the latest videos', url:'https://www.youtube.com/@kamiki-ch', urlText:'youtube.com/@kamiki-ch' },
+  { icon:'forward_to_inbox', name:'Formspree', desc:'Contact form', url:'https://formspree.io/', urlText:'formspree.io' },
+  { icon:'badge', name:'Tororo ID Login System', desc:'Login powered by Tororo ID (Scratch / Google / GitHub / Email / Passkey)', url:'https://tr3131kami.github.io/id/', urlText:'tr3131kami.github.io/id/' },
+  { icon:'palette', name:'Particles', desc:'CSS animation (original)', url:'', urlText:'' },
+  { icon:'rocket_launch', name:'Hosting', desc:'GitHub Pages', url:'https://pages.github.com/', urlText:'pages.github.com' }
 ];
 
 /* toast */
@@ -531,8 +575,8 @@ function toast(msg){
 }
 
 /* router */
-var PAGES = ['home','member','news','video','about','contact','credit','login'];
-var TITLES = { home:'神木チャンネル 公式サイト', member:'MEMBER | 神木チャンネル', news:'NEWS | 神木チャンネル', video:'VIDEO | 神木チャンネル', about:'ABOUT | 神木チャンネル', contact:'CONTACT | 神木チャンネル', credit:'CREDIT | 神木チャンネル', login:'LOGIN | 神木チャンネル' };
+var PAGES = ['home','member','news','video','challenge','about','contact','credit','login'];
+var TITLES = { home:'Kamiki Channel Official Site', member:'MEMBER | Kamiki Channel', news:'NEWS | Kamiki Channel', video:'VIDEO | Kamiki Channel', challenge:'CHALLENGE | Kamiki Channel', about:'ABOUT | Kamiki Channel', contact:'CONTACT | Kamiki Channel', credit:'CREDIT | Kamiki Channel', login:'LOGIN | Kamiki Channel' };
 function currentPage(){
   var m = /#q=([a-z]+)/.exec(location.hash || '');
   var q = m ? m[1] : 'home';
@@ -557,10 +601,10 @@ $$('.reveal').forEach(function(el){ io.observe(el); });
 /* members */
 function memberCard(m, detail){
   var meta = '<div class="member-meta">'
-    + '<span><span class="ms">badge</span>担当：' + esc(m.role) + '</span>'
-    + '<span><span class="ms">favorite</span>趣味：' + esc(m.hobby) + '</span>'
-    + '<span><span class="ms">star</span>特技：' + esc(m.skill) + '</span>'
-    + '<span><span class="ms">cake</span>誕生日：' + esc(m.birthday) + '</span>'
+    + '<span><span class="ms">badge</span>Role: ' + esc(m.role) + '</span>'
+    + '<span><span class="ms">favorite</span>Hobby: ' + esc(m.hobby) + '</span>'
+    + '<span><span class="ms">star</span>Skill: ' + esc(m.skill) + '</span>'
+    + '<span><span class="ms">cake</span>Birthday: ' + esc(m.birthday) + '</span>'
     + (m.instagram ? '<span><span class="ms">photo_camera</span><a href="' + esc(m.instagram) + '" target="_blank" rel="noopener">Instagram</a></span>' : '')
     + '</div>';
   return '<div class="card member-card">'
@@ -584,7 +628,7 @@ $('#creditGrid').innerHTML = CREDITS.map(function(c){
 
 /* news (GitHub Issues: kamiki-chyt/kamiki-ch-notices) */
 var allIssues = [];
-function fmtDate(s){ try { return new Date(s).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }); } catch(e){ return ''; } }
+function fmtDate(s){ try { return new Date(s).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }); } catch(e){ return ''; } }
 function stripMd(t){
   return String(t || '').replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[#>*`_~-]/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -602,7 +646,7 @@ function newsCard(it){
 }
 function renderHomeNews(){
   var box = $('#homeNews');
-  if (!allIssues.length) { box.innerHTML = '<p class="empty-note">お知らせはまだありません</p>'; return; }
+  if (!allIssues.length) { box.innerHTML = '<p class="empty-note">No news yet</p>'; return; }
   box.innerHTML = allIssues.slice(0, 3).map(newsCard).join('');
   bindNewsCards(box);
 }
@@ -613,7 +657,7 @@ function renderNewsList(){
     if (!q) return true;
     return (it.title + ' ' + stripMd(it.body)).toLowerCase().indexOf(q) >= 0;
   });
-  if (!list.length) { box.innerHTML = '<p class="empty-note">該当するお知らせがありません</p>'; return; }
+  if (!list.length) { box.innerHTML = '<p class="empty-note">No matching news</p>'; return; }
   box.innerHTML = list.map(function(it){
     return '<button class="card news-row hoverable" type="button" data-news-id="' + it.number + '">'
       + '<div><div class="news-date">' + fmtDate(it.created_at) + ' ' + labelsHtml(it.labels) + '</div>'
@@ -656,8 +700,8 @@ fetch('https://api.github.com/repos/kamiki-chyt/kamiki-ch-notices/issues?state=o
     renderHomeNews(); renderNewsList();
   })
   .catch(function(){
-    $('#homeNews').innerHTML = '<p class="empty-note">お知らせを取得できませんでした</p>';
-    $('#newsList').innerHTML = '<p class="empty-note">お知らせを取得できませんでした</p>';
+    $('#homeNews').innerHTML = '<p class="empty-note">Could not load news</p>';
+    $('#newsList').innerHTML = '<p class="empty-note">Could not load news</p>';
   });
 
 /* videos (YouTube RSS) */
@@ -667,20 +711,66 @@ function videoCard(v){
     + '<div class="v-body"><div class="v-title">' + esc(v.title) + '</div>'
     + '<div class="v-date">' + esc(v.date) + '</div></div></a>';
 }
+var rssItems = [];
+function dayIndexOf(dateStr){
+  var d = new Date(dateStr + 'T00:00:00');
+  var start = new Date(2026, 10, 12);
+  return Math.floor((d - start) / 86400000) + 1;
+}
+function renderChallenge(){
+  var now = new Date();
+  var todayIdx = dayIndexOf(now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'));
+  var inRange = rssItems.filter(function(v){ return v.day >= 1 && v.day <= 30; });
+  var postedDays = {};
+  inRange.forEach(function(v){ postedDays[v.day] = true; });
+  var postedCount = Object.keys(postedDays).length;
+  var todayText = todayIdx < 1 ? 'Starts Nov 12' : todayIdx > 30 ? 'Finished' : 'Day ' + todayIdx + ' / 30';
+  var left = todayIdx < 1 ? 30 : Math.max(0, 30 - Math.max(0, todayIdx - 1) - (postedDays[todayIdx] ? 0 : 0));
+  var leftText = todayIdx > 30 ? '0 days' : (30 - Math.min(Math.max(todayIdx, 0), 30)) + ' days left';
+  var t = $('#chToday'); if (t) t.textContent = todayText;
+  var p = $('#chPosted'); if (p) p.textContent = postedCount + ' / 30';
+  var l = $('#chLeft'); if (l) l.textContent = todayIdx > 30 ? 'Done!' : String(Math.max(0, 30 - Math.max(todayIdx, 0)));
+  var pt = $('#chProgressText'); if (pt) pt.textContent = postedCount + ' of 30 days posted';
+  var pf = $('#chProgressFill'); if (pf) pf.style.width = Math.round(postedCount / 30 * 100) + '%';
+  var grid = $('#challengeGrid');
+  if (grid) {
+    if (!inRange.length) grid.innerHTML = '<p class="empty-note">No challenge videos yet</p>';
+    else grid.innerHTML = inRange.slice().sort(function(a, b){ return a.day - b.day; }).map(function(v){
+      return '<a class="card video-card hoverable" href="' + esc(v.link) + '" target="_blank" rel="noopener">'
+        + '<span class="day-badge">Day ' + v.day + '</span>'
+        + '<img src="' + esc(v.thumb) + '" alt="" loading="lazy">'
+        + '<div class="v-body"><div class="v-title">' + esc(v.title) + '</div>'
+        + '<div class="v-date">' + esc(v.date) + '</div></div></a>';
+    }).join('');
+  }
+  var home = $('#homeChallenge');
+  if (home) {
+    home.innerHTML = '<a class="card hoverable" href="#q=challenge" style="text-decoration:none">'
+      + '<span class="ms" style="font-size:30px;color:var(--acc2)">local_fire_department</span>'
+      + '<span style="flex:1;min-width:220px"><strong style="font-size:1.05rem">30-Day Daily Posting Challenge</strong><br>'
+      + '<span style="color:var(--sub);font-weight:600;font-size:.88rem">' + todayText + ' — ' + postedCount + ' of 30 days posted</span></span>'
+      + '<span class="btn primary small">View</span></a>';
+  }
+}
 fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=UCFCWHBYTtv17ku33Jl2lImw'))
   .then(function(r){ if (!r.ok) throw new Error('rss ' + r.status); return r.json(); })
   .then(function(data){
-    var items = (data.items || []).slice(0, 9).map(function(it){
-      return { title: it.title, link: it.link, thumb: it.thumbnail, date: fmtDate((it.pubDate || '').replace(' ', 'T')) };
+    var items = (data.items || []).slice(0, 15).map(function(it){
+      var raw = (it.pubDate || '').slice(0, 10);
+      return { title: it.title, link: it.link, thumb: it.thumbnail, date: fmtDate((it.pubDate || '').replace(' ', 'T')), day: dayIndexOf(raw) };
     });
     if (!items.length) throw new Error('empty');
-    $('#videoGrid').innerHTML = items.map(videoCard).join('');
+    rssItems = items;
+    $('#videoGrid').innerHTML = items.slice(0, 9).map(videoCard).join('');
     $('#homeVideos').innerHTML = items.slice(0, 3).map(videoCard).join('');
+    renderChallenge();
   })
   .catch(function(){
-    var fb = '<p class="empty-note">動画を取得できませんでした。<a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener" style="color:var(--acc2)">YouTubeで見る</a></p>';
+    var fb = '<p class="empty-note">Could not load videos. <a href="https://www.youtube.com/@kamiki-ch" target="_blank" rel="noopener" style="color:var(--acc2)">Watch on YouTube</a></p>';
     $('#videoGrid').innerHTML = fb;
     $('#homeVideos').innerHTML = fb;
+    var cg = $('#challengeGrid'); if (cg) cg.innerHTML = fb;
+    renderChallenge();
   });
 
 /* countdown (koukai.txt) */
@@ -707,7 +797,7 @@ function tickCountdown(){
   var info = $('#cd-info');
   if (!next) {
     $('#cd-day').textContent = '0'; $('#cd-hour').textContent = '00'; $('#cd-min').textContent = '00'; $('#cd-sec').textContent = '00';
-    info.innerHTML = koukaiList.length === 0 ? '公開予定は未設定です' : '現在、公開予定はありません';
+    info.innerHTML = koukaiList.length === 0 ? 'No schedule has been set' : 'No upcoming premieres right now';
     return;
   }
   var diff = Math.max(0, next.date - now);
@@ -715,7 +805,7 @@ function tickCountdown(){
   $('#cd-hour').textContent = String(Math.floor((diff / 3600000) % 24)).padStart(2, '0');
   $('#cd-min').textContent = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
   $('#cd-sec').textContent = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
-  info.innerHTML = '次の動画公開まで' + (next.title ? '：<strong>' + esc(next.title) + '</strong>' : '');
+  info.innerHTML = 'Until the next video' + (next.title ? ': <strong>' + esc(next.title) + '</strong>' : '');
 }
 fetch('https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/koukai.txt?_=' + Date.now())
   .then(function(r){ return r.text(); })
@@ -730,12 +820,21 @@ fetch('https://raw.githubusercontent.com/kamiki-chyt/kamiki-hp/main/config.json?
   .catch(function(){});
 
 /* QR */
-$('#heroQrBtn').addEventListener('click', function(){
-  toast('QRコードは今まで通り、とろろぉーーーーHPのリンクページからも開けます');
-});
+$('#heroQrBtn').addEventListener('click', function(){ $('#qrModal').hidden = false; });
+$('#qrClose').addEventListener('click', function(){ $('#qrModal').hidden = true; });
+$('#qrModal').addEventListener('click', function(e){ if (e.target === this) this.hidden = true; });
 
 /* ===== login bridge (module -> classic) ===== */
 var loginProfile = null;
+function methodEn(m){
+  m = m || '';
+  if (m.indexOf('Google') >= 0) return 'Logged in with Google';
+  if (m.indexOf('GitHub') >= 0) return 'Logged in with GitHub';
+  if (m.indexOf('Scratch') >= 0) return 'Logged in with Scratch';
+  if (m.indexOf('パスキー') >= 0 || m.indexOf('passkey') >= 0) return 'Logged in with a passkey';
+  if (m.indexOf('メール') >= 0) return 'Logged in with Email';
+  return m;
+}
 function renderNavUser(){
   var chip = $('#navUser'), loginBtn = $('#navLogin'), logoutBtn = $('#navLogout');
   if (loginProfile) {
@@ -774,36 +873,36 @@ window.renderLoginPage = function(){
   if (!box) return;
   if (!loginProfile) {
     box.innerHTML = '<div class="card locked-box"><span class="ms big">lock</span>'
-      + '<h3 style="font-weight:900;font-size:1.15rem;margin:10px 0 6px">ログインしていません</h3>'
-      + '<p style="color:var(--sub);font-weight:600;margin-bottom:18px">ログインすると、ここに会員カードが表示されます。お問い合わせフォームも使えるようになります。</p>'
-      + '<button class="btn primary" id="lpLoginBtn" type="button"><span class="ms">login</span>ログイン方法を選ぶ</button></div>';
+      + '<h3 style="font-weight:900;font-size:1.15rem;margin:10px 0 6px">Not logged in</h3>'
+      + '<p style="color:var(--sub);font-weight:600;margin-bottom:18px">Log in to see your member card here. The contact form will also become available.</p>'
+      + '<button class="btn primary" id="lpLoginBtn" type="button"><span class="ms">login</span>Choose a login method</button></div>';
     var b = $('#lpLoginBtn');
     if (b) b.addEventListener('click', function(){ if (window.TororoID) window.TororoID.open(); });
     return;
   }
-  var noText = (loginProfile.no != null) ? 'No.' + String(loginProfile.no).padStart(4, '0') : '会員No. —';
+  var noText = (loginProfile.no != null) ? String(loginProfile.no).padStart(4, '0') : '—';
   var pkInfo = (window.TororoID && window.TororoID.pk) ? window.TororoID.pk.info() : { supported:false, registered:false, name:'' };
   box.innerHTML = '<div class="card">'
     + '<div class="member-login-card">'
     + (loginProfile.avatar ? '<img src="' + esc(loginProfile.avatar) + '" alt="">' : '<span class="fallback"><span class="ms">person</span></span>')
     + '<div><div class="m-name">' + esc(loginProfile.name || '') + '</div>'
-    + '<div class="m-meta">' + esc(loginProfile.method || '') + '</div></div>'
-    + '<div class="m-no"><div class="n">' + esc(noText.replace('No.', '')) + '</div><div class="l">会員No.</div></div>'
+    + '<div class="m-meta">' + esc(methodEn(loginProfile.method)) + '</div></div>'
+    + '<div class="m-no"><div class="n">' + esc(noText) + '</div><div class="l">MEMBER NO.</div></div>'
     + '</div>'
-    + '<div class="btn-row"><button class="btn ghost small" id="lpLogoutBtn" type="button"><span class="ms">logout</span>ログアウト</button></div>'
-    + '<div class="pk-block"><div class="pk-title"><span class="ms">passkey</span>パスキー</div>'
-    + '<p style="font-weight:700" id="lpPkStatus">' + (!pkInfo.supported ? 'このブラウザはパスキーに未対応です' : pkInfo.registered ? '登録済み（' + esc(pkInfo.name) + '）— この端末でパスキーログインできます' : '未登録です') + '</p>'
-    + '<p style="font-size:.82rem;color:var(--muted);font-weight:600">登録すると、この端末の指紋・顔認証などでログインできます（登録情報はこの端末の中だけに保存されます）。</p>'
-    + '<div class="btn-row"><button class="btn primary small" id="lpPkRegister" type="button">パスキーを登録</button>'
-    + '<button class="btn ghost small" id="lpPkDelete" type="button">登録を削除</button></div>'
+    + '<div class="btn-row"><button class="btn ghost small" id="lpLogoutBtn" type="button"><span class="ms">logout</span>Log out</button></div>'
+    + '<div class="pk-block"><div class="pk-title"><span class="ms">passkey</span>Passkey</div>'
+    + '<p style="font-weight:700" id="lpPkStatus">' + (!pkInfo.supported ? 'This browser does not support passkeys' : pkInfo.registered ? 'Registered (' + esc(pkInfo.name) + ') — you can log in with a passkey on this device' : 'Not registered') + '</p>'
+    + '<p style="font-size:.82rem;color:var(--muted);font-weight:600">Register a passkey to log in with your fingerprint or face on this device (the data is stored only on this device).</p>'
+    + '<div class="btn-row"><button class="btn primary small" id="lpPkRegister" type="button">Register a passkey</button>'
+    + '<button class="btn ghost small" id="lpPkDelete" type="button">Remove</button></div>'
     + '<p class="form-msg" id="lpPkMsg"></p></div>'
     + '</div>';
   $('#lpLogoutBtn').addEventListener('click', function(){ if (window.TororoID) window.TororoID.logout(); });
   var reg = $('#lpPkRegister'), del = $('#lpPkDelete');
   if (reg) { reg.disabled = !pkInfo.supported; reg.addEventListener('click', async function(){
     var msg = $('#lpPkMsg');
-    try { await window.TororoID.pk.register(); msg.textContent = 'パスキーを登録しました'; msg.className = 'form-msg ok'; renderLoginPage(); }
-    catch(e){ msg.textContent = '登録できませんでした'; msg.className = 'form-msg err'; }
+    try { await window.TororoID.pk.register(); msg.textContent = 'Passkey registered'; msg.className = 'form-msg ok'; renderLoginPage(); }
+    catch(e){ msg.textContent = 'Could not register the passkey'; msg.className = 'form-msg err'; }
   }); }
   if (del) { del.disabled = !pkInfo.registered; del.addEventListener('click', function(){
     window.TororoID.pk.remove(); renderLoginPage();
@@ -816,7 +915,7 @@ window.renderContactGate = function(){
   if (!locked || !wrap) return;
   if (loginProfile) {
     locked.hidden = true; wrap.hidden = false;
-    $('#contactUserInfo').textContent = loginProfile.name + '（' + (loginProfile.method || '') + '）でログイン中';
+    $('#contactUserInfo').textContent = 'Logged in as ' + loginProfile.name + ' (' + methodEn(loginProfile.method) + ')';
     var em = $('#cfEmail');
     if (em && !em.value && loginProfile.email) em.value = loginProfile.email;
     var nm = $('#cfName');
@@ -834,10 +933,10 @@ $('#contactForm').addEventListener('submit', function(ev){
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({ name: $('#cfName').value, email: $('#cfEmail').value, message: $('#cfMsg').value })
   }).then(function(r){
-    if (r.ok) { res.textContent = '送信しました。ありがとうございました！'; res.className = 'form-msg ok'; $('#contactForm').reset(); }
-    else { res.textContent = '送信に失敗しました。時間をおいて再度お試しください'; res.className = 'form-msg err'; }
+    if (r.ok) { res.textContent = 'Sent. Thank you!'; res.className = 'form-msg ok'; $('#contactForm').reset(); }
+    else { res.textContent = 'Failed to send. Please try again later.'; res.className = 'form-msg err'; }
   }).catch(function(){
-    res.textContent = '送信に失敗しました。接続をご確認ください'; res.className = 'form-msg err';
+    res.textContent = 'Failed to send. Please check your connection.'; res.className = 'form-msg err';
   }).finally(function(){ btn.disabled = false; });
 });
 
