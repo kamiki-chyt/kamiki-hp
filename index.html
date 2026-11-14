@@ -790,6 +790,25 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
 @media(prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+  /* ---------- とろろぉーーーーID ログイン ---------- */
+  #loginModal{position:fixed;inset:0;background:rgba(20,16,32,.5);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;}
+  #loginModal[hidden]{display:none;}
+  .lm-box{position:relative;background:var(--card-bg);color:var(--text-main);border-radius:20px;padding:28px 24px;width:340px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--card-shadow-hover);display:flex;flex-direction:column;gap:10px;font-family:var(--font-family);}
+  .lm-box h3{font-size:1rem;text-align:center;margin-bottom:6px;}
+  .lm-close{position:absolute;top:10px;right:12px;background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1;padding:4px;}
+  .lm-btn{background:var(--card-bg);border:1px solid var(--input-border);border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--text-main);cursor:pointer;font-family:inherit;width:100%;}
+  .lm-btn:hover{border-color:var(--accent-color);background:var(--accent-soft);}
+  .lm-primary{background:var(--accent-gradient);color:#fff;border:none;}
+  .lm-sep{text-align:center;color:var(--text-muted);font-size:12px;margin:4px 0;}
+  #lmEmailForm{display:flex;flex-direction:column;gap:8px;}
+  #lmEmailForm input{padding:10px 14px;border-radius:12px;border:1px solid var(--input-border);font-size:14px;font-family:inherit;background:var(--input-bg);color:var(--text-main);width:100%;}
+  .lm-row{display:flex;gap:8px;}
+  .lm-err{color:var(--danger);font-size:13px;text-align:center;}
+  .lm-err[hidden]{display:none;}
+  .lm-reset{background:none;border:none;color:var(--accent-color-2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;padding:2px;}
+  .lm-info{color:var(--success);font-size:13px;text-align:center;}
+  .lm-info[hidden]{display:none;}
+  #contact-login-open{display:inline-flex;align-items:center;gap:6px;background:var(--accent-gradient);color:#fff;border:none;padding:10px 26px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
 </style>
 </head>
 <body>
@@ -1079,7 +1098,7 @@ footer { padding: 60px 20px 80px; text-align: center; color: var(--text-muted); 
       <p class="section-subtitle">神木チャンネルへのお問い合わせ</p>
       <div class="contact-wrapper">
         <div class="login-section" id="login-section">
-          <div id="login-prompt"><div class="icon"><span class="material-symbols-outlined">lock</span></div><p class="login-prompt">お問い合わせには Google ログインが必要です</p><div id="g_id_onload"></div></div>
+          <div id="login-prompt"><div class="icon"><span class="material-symbols-outlined">lock</span></div><p class="login-prompt">お問い合わせにはログインが必要です</p><button type="button" id="contact-login-open"><span class="material-symbols-outlined">login</span>ログイン</button></div>
           <div id="user-info" style="display:none;"><div class="user-info"><img id="user-avatar" src="" alt="avatar"><div><div class="name" id="user-name">ユーザー名</div><div class="email" id="user-email">email@example.com</div></div><button class="logout-btn" id="logout-btn"><span class="material-symbols-outlined">logout</span>ログアウト</button></div></div>
         </div>
         <div class="contact-form locked" id="contact-form-wrapper">
@@ -1566,12 +1585,19 @@ logoutBtnContact?.addEventListener('click', logout);
 
 function renderLoginPage() {
   const container = $('#login-page-content'); if (!container) return;
-  if (isLoggedIn && userProfile) {
-    container.innerHTML = `<div class="profile-name">${userProfile.name||'ユーザー'}</div><div class="profile-email">${userProfile.email||''}</div><div style="margin-bottom:20px;font-size:12px;color:var(--accent-color);background:var(--accent-soft);padding:4px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:14px;">verified</span>Google アカウント</div><button class="action-btn danger" id="login-page-logout-btn"><span class="material-symbols-outlined">logout</span>ログアウト</button>`;
-    $('#login-page-logout-btn')?.addEventListener('click', logout);
+  const T = window.TororoID;
+  const id = T ? T.getIdentity() : null;
+  const esc = (s) => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  if (id) {
+    container.innerHTML = (id.avatar ? '<img src="' + esc(id.avatar) + '" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--accent-color);margin-bottom:10px;">' : '') +
+      '<div class="profile-name">' + esc(id.name) + '</div>' +
+      '<div class="profile-email">' + esc(id.method) + 'でログイン中 ・ ' + esc(id.memberNo) + '</div>' +
+      '<div style="margin-bottom:20px;font-size:12px;color:var(--accent-color);background:var(--accent-soft);padding:4px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:14px;">verified</span>とろろぉーーーーID</div>' +
+      '<button class="action-btn danger" id="login-page-logout-btn"><span class="material-symbols-outlined">logout</span>ログアウト</button>';
+    $('#login-page-logout-btn')?.addEventListener('click', () => { if (window.TororoID) window.TororoID.logout(); });
   } else {
-    container.innerHTML = `<h2><span class="material-symbols-outlined">passkey</span>ログイン</h2><p class="sub-text">Googleアカウントでログイン</p><div id="google-login-page-wrapper" style="display:flex;justify-content:center;margin-top:8px;"></div>`;
-    initGoogleLogin('google-login-page-wrapper');
+    container.innerHTML = '<h2><span class="material-symbols-outlined">passkey</span>ログイン</h2><p class="sub-text">とろろぉーーーーIDでログインできます<br>（Scratch / Google / GitHub / メールアドレス）<br>とろろぉーーーーのホームページと会員番号が共通です</p><button class="action-btn" id="login-page-open-btn"><span class="material-symbols-outlined">login</span>ログイン方法を選ぶ</button>';
+    $('#login-page-open-btn')?.addEventListener('click', () => { if (window.TororoID) window.TororoID.open(); });
   }
 }
 
@@ -2755,6 +2781,252 @@ setTimeout(() => {
 }, 900);
 
 })();
+</script>
+
+<div id="loginModal" hidden>
+  <div class="lm-box">
+    <button class="lm-close" id="lmClose" type="button" aria-label="閉じる">×</button>
+    <h3>ログイン方法を選んでね</h3>
+    <button class="lm-btn" id="lmScratch" type="button">Scratchでログイン</button>
+    <button class="lm-btn" id="lmGoogle" type="button">Googleでログイン</button>
+    <button class="lm-btn" id="lmGithub" type="button">GitHubでログイン</button>
+    <div class="lm-sep">または</div>
+    <form id="lmEmailForm">
+      <input type="email" id="lmEmail" placeholder="メールアドレス" autocomplete="email" required>
+      <input type="password" id="lmPassword" placeholder="パスワード" autocomplete="current-password" required>
+      <div class="lm-row">
+        <button type="submit" class="lm-btn lm-primary">ログイン</button>
+        <button type="button" class="lm-btn" id="lmEmailSignup">新規登録</button>
+      </div>
+    </form>
+    <button type="button" class="lm-reset" id="lmReset">パスワードを忘れた場合</button>
+    <p class="lm-info" id="lmInfo" hidden></p>
+    <p class="lm-err" id="lmError" hidden></p>
+  </div>
+</div>
+
+<script src="https://tr3131kami.github.io/ScratchLoginSystem/scratch-login.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, getAdditionalUserInfo } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyBfKW5cuKxXBFHWV1MRumSey8PPwgcCfvQ',
+  authDomain: 'tororo-hp.firebaseapp.com',
+  projectId: 'tororo-hp',
+  storageBucket: 'tororo-hp.firebasestorage.app',
+  messagingSenderId: '133948474364',
+  appId: '1:133948474364:web:decac4c97ddd8f167ba879'
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const modal = document.getElementById('loginModal');
+const lmError = document.getElementById('lmError');
+const USER_KEY = 'sa_username';
+const NAME_HINT_KEY = 'tororo_fb_name_hint';
+
+let scratchUser = null;
+let scratchAvatarUrl = null;
+try { scratchUser = localStorage.getItem(USER_KEY); } catch (e) {}
+try {
+  const slsUser = localStorage.getItem('sls_user');
+  if (slsUser && !scratchUser) {
+    scratchUser = slsUser;
+    try { localStorage.setItem(USER_KEY, scratchUser); } catch (e) {}
+  }
+} catch (e) {}
+if (window.ScratchLogin) {
+  ScratchLogin.init({
+    projectId: '1436331790',
+    onLogin: function (u) {
+      scratchUser = u;
+      try { localStorage.setItem(USER_KEY, u); } catch (e) {}
+      render();
+    }
+  });
+}
+let fbUser = null;
+let fbMemberNo = null;
+let fbMemberBusy = false;
+
+function identity() {
+  if (fbUser) {
+    let hint = null;
+    try { const hh = JSON.parse(localStorage.getItem(NAME_HINT_KEY) || 'null'); if (hh && hh.uid === fbUser.uid) hint = hh.name; } catch (e) {}
+    return { name: fbUser.displayName || hint || fbUser.email || 'ユーザー', avatar: fbUser.photoURL || null };
+  }
+  if (scratchUser) return { name: scratchUser, avatar: scratchAvatarUrl };
+  return null;
+}
+function loadScratchAvatar(username) {
+  fetch('https://scratch.mit.edu/site-api/users/all/' + encodeURIComponent(username) + '/')
+    .then(r => r.json())
+    .then(d => {
+      if (d && d.thumbnail_url) { scratchAvatarUrl = 'https:' + d.thumbnail_url; render(); }
+    }).catch(() => {});
+}
+function methodLabel() {
+  if (fbUser) {
+    const p = (fbUser.providerData && fbUser.providerData[0] && fbUser.providerData[0].providerId) || '';
+    return ({ 'google.com': 'Google', 'github.com': 'GitHub', 'password': 'メールアドレス' })[p] || 'ログイン';
+  }
+  if (scratchUser) return 'Scratch';
+  return '';
+}
+function memberNoText() {
+  if (fbUser) return fbMemberNo !== null ? '会員No.' + String(fbMemberNo).padStart(4, '0') : '会員No.発行中…';
+  return '会員No. —';
+}
+async function ensureMemberNo() {
+  if (!fbUser || fbMemberNo !== null || fbMemberBusy) return;
+  fbMemberBusy = true;
+  try {
+    const userRef = doc(db, 'users', fbUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      fbMemberNo = snap.data().no;
+    } else {
+      fbMemberNo = await runTransaction(db, async (tx) => {
+        const counterRef = doc(db, 'meta', 'counter');
+        const c = await tx.get(counterRef);
+        const next = (c.exists() ? c.data().count : 0) + 1;
+        tx.set(counterRef, { count: next });
+        tx.set(userRef, { no: next });
+        return next;
+      });
+    }
+  } catch (e) { /* 番号が取れなかったら次回また試す */ }
+  fbMemberBusy = false;
+  render();
+}
+function render() {
+  const id = identity();
+  try {
+    if (id) {
+      isLoggedIn = true;
+      userProfile = { name: id.name, email: fbUser ? (fbUser.email || '') : '', picture: id.avatar || '' };
+    } else {
+      isLoggedIn = false;
+      userProfile = null;
+    }
+  } catch (e) {}
+  if (typeof updateAllUI === 'function') { try { updateAllUI(); } catch (e) {} }
+  if (scratchUser && !fbUser && !scratchAvatarUrl) loadScratchAvatar(scratchUser);
+}
+function openModal() { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; modal.hidden = false; }
+function closeModal() { modal.hidden = true; }
+function showError(text) { lmError.textContent = text; lmError.hidden = false; }
+function friendlyError(e) {
+  const code = e && e.code ? e.code : '';
+  const map = {
+    'auth/invalid-credential': 'メールアドレスかパスワードが違います',
+    'auth/user-not-found': 'そのメールアドレスは登録されていません',
+    'auth/wrong-password': 'パスワードが違います',
+    'auth/email-already-in-use': 'そのメールアドレスは登録済みだよ。「ログイン」を押してね',
+    'auth/weak-password': 'パスワードは6文字以上にしてね',
+    'auth/invalid-email': 'メールアドレスの形が違います',
+    'auth/popup-closed-by-user': 'ログイン画面が閉じられたよ',
+    'auth/account-exists-with-different-credential': 'そのアカウントは別のログイン方法で登録済みだよ',
+    'auth/unauthorized-domain': 'このドメインはまだ許可されていません'
+  };
+  return map[code] || 'ログインできませんでした';
+}
+function doScratchLogin() {
+  closeModal();
+  if (window.ScratchLogin) { ScratchLogin.login(); }
+}
+function rememberName(result) {
+  try {
+    const info = result ? getAdditionalUserInfo(result) : null;
+    if (info && info.username && result.user) {
+      localStorage.setItem(NAME_HINT_KEY, JSON.stringify({ uid: result.user.uid, name: info.username }));
+    }
+  } catch (e) {}
+}
+function socialLogin(kind) {
+  const provider = kind === 'google' ? new GoogleAuthProvider() : new GithubAuthProvider();
+  signInWithPopup(auth, provider)
+    .then(result => { rememberName(result); render(); closeModal(); })
+    .catch(e => {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        signInWithRedirect(auth, provider);
+      } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+        showError(friendlyError(e));
+      }
+    });
+}
+async function doLogout() {
+  if (fbUser) { try { await signOut(auth); } catch (e) {} }
+  fbMemberNo = null;
+  scratchUser = null;
+  scratchAvatarUrl = null;
+  try { localStorage.removeItem(USER_KEY); localStorage.removeItem(NAME_HINT_KEY); } catch (e) {}
+  if (window.ScratchLogin) { try { ScratchLogin.logout(); } catch (e) {} }
+  render();
+}
+async function doLogoutFull() {
+  await doLogout();
+  try { if (typeof logout === 'function') logout(); } catch (e) {}
+  try { location.hash = '#q=home'; } catch (e) {}
+}
+
+window.TororoID = {
+  open: openModal,
+  logout: doLogoutFull,
+  getIdentity: function () {
+    const id = identity();
+    if (!id) return null;
+    return { name: id.name, avatar: id.avatar || null, method: methodLabel(), memberNo: memberNoText() };
+  }
+};
+
+document.addEventListener('click', (e) => {
+  const t = e.target && e.target.closest ? e.target.closest('#nav-logout-btn, #logout-btn') : null;
+  if (t) { e.preventDefault(); e.stopPropagation(); doLogoutFull(); }
+}, true);
+const contactOpen = document.getElementById('contact-login-open');
+if (contactOpen) contactOpen.addEventListener('click', openModal);
+document.getElementById('lmClose').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.getElementById('lmScratch').addEventListener('click', doScratchLogin);
+document.getElementById('lmGoogle').addEventListener('click', () => socialLogin('google'));
+document.getElementById('lmGithub').addEventListener('click', () => socialLogin('github'));
+document.getElementById('lmEmailForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('lmEmail').value.trim();
+  const pass = document.getElementById('lmPassword').value;
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => closeModal())
+    .catch(err => showError(friendlyError(err)));
+});
+document.getElementById('lmEmailSignup').addEventListener('click', () => {
+  const email = document.getElementById('lmEmail').value.trim();
+  const pass = document.getElementById('lmPassword').value;
+  if (!email || !pass) { showError('メールアドレスとパスワードを入れてね'); return; }
+  createUserWithEmailAndPassword(auth, email, pass)
+    .then(() => closeModal())
+    .catch(err => showError(friendlyError(err)));
+});
+document.getElementById('lmReset').addEventListener('click', () => {
+  const email = document.getElementById('lmEmail').value.trim();
+  if (!email) { showError('メールアドレスを入れてね'); return; }
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      lmError.hidden = true;
+      const info = document.getElementById('lmInfo');
+      info.textContent = 'パスワード再設定のメールを送りました。メールを確認してね';
+      info.hidden = false;
+    })
+    .catch(err => showError(friendlyError(err)));
+});
+
+getRedirectResult(auth).then(result => { if (result) { rememberName(result); render(); } }).catch(() => {});
+onAuthStateChanged(auth, user => { fbUser = user; if (!user) fbMemberNo = null; render(); if (user) ensureMemberNo(); });
+
+render();
 </script>
 
 </body>
