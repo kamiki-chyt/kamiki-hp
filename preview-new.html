@@ -866,12 +866,43 @@ function renderNavUser(){
     loginBtn.hidden = false; logoutBtn.hidden = true;
   }
 }
+function scratchName(){
+  try {
+    var n = localStorage.getItem('sa_username');
+    if (n) return n;
+    var s = localStorage.getItem('sls_user');
+    if (!s) return '';
+    try { var o = JSON.parse(s); return (o && (o.name || o.username)) || ''; } catch (e) { return s; }
+  } catch (e) { return ''; }
+}
+function displayMethod(){
+  if (!loginProfile) return '';
+  if (loginProfile.method) return loginProfile.method;
+  return scratchName() ? 'Scratchでログイン中' : '';
+}
+var scratchNoFor = '';
+function maybeFillScratchNo(){
+  if (!loginProfile || loginProfile.no != null) return;
+  var name = scratchName();
+  if (!name || scratchNoFor === name) return;
+  if (typeof window.__lookupScratchNo !== 'function') { setTimeout(maybeFillScratchNo, 600); return; }
+  scratchNoFor = name;
+  window.__lookupScratchNo(name).then(function(no){
+    if (no != null && loginProfile && loginProfile.no == null && scratchName() === name) {
+      loginProfile.no = no;
+      renderLoginPage();
+    }
+  }).catch(function(){});
+}
 window.__kamikiSetLogin = function(profile){
   loginProfile = profile || null;
+  if (!loginProfile) scratchNoFor = '';
   renderNavUser(); renderLoginPage(); renderContactGate();
+  maybeFillScratchNo();
 };
 window.updateAllUI = function(){
   renderNavUser(); renderLoginPage(); renderContactGate();
+  maybeFillScratchNo();
 };
 $('#navLogin').addEventListener('click', function(){
   if (window.TororoID) window.TororoID.open();
@@ -902,7 +933,7 @@ window.renderLoginPage = function(){
     + '<div class="member-login-card">'
     + (loginProfile.avatar ? '<img src="' + esc(loginProfile.avatar) + '" alt="">' : '<span class="fallback"><span class="ms">person</span></span>')
     + '<div><div class="m-name">' + esc(loginProfile.name || '') + '</div>'
-    + '<div class="m-meta">' + esc(loginProfile.method || '') + '</div></div>'
+    + '<div class="m-meta">' + esc(displayMethod()) + '</div></div>'
     + '<div class="m-no"><div class="n">' + esc(noText.replace('No.', '')) + '</div><div class="l">会員No.</div></div>'
     + '</div>'
     + '<div class="btn-row"><button class="btn ghost small" id="lpLogoutBtn" type="button"><span class="ms">logout</span>ログアウト</button></div>'
@@ -931,7 +962,7 @@ window.renderContactGate = function(){
   if (!locked || !wrap) return;
   if (loginProfile) {
     locked.hidden = true; wrap.hidden = false;
-    $('#contactUserInfo').textContent = loginProfile.name + '（' + (loginProfile.method || '') + '）でログイン中';
+    $('#contactUserInfo').textContent = loginProfile.name + '（' + displayMethod() + '）でログイン中';
     var em = $('#cfEmail');
     if (em && !em.value && loginProfile.email) em.value = loginProfile.email;
     var nm = $('#cfName');
@@ -1240,6 +1271,30 @@ onAuthStateChanged(auth, user => { fbUser = user; if (!user) fbMemberNo = null; 
 
 render();
 
+</script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+try {
+  const app2 = initializeApp({
+    apiKey: 'AIzaSyBfKW5cuKxXBFHWV1MRumSey8PPwgcCfvQ',
+    authDomain: 'tororo-hp.firebaseapp.com',
+    projectId: 'tororo-hp',
+    storageBucket: 'tororo-hp.firebasestorage.app',
+    messagingSenderId: '133948474364',
+    appId: '1:133948474364:web:decac4c97ddd8f167ba879'
+  }, 'kamikiScratchLookup');
+  const db2 = getFirestore(app2);
+  window.__lookupScratchNo = async function (name) {
+    try {
+      const q = query(collection(db2, 'users'), where('scratch', '==', name));
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+      const d = snap.docs[0].data();
+      return (d && typeof d.no === 'number') ? d.no : null;
+    } catch (e) { return null; }
+  };
+} catch (e) { window.__lookupScratchNo = async function () { return null; }; }
 </script>
 </body>
 </html>
