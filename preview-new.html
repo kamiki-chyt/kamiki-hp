@@ -260,6 +260,17 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 .challenge-hero{text-align:center;padding:52px 0 6px}
 .challenge-hero h1{font-size:clamp(1.9rem,5.6vw,3.2rem);font-weight:900;line-height:1.3}
 #homeChallenge .card{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px;text-align:left}
+#lmEmailForm{display:flex;flex-direction:column}
+#lmEmailForm input{width:100%;box-sizing:border-box;padding:13px 16px;border:2px solid #e2dbf8;border-radius:14px;font-family:inherit;font-size:1rem;margin-bottom:10px;color:#241b3a;background:#f5f2ff;transition:border-color .15s,box-shadow .15s,background .15s}
+#lmEmailForm input::placeholder{color:#a79fc4}
+#lmEmailForm input:focus{outline:none;border-color:#a78bfa;background:#fff;box-shadow:0 0 0 4px rgba(167,139,250,.22)}
+@media (max-width:720px){
+  #navLogin,#navLogout{font-size:0;width:42px;height:42px;padding:0;border-radius:50%;gap:0;flex:none}
+  #navLogin .ms,#navLogout .ms{font-size:21px}
+  .logo{white-space:nowrap}
+  .user-chip{max-width:118px}
+  .user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
 </style>
 </head>
 <body>
@@ -634,7 +645,6 @@ function memberCard(m, detail){
     + (m.instagram ? '<span><span class="ms">photo_camera</span><a href="' + esc(m.instagram) + '" target="_blank" rel="noopener">Instagram</a></span>' : '')
     + '</div>';
   return '<div class="card member-card">'
-    + '<div class="member-ava">' + esc(m.initial) + '</div>'
     + (m.status ? '<span class="member-status">' + esc(m.status) + '</span>' : '')
     + '<h3>' + esc(m.name) + '</h3><div class="member-role">' + esc(m.role) + '</div>'
     + (detail ? meta : '')
