@@ -1298,28 +1298,41 @@ render();
 
 </script>
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { initializeApp, getApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+const cfg2 = {
+  apiKey: 'AIzaSyBfKW5cuKxXBFHWV1MRumSey8PPwgcCfvQ',
+  authDomain: 'tororo-hp.firebaseapp.com',
+  projectId: 'tororo-hp',
+  storageBucket: 'tororo-hp.firebasestorage.app',
+  messagingSenderId: '133948474364',
+  appId: '1:133948474364:web:decac4c97ddd8f167ba879'
+};
 try {
-  const app2 = initializeApp({
-    apiKey: 'AIzaSyBfKW5cuKxXBFHWV1MRumSey8PPwgcCfvQ',
-    authDomain: 'tororo-hp.firebaseapp.com',
-    projectId: 'tororo-hp',
-    storageBucket: 'tororo-hp.firebasestorage.app',
-    messagingSenderId: '133948474364',
-    appId: '1:133948474364:web:decac4c97ddd8f167ba879'
-  }, 'kamikiScratchLookup');
+  const app2 = initializeApp(cfg2, 'kamikiScratchLookup');
   const db2 = getFirestore(app2);
   window.__lookupScratchNo = async function (name) {
     try {
-      const q = query(collection(db2, 'users'), where('scratch', '==', name));
-      const snap = await getDocs(q);
-      if (snap.empty) return null;
-      const d = snap.docs[0].data();
+      const s = await getDoc(doc(db2, 'scratchIndex', name));
+      if (!s.exists()) return null;
+      const d = s.data();
       return (d && typeof d.no === 'number') ? d.no : null;
     } catch (e) { return null; }
   };
 } catch (e) { window.__lookupScratchNo = async function () { return null; }; }
+try {
+  const mainDb = getFirestore(getApp());
+  onAuthStateChanged(getAuth(getApp()), async function (u) {
+    if (!u) return;
+    try {
+      const s = await getDoc(doc(mainDb, 'users', u.uid));
+      if (s.exists() && s.data().scratch && typeof s.data().no === 'number') {
+        await setDoc(doc(mainDb, 'scratchIndex', s.data().scratch), { no: s.data().no });
+      }
+    } catch (e) {}
+  });
+} catch (e) {}
 </script>
 </body>
 </html>
