@@ -531,6 +531,31 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 
 <div id="toast" role="status"></div>
 
+<div id="loginModal" hidden>
+  <div class="lm-box">
+    <h3>とろろぉーーーーIDでログイン</h3>
+    <p class="lm-sub">対応サイト共通のアカウントでログインします。いずれかの方法をお選びください。</p>
+    <p class="lm-err" id="lmError" hidden></p>
+    <p class="lm-info" id="lmInfo" hidden></p>
+    <button class="lm-btn" id="lmScratch" type="button"><span class="material-symbols-outlined">stadia_controller</span>Scratchでログイン</button>
+    <button class="lm-btn" id="lmGoogle" type="button"><span class="material-symbols-outlined">account_circle</span>Googleでログイン</button>
+    <button class="lm-btn" id="lmGithub" type="button"><span class="material-symbols-outlined">code</span>GitHubでログイン</button>
+    <button class="lm-btn" id="lmPasskey" type="button"><span class="material-symbols-outlined">passkey</span>パスキーでログイン</button>
+    <div class="lm-sep">または メールアドレスで</div>
+    <form id="lmEmailForm">
+      <input type="email" id="lmEmail" placeholder="メールアドレス" autocomplete="email" required>
+      <input type="password" id="lmPassword" placeholder="パスワード" autocomplete="current-password" required>
+      <div class="lm-row">
+        <button type="submit" class="lm-btn lm-primary">ログイン</button>
+        <button type="button" class="lm-btn" id="lmEmailSignup">新規登録</button>
+      </div>
+    </form>
+    <button type="button" class="lm-btn" id="lmReset"><span class="material-symbols-outlined">lock_reset</span>パスワードを忘れた場合</button>
+    <button type="button" class="lm-btn" id="lmClose">閉じる</button>
+    <p class="lm-note">Scratchログインは ScratchLoginSystem（suzunokana × とろろぉーーーー）を使用します。パスキーは登録した端末でのみご利用いただけます。</p>
+  </div>
+</div>
+
 <script src="https://tr3131kami.github.io/ScratchLoginSystem/scratch-login.js"></script>
 <script>
 (function(){
