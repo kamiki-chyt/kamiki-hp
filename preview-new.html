@@ -38,21 +38,21 @@ button{font-family:inherit}
 /* header */
 .site-header{position:sticky;top:0;z-index:900;background:rgba(8,4,15,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .header-in{max-width:1180px;margin:0 auto;padding:0 18px;height:64px;display:flex;align-items:center;gap:16px}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:1.12rem;letter-spacing:.02em;white-space:nowrap}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:1.12rem;letter-spacing:.02em;white-space:nowrap;flex:none}
 .logo .logo-ic{width:36px;height:36px;border-radius:11px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 18px rgba(168,85,247,.5)}
 .logo .logo-ic .ms{font-size:21px}
-.main-nav{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.main-nav{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none;flex:0 1 auto;min-width:0}
 .main-nav::-webkit-scrollbar{display:none}
 .main-nav a{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;text-decoration:none;color:var(--sub);font-weight:800;font-size:.83rem;letter-spacing:.04em;white-space:nowrap;transition:color .25s,background .25s}
 .main-nav a .ms{font-size:18px}
 .main-nav a:hover{color:#fff}
 .main-nav a.act{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(168,85,247,.45)}
-.header-user{display:flex;align-items:center;gap:9px;margin-left:6px}
+.header-user{display:flex;align-items:center;gap:9px;margin-left:6px;flex:none}
 .user-chip{display:none;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:5px 12px 5px 6px;font-weight:800;font-size:.82rem;white-space:nowrap}
 .user-chip img{width:26px;height:26px;border-radius:50%;object-fit:cover;background:#2a1b4d}
 .user-chip .fallback{width:26px;height:26px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff}
 .user-chip .fallback .ms{font-size:16px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;font-weight:900;font-size:.92rem;letter-spacing:.03em;transition:transform .25s,box-shadow .25s,background .25s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;padding:12px 24px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;font-weight:900;font-size:.92rem;letter-spacing:.03em;transition:transform .25s,box-shadow .25s,background .25s}
 .btn .ms{font-size:20px}
 .btn.primary{background:var(--grad);color:#fff;box-shadow:0 10px 28px rgba(168,85,247,.45)}
 .btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(168,85,247,.6)}
@@ -265,7 +265,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);margin-top
 #lmEmailForm input::placeholder{color:#a79fc4}
 #lmEmailForm input:focus{outline:none;border-color:#a78bfa;background:#fff;box-shadow:0 0 0 4px rgba(167,139,250,.22)}
 @media (max-width:720px){
-  #navLogin,#navLogout{font-size:0;width:42px;height:42px;padding:0;border-radius:50%;gap:0;flex:none}
+  #navLogin,#navLogout{font-size:0;width:42px;height:42px;padding:0;border-radius:50%;gap:0;flex:none;white-space:nowrap}
   #navLogin .ms,#navLogout .ms{font-size:21px}
   .logo{white-space:nowrap}
   .user-chip{max-width:118px}
