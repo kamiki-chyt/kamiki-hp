@@ -756,7 +756,7 @@ function dayIndexOf(dateStr){
 function renderChallenge(){
   var now = new Date();
   var todayIdx = dayIndexOf(now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'));
-  var inRange = rssItems.filter(function(v){ return v.day >= 1 && v.day <= 30; });
+  var inRange = challengeItems ? challengeItems : rssItems.filter(function(v){ return v.day >= 1 && v.day <= 30; });
   var postedDays = {};
   inRange.forEach(function(v){ postedDays[v.day] = true; });
   var postedCount = Object.keys(postedDays).length;
@@ -807,6 +807,21 @@ fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('http
     var cg = $('#challengeGrid'); if (cg) cg.innerHTML = fb;
     renderChallenge();
   });
+
+/* challenge playlist (user-curated: the 30-day series) */
+var challengeItems = null;
+fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.youtube.com/feeds/videos.xml?playlist_id=PLMd0-u02yZQ4'))
+  .then(function(r){ if (!r.ok) throw new Error('rss ' + r.status); return r.json(); })
+  .then(function(data){
+    var items = (data.items || []).map(function(it){
+      return { title: it.title, link: it.link, thumb: it.thumbnail, raw: (it.pubDate || ''), date: fmtDate((it.pubDate || '').replace(' ', 'T')), day: 0 };
+    });
+    items.sort(function(a, b){ return a.raw < b.raw ? -1 : 1; });
+    items.forEach(function(v, i){ v.day = i + 1; });
+    challengeItems = items;
+    renderChallenge();
+  })
+  .catch(function(){});
 
 /* countdown (koukai.txt) */
 var koukaiList = [];
